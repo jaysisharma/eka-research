@@ -58,7 +58,7 @@ const areas = [
 function stars(seed, count) {
   let s = seed;
   const rand = () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; };
-  return Array.from({ length: count }, (_, i) => ({
+  return Array.from({ length: count }, () => ({
     x: Math.floor(rand() * W),
     y: Math.floor(rand() * H),
     r: rand() < 0.15 ? 1.4 : rand() < 0.5 ? 0.8 : 0.4,

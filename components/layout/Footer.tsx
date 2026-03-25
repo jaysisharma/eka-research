@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, MapPin, Youtube, Instagram, Twitter, Github } from "lucide-react";
-import { SITE, SITE_URL } from "@/lib/constants";
+import { SITE } from "@/lib/constants";
 import styles from "./Footer.module.css";
 
 const FOOTER_LINKS = [

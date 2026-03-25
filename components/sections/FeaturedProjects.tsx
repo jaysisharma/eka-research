@@ -26,7 +26,7 @@ export default function FeaturedProjects() {
             <span className={styles.labelLine} />
           </span>
           <div className={styles.headerRow}>
-            <h2 className={styles.heading}>What we're working on</h2>
+            <h2 className={styles.heading}>What we&apos;re working on</h2>
             <Link href="/projects" className={styles.viewAll}>
               All projects <ArrowRight size={14} />
             </Link>

@@ -186,7 +186,7 @@ export default function MemberBenefitsPage() {
               <div className={styles.bentoCellContent}>
                 <div className={styles.bentoIconWrap}><Telescope size={20} strokeWidth={1.75} /></div>
                 <h3 className={styles.bentoCellTitle}>Telescope & Instrument Time</h3>
-                <p className={styles.bentoCellDesc}>Book dedicated slots on Eka's All Sky Camera, weather station, and telescopes.</p>
+                <p className={styles.bentoCellDesc}>Book dedicated slots on Eka&apos;s All Sky Camera, weather station, and telescopes.</p>
                 <ul className={styles.bentoList}>
                   <li>All Sky Camera network</li>
                   <li>Weather station data</li>
@@ -200,7 +200,7 @@ export default function MemberBenefitsPage() {
               <div className={styles.bentoCellContent}>
                 <div className={styles.bentoIconWrap}><Database size={20} strokeWidth={1.75} /></div>
                 <h3 className={styles.bentoCellTitle}>Research Data Access</h3>
-                <p className={styles.bentoCellDesc}>Full access to Eka's cleaned, documented datasets — ready for your own research or coursework.</p>
+                <p className={styles.bentoCellDesc}>Full access to Eka&apos;s cleaned, documented datasets — ready for your own research or coursework.</p>
                 <div className={styles.bentaTags}>
                   {["Meteor events", "Space weather", "Atmospheric data", "API access"].map(t => (
                     <span key={t} className={styles.bentoTag}>{t}</span>

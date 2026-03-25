@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, MapPin, Clock, Calendar, Users } from "lucide-react";
+import { ArrowRight, MapPin, Clock, Users } from "lucide-react";
 import { EVENTS, type EkaEvent } from "@/lib/constants";
 import styles from "./Events.module.css";
 
@@ -64,7 +64,7 @@ export default function Events() {
 
         {/* Event list */}
         <div className={styles.list}>
-          {EVENTS.map((event, i) => {
+          {EVENTS.map((event) => {
             const date = formatDate(event.date);
             return (
               <article key={event.id} className={styles.card}>
@@ -134,7 +134,7 @@ export default function Events() {
         {/* Bottom CTA strip */}
         <div className={styles.footer}>
           <p className={styles.footerText}>
-            Can't make these? We run events year-round.
+            Can&apos;t make these? We run events year-round.
           </p>
           <Link href="/events" className={styles.footerLink}>
             Browse all events <ArrowRight size={14} />

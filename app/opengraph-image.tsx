@@ -112,6 +112,7 @@ export default async function Image() {
           >
             <img
               src={logoBase64}
+              alt="Eka Research Logo"
               width={150}
               height={150}
               style={{ objectFit: "contain" }}

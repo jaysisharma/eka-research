@@ -58,7 +58,7 @@ export default function StarField() {
 
     let animId: number;
     let stars: Star[] = [];
-    let shootingStars: ShootingStar[] = [];
+    const shootingStars: ShootingStar[] = [];
     let tick = 0;
     let nextShootAt = randBetween(180, 400);
 
