@@ -12,6 +12,7 @@ export default async function Image() {
   const logoBuffer = await readFile(join(process.cwd(), "public/logo.png"));
   const logoBase64 = `data:image/png;base64,${logoBuffer.toString("base64")}`;
 
+
   return new ImageResponse(
     (
       <div
