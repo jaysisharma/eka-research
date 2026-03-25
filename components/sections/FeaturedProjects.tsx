@@ -5,14 +5,15 @@ import { PROJECTS } from "@/lib/constants";
 import styles from "./FeaturedProjects.module.css";
 
 const STATUS_LABEL: Record<string, string> = {
-  ongoing:   "Ongoing",
+  ongoing: "Ongoing",
   completed: "Completed",
-  upcoming:  "Upcoming",
+  upcoming: "Upcoming",
 };
+
 
 export default function FeaturedProjects() {
   const featured = PROJECTS.find((p) => p.featured)!;
-  const rest     = PROJECTS.filter((p) => !p.featured);
+  const rest = PROJECTS.filter((p) => !p.featured);
 
   return (
     <section className={styles.section} id="projects">
