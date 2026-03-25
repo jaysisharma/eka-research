@@ -14,6 +14,8 @@ import { SITE } from "@/lib/constants";
 import { buildMetadata } from "@/lib/seo";
 import styles from "./page.module.css";
 
+
+
 export const metadata = buildMetadata({
   title: "Member Benefits",
   description:
@@ -55,7 +57,7 @@ export default function MemberBenefitsPage() {
           1. HERO — split: pitch left, card right
       ═══════════════════════════════════════════ */}
       <section className={styles.hero}>
-        <div className={styles.heroGlowLeft}  aria-hidden="true" />
+        <div className={styles.heroGlowLeft} aria-hidden="true" />
         <div className={styles.heroGlowRight} aria-hidden="true" />
 
         <div className={styles.heroInner}>
@@ -121,9 +123,9 @@ export default function MemberBenefitsPage() {
               <div className={styles.mcIcons}>
                 {[
                   { Icon: CalendarCheck, label: "Events" },
-                  { Icon: Telescope,     label: "Instruments" },
+                  { Icon: Telescope, label: "Instruments" },
                   { Icon: GraduationCap, label: "Mentoring" },
-                  { Icon: Award,         label: "Certificate" },
+                  { Icon: Award, label: "Certificate" },
                 ].map(({ Icon, label }) => (
                   <div key={label} className={styles.mcIcon}>
                     <Icon size={16} strokeWidth={1.5} className={styles.mcIconSvg} />
