@@ -31,7 +31,6 @@ export default function JsonLd() {
     ],
   };
 
-
   const website = {
     "@context": "https://schema.org",
     "@type": "WebSite",
