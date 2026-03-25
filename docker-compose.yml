@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: eka-research-app:latest
+    container_name: eka_research_web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # Add other necessary production environment variables here
+    # If there are volumes needed, add them here
+    # volumes:
+    #   - ./public/uploads:/app/public/uploads
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

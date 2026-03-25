@@ -1,0 +1,469 @@
+/* ============================================================
+   NAV — shared styles for Nav, NavDropdown, NavMobile
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   HEADER SHELL
+---------------------------------------------------------- */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--nav-height);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background var(--transition-normal),
+    border-color var(--transition-normal),
+    backdrop-filter var(--transition-normal);
+}
+
+.nav.scrolled {
+  background: var(--nav-bg-scrolled);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom-color: var(--border-default);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: var(--container-wide);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+  gap: var(--space-6);
+}
+
+/* ----------------------------------------------------------
+   LOGO
+---------------------------------------------------------- */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+/* White logo in dark mode so it's visible over dark hero */
+[data-theme="dark"] .logoImg {
+  filter: brightness(0) invert(1);
+}
+
+.logoText {
+  font-family: var(--font-heading);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------
+   DESKTOP LINKS
+---------------------------------------------------------- */
+.links {
+  display: none;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 1;
+  justify-content: center;
+}
+
+@media (min-width: 1080px) {
+  .links {
+    display: flex;
+  }
+}
+
+.linkGroup {
+  position: relative;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem; /* 13px — compact so 8 items fit */
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.link:hover {
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+}
+
+/* Member Benefits — gold accent */
+.link.highlight {
+  color: var(--color-brand-gold);
+  position: relative;
+}
+
+.link.highlight::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: var(--space-3);
+  right: var(--space-3);
+  height: 1.5px;
+  background: var(--color-brand-gold);
+  border-radius: var(--radius-full);
+  opacity: 0.6;
+}
+
+.link.highlight:hover {
+  background: rgba(254, 199, 62, 0.08);
+  color: var(--color-gold-400);
+}
+
+.chevron {
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* ----------------------------------------------------------
+   DROPDOWN PANEL
+---------------------------------------------------------- */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  padding: var(--space-2);
+  z-index: 200;
+  animation: dropIn 180ms ease forwards;
+  /* Gold top accent */
+  border-top: 2px solid var(--color-brand-gold);
+}
+
+.dropdownWide {
+  min-width: 500px;
+  left: 0;
+  transform: none;
+}
+
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Wide dropdown doesn't translate X */
+.dropdownWide {
+  animation: dropInWide 180ms ease forwards;
+}
+
+@keyframes dropInWide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdownGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-1);
+}
+
+.dropdownItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.dropdownItem:hover {
+  background: var(--bg-subtle);
+}
+
+.dropdownLabel {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.dropdownDesc {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: var(--leading-snug);
+}
+
+/* ----------------------------------------------------------
+   RIGHT ACTIONS
+---------------------------------------------------------- */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.cta {
+  display: none;
+  align-items: center;
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-brand-gold);
+  color: var(--color-brand-navy);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.cta:hover {
+  background: var(--color-gold-400);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 640px) {
+  .cta {
+    display: flex;
+  }
+}
+
+.hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.hamburger:hover {
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+}
+
+@media (min-width: 1080px) {
+  .hamburger {
+    display: none;
+  }
+}
+
+/* ----------------------------------------------------------
+   MOBILE OVERLAY
+---------------------------------------------------------- */
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition:
+    opacity 280ms ease,
+    visibility 280ms ease,
+    transform 280ms ease;
+  overflow-y: auto;
+}
+
+.mobileOverlayOpen {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.mobileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  height: var(--nav-height);
+  border-bottom: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.closeBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+}
+
+.mobileLinks {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4) var(--space-6);
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.mobileLink {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.mobileLink:hover {
+  background: var(--bg-subtle);
+}
+
+.mobileLink.highlight {
+  color: var(--color-brand-gold);
+}
+
+.mobileGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileGroupBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+
+.mobileGroupBtn:hover {
+  background: var(--bg-subtle);
+}
+
+.mobileGroupBtn .highlight {
+  color: var(--color-brand-gold);
+}
+
+.mobileChildren {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-1) 0 var(--space-2) var(--space-4);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 280ms ease;
+}
+
+.mobileChildrenOpen {
+  max-height: 400px;
+}
+
+.mobileChild {
+  display: block;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-left: 2px solid var(--border-default);
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.mobileChild:hover {
+  color: var(--text-primary);
+  border-left-color: var(--color-brand-gold);
+  background: var(--bg-subtle);
+}
+
+.mobileFooter {
+  padding: var(--space-6);
+  border-top: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.mobileToggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobileToggleLabel {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.mobileCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--color-brand-gold);
+  color: var(--color-brand-navy);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.mobileCta:hover {
+  background: var(--color-gold-400);
+}

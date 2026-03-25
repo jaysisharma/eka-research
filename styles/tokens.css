@@ -1,0 +1,199 @@
+/* ============================================================
+   EKA RESEARCH — DESIGN TOKENS
+   Single source of truth for all visual values.
+   Change here, changes everywhere.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   BRAND (fixed, never switch with theme)
+---------------------------------------------------------- */
+:root {
+  --color-brand-navy: #162161;
+  --color-brand-gold:  #FEC73E;
+
+  /* Tints & shades derived from brand */
+  --color-navy-900: #0D1540;
+  --color-navy-800: #162161;   /* = brand navy */
+  --color-navy-700: #1E2E82;
+  --color-navy-600: #2A3DA0;
+  --color-navy-400: #5B72D4;
+  --color-navy-200: #B0BCE8;
+
+  --color-gold-500: #FEC73E;   /* = brand gold */
+  --color-gold-400: #FFD76A;
+  --color-gold-300: #FFE49A;
+  --color-gold-600: #D4A020;
+}
+
+/* ----------------------------------------------------------
+   LIGHT MODE (default)
+---------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-base:     #F6F7FB;   /* slightly blue-grey tint, not clinical white */
+  --bg-surface:  #FFFFFF;
+  --bg-subtle:   #EDEEF6;
+  --bg-inset:    #E4E6F2;
+
+  /* Borders */
+  --border-default: #D6D9EC;
+  --border-strong:  #B0B5D6;
+
+  /* Text */
+  --text-primary:   #0E1128;
+  --text-secondary: #444A6E;
+  --text-muted:     #7A80A0;
+  --text-inverse:   #F0F2FF;
+
+  /* Interactive */
+  --color-primary:       var(--color-brand-navy);
+  --color-primary-hover: var(--color-navy-700);
+  --color-accent:        var(--color-brand-gold);
+  --color-accent-hover:  var(--color-gold-600);
+
+  /* Semantic */
+  --color-success: #2DB87A;
+  --color-warning: #F5A623;
+  --color-error:   #E0405A;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px 0 rgba(14, 17, 40, 0.08);
+  --shadow-md: 0 4px 12px 0 rgba(14, 17, 40, 0.10);
+  --shadow-lg: 0 12px 32px 0 rgba(14, 17, 40, 0.13);
+}
+
+/* ----------------------------------------------------------
+   DARK MODE
+---------------------------------------------------------- */
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-base:     #090B18;   /* near-black with blue undertone — feels like deep space */
+  --bg-surface:  #0F1225;
+  --bg-subtle:   #141829;
+  --bg-inset:    #1B2038;
+
+  /* Borders */
+  --border-default: #252A48;
+  --border-strong:  #353D60;
+
+  /* Text */
+  --text-primary:   #EDF0FF;
+  --text-secondary: #9098C0;
+  --text-muted:     #5A6080;
+  --text-inverse:   #0E1128;
+
+  /* Interactive */
+  --color-primary:       var(--color-navy-400);   /* lightened for dark bg */
+  --color-primary-hover: var(--color-navy-200);
+  --color-accent:        var(--color-brand-gold);
+  --color-accent-hover:  var(--color-gold-400);
+
+  /* Semantic */
+  --color-success: #3DCFA0;
+  --color-warning: #FEC73E;
+  --color-error:   #F06070;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* ----------------------------------------------------------
+   TYPOGRAPHY SCALE
+---------------------------------------------------------- */
+:root {
+  /* Fonts */
+  /* Heading: Helvetica is a system font — no import needed */
+  --font-heading: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body:    var(--font-dm-sans), 'DM Sans', sans-serif;
+
+  /* Size scale (fluid between 375px and 1440px) */
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.875rem;   /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-md:   1.125rem;   /* 18px */
+  --text-lg:   1.25rem;    /* 20px */
+  --text-xl:   1.5rem;     /* 24px */
+  --text-2xl:  1.875rem;   /* 30px */
+  --text-3xl:  2.25rem;    /* 36px */
+  --text-4xl:  3rem;       /* 48px */
+  --text-5xl:  3.75rem;    /* 60px */
+  --text-6xl:  4.5rem;     /* 72px */
+
+  /* Line heights */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.6;
+  --leading-loose:  1.8;
+
+  /* Letter spacing */
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.04em;
+  --tracking-widest:  0.12em;
+
+  /* Font weights */
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold: 600;
+  --weight-bold:    700;
+  --weight-extrabold: 800;
+}
+
+/* ----------------------------------------------------------
+   SPACING SCALE
+---------------------------------------------------------- */
+:root {
+  --space-1:  0.25rem;   /*  4px */
+  --space-2:  0.5rem;    /*  8px */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
+  --space-24: 6rem;      /* 96px */
+  --space-32: 8rem;      /* 128px */
+}
+
+/* ----------------------------------------------------------
+   LAYOUT
+---------------------------------------------------------- */
+:root {
+  --container-max:  1200px;
+  --container-wide: 1440px;
+  --container-pad:  clamp(1rem, 5vw, 3rem);
+
+  /* Border radius */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   20px;
+  --radius-2xl:  28px;
+  --radius-full: 9999px;
+
+  /* Nav */
+  --nav-height: 64px;
+  --nav-breakpoint: 1080px;
+}
+
+/* Nav scrolled background — frosted glass, theme-aware */
+:root,
+[data-theme="light"] {
+  --nav-bg-scrolled: rgba(255, 255, 255, 0.88);
+}
+[data-theme="dark"] {
+  --nav-bg-scrolled: rgba(9, 11, 24, 0.88);
+}
+
+:root {
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms ease;
+}
