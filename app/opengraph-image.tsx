@@ -12,16 +12,6 @@ export default async function Image() {
   const logoBuffer = await readFile(join(process.cwd(), "public/logo.png"));
   const logoBase64 = `data:image/png;base64,${logoBuffer.toString("base64")}`;
 
-  // Load Syne Bold for headings
-  const syneBold = await fetch(
-    "https://fonts.gstatic.com/s/syne/v22/8vIS7w4qzmVxsWxjBZRjr0FKM_04uQ.woff2"
-  ).then((r) => r.arrayBuffer());
-
-  // Load DM Sans Regular for body
-  const dmSansRegular = await fetch(
-    "https://fonts.gstatic.com/s/dmsans/v15/rP2Hp2ywxg089UriCZa4ET-DNl0.woff2"
-  ).then((r) => r.arrayBuffer());
-
   return new ImageResponse(
     (
       <div
@@ -208,10 +198,6 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: [
-        { name: "Syne", data: syneBold, style: "normal", weight: 800 },
-        { name: "DM Sans", data: dmSansRegular, style: "normal", weight: 400 },
-      ],
     }
   );
 }
