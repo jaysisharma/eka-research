@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/jaysisharma/eka-research-app:latest
+    image: ghcr.io/jaysisharma/eka-research/eka-research-app:latest
     container_name: eka_app
     restart: always
     environment:
