@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { v2 as cloudinary } from "cloudinary";
@@ -40,7 +41,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: result.secure_url }, { status: 200 });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Upload failed.";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: "Upload failed." }, { status: 500 });
   }
 }

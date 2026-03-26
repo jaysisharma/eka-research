@@ -6,7 +6,12 @@ const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 const createPrismaClient = () => {
   const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) return new PrismaClient(); // Fallback for build time if needed
+  if (!connectionString) {
+    // Fallback for build time if needed
+    return new PrismaClient({
+      errorFormat: "minimal"
+    });
+  }
 
   const pool = new Pool({ connectionString });
   const adapter = new PrismaPg(pool as any);
