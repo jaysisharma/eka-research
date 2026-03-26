@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { buildMetadata } from "@/lib/seo";

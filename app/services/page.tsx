@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { ArrowRight, Users, School, FlaskConical, Camera, CloudRain, GraduationCap, CheckCircle } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
