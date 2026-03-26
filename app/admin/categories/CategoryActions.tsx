@@ -20,6 +20,8 @@ export function CategoryActions() {
     setSaving(true);
     setError("");
 
+
+
     try {
       const res = await fetch("/api/admin/categories", {
         method: "POST",
