@@ -4,13 +4,9 @@
  */
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
 import bcrypt from "bcryptjs";
 
-const url = process.env.DATABASE_URL ?? "file:./prisma/dev.db";
-const libsqlUrl = url.startsWith("file:") ? url : `file:${url}`;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = new PrismaClient({ adapter: new PrismaLibSql({ url: libsqlUrl }) } as any);
+const db = new PrismaClient();
 
 async function main() {
   const existing = await db.user.findUnique({ where: { email: "admin@ekaresearch.org" } });
