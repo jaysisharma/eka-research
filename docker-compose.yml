@@ -1,4 +1,16 @@
 services:
+  migrate:
+    image: ghcr.io/jaysisharma/eka-research/eka-research-app:migrate
+    container_name: eka_migrate
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - shared_network
+    restart: "no"
+
   app:
     image: ghcr.io/jaysisharma/eka-research/eka-research-app:latest
     container_name: eka_app
@@ -15,6 +27,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     networks:
       - shared_network
 

@@ -21,7 +21,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx prisma generate
 RUN npm run build
 
-# ── Stage 3: production runner ───────────────────────────────
+# ── Stage 3: migration runner (has full node_modules) ────────
+FROM node:20-alpine AS migrator
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY prisma ./prisma
+CMD ["npx", "prisma", "migrate", "deploy"]
+
+# ── Stage 4: production runner ───────────────────────────────
 FROM node:20-alpine AS runner
 WORKDIR /app
 
@@ -38,11 +45,8 @@ RUN mkdir -p .next && chown nextjs:nodejs .next
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
-# Prisma packages needed for migrate deploy at startup
-# Use node_modules/prisma/build/index.js directly (avoids __dirname mismatch with .bin symlink)
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/client ./node_modules/@prisma/client
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/adapter-pg ./node_modules/@prisma/adapter-pg
 
 USER nextjs
 EXPOSE 3000
@@ -50,4 +54,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD wget -no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1
 
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]
+CMD ["node", "server.js"]

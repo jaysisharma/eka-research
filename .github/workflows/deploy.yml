@@ -25,12 +25,22 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
+      - name: Build and push app
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}/eka-research-app:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push migrator
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: migrator
+          push: true
+          tags: ghcr.io/${{ github.repository }}/eka-research-app:migrate
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
