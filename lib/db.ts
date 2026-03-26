@@ -2,25 +2,28 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+const g = globalThis as typeof globalThis & { __prisma?: PrismaClient };
 
-const createPrismaClient = () => {
+function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
-    // Fallback for build time if needed
-    return new PrismaClient({
-      errorFormat: "minimal"
-    });
+    throw new Error("DATABASE_URL environment variable is not set");
   }
-
   const pool = new Pool({ connectionString });
   const adapter = new PrismaPg(pool as any);
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
-};
+}
 
-export const db = globalForPrisma.prisma ?? createPrismaClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+// Lazy proxy — Prisma client is not created until first database access.
+// This prevents build-time failures when DATABASE_URL is unavailable.
+export const db: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    if (!g.__prisma) {
+      g.__prisma = createPrismaClient();
+    }
+    return Reflect.get(g.__prisma, prop);
+  },
+});

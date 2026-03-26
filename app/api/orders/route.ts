@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
@@ -76,7 +77,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ orderId: order.id, totalNpr: order.totalNpr }, { status: 201 });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Something went wrong.";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   }
 }
