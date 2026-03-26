@@ -26,6 +26,7 @@ FROM node:20-alpine AS migrator
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
 CMD ["npx", "prisma", "migrate", "deploy"]
 
 # ── Stage 4: production runner ───────────────────────────────

@@ -6,6 +6,8 @@ import { Plus, Trash2, Loader2 } from "lucide-react";
 import styles from "../cms.module.css";
 import catStyles from "./categories.module.css";
 
+
+// Category Actions
 export function CategoryActions() {
   const router = useRouter();
   const [name, setName] = useState("");

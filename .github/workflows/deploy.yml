@@ -62,28 +62,39 @@ jobs:
 
       - name: Deploy on Server via SSH
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          AUTH_URL: ${{ secrets.AUTH_URL }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: DATABASE_URL,AUTH_SECRET,AUTH_URL,POSTGRES_USER,POSTGRES_PASSWORD,POSTGRES_DB,CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET,ACCESS_TOKEN,GH_ACTOR
           script: |
             cd /opt/eka_research
 
-            # Write environment file from GitHub secrets
-            cat > .env << 'ENVEOF'
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            AUTH_SECRET=${{ secrets.AUTH_SECRET }}
-            AUTH_URL=${{ secrets.AUTH_URL }}
-            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-            CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
-            CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
-            CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
-            ENVEOF
+            # Write .env from env vars injected over SSH (no heredoc indentation issues)
+            printf 'DATABASE_URL=%s\n' "$DATABASE_URL" > .env
+            printf 'AUTH_SECRET=%s\n' "$AUTH_SECRET" >> .env
+            printf 'AUTH_URL=%s\n' "$AUTH_URL" >> .env
+            printf 'POSTGRES_USER=%s\n' "$POSTGRES_USER" >> .env
+            printf 'POSTGRES_PASSWORD=%s\n' "$POSTGRES_PASSWORD" >> .env
+            printf 'POSTGRES_DB=%s\n' "$POSTGRES_DB" >> .env
+            printf 'CLOUDINARY_CLOUD_NAME=%s\n' "$CLOUDINARY_CLOUD_NAME" >> .env
+            printf 'CLOUDINARY_API_KEY=%s\n' "$CLOUDINARY_API_KEY" >> .env
+            printf 'CLOUDINARY_API_SECRET=%s\n' "$CLOUDINARY_API_SECRET" >> .env
 
             # Log in to GitHub Container Registry
-            echo "${{ secrets.ACCESS_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "$ACCESS_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
 
             # Pull latest image and restart
             docker compose pull

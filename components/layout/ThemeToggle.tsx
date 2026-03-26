@@ -7,12 +7,15 @@ import styles from "./ThemeToggle.module.css";
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
+
   useEffect(() => {
     const saved = document.documentElement.getAttribute("data-theme");
     if (saved === "light" || saved === "dark") {
       setTimeout(() => setTheme(saved), 0);
     }
   }, []);
+
+  // Toggle logic
 
   function toggle() {
     const next = theme === "dark" ? "light" : "dark";
