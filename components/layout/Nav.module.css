@@ -103,6 +103,22 @@
   background: var(--bg-subtle);
 }
 
+.link.active {
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+}
+
+.link.active::before {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: var(--space-3);
+  right: var(--space-3);
+  height: 2px;
+  background: var(--color-brand-gold);
+  border-radius: var(--radius-full);
+}
+
 /* Member Benefits — gold accent */
 .link.highlight {
   color: var(--color-brand-gold);
@@ -154,6 +170,16 @@
   animation: dropIn 180ms ease forwards;
   /* Gold top accent */
   border-top: 2px solid var(--color-brand-gold);
+}
+
+/* Transparent bridge fills the 8px gap so mouse stays in the linkGroup */
+.dropdown::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
 }
 
 .dropdownWide {
@@ -236,6 +262,32 @@
   align-items: center;
   gap: var(--space-2);
   flex-shrink: 0;
+}
+
+.signIn {
+  display: none;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.signIn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+  background: var(--bg-subtle);
+}
+
+@media (min-width: 640px) {
+  .signIn {
+    display: flex;
+  }
 }
 
 .cta {
@@ -366,6 +418,13 @@
   background: var(--bg-subtle);
 }
 
+.mobileLink.active {
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  border-left: 2px solid var(--color-brand-gold);
+  padding-left: calc(var(--space-4) - 2px);
+}
+
 .mobileLink.highlight {
   color: var(--color-brand-gold);
 }
@@ -466,4 +525,23 @@
 
 .mobileCta:hover {
   background: var(--color-gold-400);
+}
+
+.mobileSignIn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.mobileSignIn:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { ChevronDown, Menu } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
@@ -10,7 +11,13 @@ import NavDropdown from "./NavDropdown";
 import NavMobile from "./NavMobile";
 import styles from "./Nav.module.css";
 
+function isActive(href: string, pathname: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
 export default function Nav() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -49,7 +56,7 @@ export default function Nav() {
             >
               <Link
                 href={link.href}
-                className={`${styles.link} ${link.highlight ? styles.highlight : ""}`}
+                className={`${styles.link} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
               >
                 {link.label}
                 {link.children && (
@@ -73,6 +80,9 @@ export default function Nav() {
         {/* Right actions */}
         <div className={styles.actions}>
           <ThemeToggle />
+          <Link href="/auth/login" className={styles.signIn}>
+            Sign In
+          </Link>
           <Link href="/opportunities/join" className={styles.cta}>
             Join Now
           </Link>

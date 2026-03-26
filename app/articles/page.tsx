@@ -3,8 +3,11 @@ import Image from "next/image";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
-import { ARTICLES, type Article, type ArticleType } from "@/lib/constants";
+import { getPublishedArticles, type ResearchArticle } from "@/lib/research";
+import type { ArticleType } from "@/lib/constants";
 import styles from "./page.module.css";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Articles",
@@ -21,8 +24,10 @@ const TYPE_LABEL: Record<ArticleType, string> = {
   report:     "Report",
 };
 
-function groupByYear(articles: Article[]) {
-  const map = new Map<number, Article[]>();
+const FALLBACK_IMG = "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=1200&q=80";
+
+function groupByYear(articles: ResearchArticle[]) {
+  const map = new Map<number, ResearchArticle[]>();
   for (const a of articles) {
     if (!map.has(a.year)) map.set(a.year, []);
     map.get(a.year)!.push(a);
@@ -52,14 +57,15 @@ function TypeBadge({ type }: { type: ArticleType }) {
   );
 }
 
-const featured = ARTICLES.find((a) => a.featured)!;
-const listed   = ARTICLES.filter((a) => !a.featured);
-const grouped  = groupByYear(listed);
+export default async function ArticlesPage() {
+  const articles = await getPublishedArticles();
+  const featured = articles.find((a) => a.featured) ?? articles[0];
+  const listed = articles.filter((a) => a.id !== featured?.id);
+  const grouped = groupByYear(listed);
 
-const totalJournals = new Set(ARTICLES.map((a) => a.journal)).size;
-const yearStart     = Math.min(...ARTICLES.map((a) => a.year));
+  const totalJournals = new Set(articles.map((a) => a.journal)).size;
+  const yearStart = articles.length ? Math.min(...articles.map((a) => a.year)) : new Date().getFullYear();
 
-export default function ArticlesPage() {
   return (
     <main>
 
@@ -77,7 +83,7 @@ export default function ArticlesPage() {
       <div className={styles.statsStrip}>
         <div className={styles.statsInner}>
           {[
-            { v: String(ARTICLES.length), l: "Publications" },
+            { v: String(articles.length), l: "Publications" },
             { v: String(totalJournals),   l: "Journals & venues" },
             { v: `${yearStart}–`,         l: "Publishing since" },
           ].map(({ v, l }) => (
@@ -90,149 +96,153 @@ export default function ArticlesPage() {
       </div>
 
       {/* ── 3. Featured article ── */}
-      <section className={styles.featuredSection}>
-        <div className={styles.sectionInner}>
-          <span className={styles.sectionLabel}>
-            <span className={styles.labelLine} />
-            Featured paper
-          </span>
+      {featured && (
+        <section className={styles.featuredSection}>
+          <div className={styles.sectionInner}>
+            <span className={styles.sectionLabel}>
+              <span className={styles.labelLine} />
+              Featured paper
+            </span>
 
-          <article className={styles.featuredCard}>
-            <div className={styles.featuredImgWrap}>
-              <Image
-                src={featured.image}
-                alt={featured.title}
-                fill
-                sizes="(max-width: 900px) 100vw, 40vw"
-                className={styles.featuredImg}
-              />
-              <div className={styles.featuredImgOverlay} />
-            </div>
+            <article className={styles.featuredCard}>
+              <div className={styles.featuredImgWrap}>
+                <Image
+                  src={featured.imageUrl ?? FALLBACK_IMG}
+                  alt={featured.title}
+                  fill
+                  sizes="(max-width: 900px) 100vw, 40vw"
+                  className={styles.featuredImg}
+                />
+                <div className={styles.featuredImgOverlay} />
+              </div>
 
-            <div className={styles.featuredContent}>
-              <div className={styles.featuredMain}>
-                <TypeBadge type={featured.type} />
-                <h2 className={styles.featuredTitle}>{featured.title}</h2>
-                <p className={styles.featuredMeta}>
-                  <AuthorList authors={featured.authors} ekaAuthors={featured.ekaAuthors} />
-                  {" — "}
-                  <em>{featured.journal}</em>, {featured.year}
-                </p>
-                <p className={styles.featuredAbstract}>{featured.abstract}</p>
-                <div className={styles.featuredTags}>
-                  {featured.disciplines.map((d) => (
-                    <span key={d} className={styles.tag}>{d}</span>
+              <div className={styles.featuredContent}>
+                <div className={styles.featuredMain}>
+                  <TypeBadge type={featured.type} />
+                  <h2 className={styles.featuredTitle}>{featured.title}</h2>
+                  <p className={styles.featuredMeta}>
+                    <AuthorList authors={featured.authors} ekaAuthors={featured.ekaAuthors} />
+                    {" — "}
+                    <em>{featured.journal}</em>, {featured.year}
+                  </p>
+                  <p className={styles.featuredAbstract}>{featured.abstract}</p>
+                  <div className={styles.featuredTags}>
+                    {featured.disciplines.map((d) => (
+                      <span key={d} className={styles.tag}>{d}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className={styles.featuredLinks}>
+                  <div className={styles.featuredLinksHead}>
+                    <span className={styles.featuredLinksLabel}>Access paper</span>
+                  </div>
+                  {featured.doi && (
+                    <a
+                      href={`https://doi.org/${featured.doi}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.linkBtn}
+                    >
+                      <ExternalLink size={13} />
+                      DOI
+                    </a>
+                  )}
+                  {featured.arxiv && (
+                    <a
+                      href={`https://arxiv.org/abs/${featured.arxiv}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${styles.linkBtn} ${styles.linkBtnGhost}`}
+                    >
+                      <ExternalLink size={13} />
+                      arXiv
+                    </a>
+                  )}
+                  <div className={styles.featuredLinksNote}>
+                    Gold names are Eka Research members.
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      )}
+
+      {/* ── 4. Year-grouped list ── */}
+      {grouped.length > 0 && (
+        <section className={styles.listSection}>
+          <div className={styles.sectionInner}>
+            <span className={styles.sectionLabel}>
+              <span className={styles.labelLine} />
+              All publications
+            </span>
+
+            {grouped.map(([year, yearArticles]) => (
+              <div key={year} className={styles.yearGroup}>
+                <div className={styles.yearHeading} aria-label={`Publications from ${year}`}>
+                  {year}
+                </div>
+
+                <div className={styles.yearArticles}>
+                  {yearArticles.map((a) => (
+                    <article key={a.id} className={styles.articleRow}>
+                      <div className={styles.thumbWrap}>
+                        <Image
+                          src={a.imageUrl ?? FALLBACK_IMG}
+                          alt={a.title}
+                          fill
+                          sizes="120px"
+                          className={styles.thumbImg}
+                        />
+                        <div className={styles.thumbOverlay} />
+                        <TypeBadge type={a.type} />
+                      </div>
+
+                      <div className={styles.articleBody}>
+                        <h3 className={styles.articleTitle}>{a.title}</h3>
+                        <p className={styles.articleMeta}>
+                          <AuthorList authors={a.authors} ekaAuthors={a.ekaAuthors} />
+                          {" — "}
+                          <em>{a.journal}</em>
+                        </p>
+                        <div className={styles.articleTags}>
+                          {a.disciplines.map((d) => (
+                            <span key={d} className={styles.tag}>{d}</span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className={styles.articleLinks}>
+                        {a.doi && (
+                          <a
+                            href={`https://doi.org/${a.doi}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.linkPill}
+                          >
+                            DOI <ExternalLink size={11} />
+                          </a>
+                        )}
+                        {a.arxiv && (
+                          <a
+                            href={`https://arxiv.org/abs/${a.arxiv}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`${styles.linkPill} ${styles.linkPillGhost}`}
+                          >
+                            arXiv <ExternalLink size={11} />
+                          </a>
+                        )}
+                      </div>
+                    </article>
                   ))}
                 </div>
               </div>
-
-              <div className={styles.featuredLinks}>
-                <div className={styles.featuredLinksHead}>
-                  <span className={styles.featuredLinksLabel}>Access paper</span>
-                </div>
-                {featured.doi && (
-                  <a
-                    href={`https://doi.org/${featured.doi}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.linkBtn}
-                  >
-                    <ExternalLink size={13} />
-                    DOI
-                  </a>
-                )}
-                {featured.arxiv && (
-                  <a
-                    href={`https://arxiv.org/abs/${featured.arxiv}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`${styles.linkBtn} ${styles.linkBtnGhost}`}
-                  >
-                    <ExternalLink size={13} />
-                    arXiv
-                  </a>
-                )}
-                <div className={styles.featuredLinksNote}>
-                  Gold names are Eka Research members.
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      {/* ── 4. Year-grouped list ── */}
-      <section className={styles.listSection}>
-        <div className={styles.sectionInner}>
-          <span className={styles.sectionLabel}>
-            <span className={styles.labelLine} />
-            All publications
-          </span>
-
-          {grouped.map(([year, articles]) => (
-            <div key={year} className={styles.yearGroup}>
-              <div className={styles.yearHeading} aria-label={`Publications from ${year}`}>
-                {year}
-              </div>
-
-              <div className={styles.yearArticles}>
-                {articles.map((a) => (
-                  <article key={a.id} className={styles.articleRow}>
-                    <div className={styles.thumbWrap}>
-                      <Image
-                        src={a.image}
-                        alt={a.title}
-                        fill
-                        sizes="120px"
-                        className={styles.thumbImg}
-                      />
-                      <div className={styles.thumbOverlay} />
-                      <TypeBadge type={a.type} />
-                    </div>
-
-                    <div className={styles.articleBody}>
-                      <h3 className={styles.articleTitle}>{a.title}</h3>
-                      <p className={styles.articleMeta}>
-                        <AuthorList authors={a.authors} ekaAuthors={a.ekaAuthors} />
-                        {" — "}
-                        <em>{a.journal}</em>
-                      </p>
-                      <div className={styles.articleTags}>
-                        {a.disciplines.map((d) => (
-                          <span key={d} className={styles.tag}>{d}</span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className={styles.articleLinks}>
-                      {a.doi && (
-                        <a
-                          href={`https://doi.org/${a.doi}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.linkPill}
-                        >
-                          DOI <ExternalLink size={11} />
-                        </a>
-                      )}
-                      {a.arxiv && (
-                        <a
-                          href={`https://arxiv.org/abs/${a.arxiv}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`${styles.linkPill} ${styles.linkPillGhost}`}
-                        >
-                          arXiv <ExternalLink size={11} />
-                        </a>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── 5. CTA strip ── */}
       <section className={styles.ctaStrip}>

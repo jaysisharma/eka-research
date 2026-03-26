@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String              @id @default(cuid())
+  name          String
+  email         String              @unique
+  password      String
+  role          String              @default("FREE_USER")
+  level         String?
+  interest      String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  orders              Order[]
+  subscription        Subscription?
+  registrations       EventRegistration[]
+  researchSubmissions ResearchArticle[]
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+  name      String
+  email     String
+  phone     String?
+  address   String
+  district  String
+  province  String
+  notes     String?
+  totalNpr  Int
+  status    String      @default("pending")
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String       @id @default(cuid())
+  orderId   String
+  order     Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   StoreProduct @relation(fields: [productId], references: [id], onDelete: Restrict)
+  name      String
+  priceNpr  Int
+  quantity  Int
+  variant   String?
+}
+
+model NewsPost {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  excerpt   String
+  category  String
+  date      String
+  imageUrl  String?
+  href      String
+  featured  Boolean  @default(false)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ResearchArticle {
+  id               String   @id @default(cuid())
+  title            String
+  authors          String
+  ekaAuthors       String
+  journal          String
+  year             Int
+  date             String
+  type             String
+  disciplines      String
+  abstract         String
+  imageUrl         String?
+  doi              String?
+  arxiv            String?
+  featured         Boolean  @default(false)
+  published        Boolean  @default(true)
+  submittedBy      String?
+  submitter        User?    @relation(fields: [submittedBy], references: [id], onDelete: SetNull)
+  submissionStatus String   @default("approved")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Event {
+  id               String              @id @default(cuid())
+  slug             String?             @unique
+  title            String
+  description      String
+  type             String
+  date             String
+  time             String
+  location         String
+  locationDetail   String?
+  seats            Int?
+  seatsLeft        Int?
+  href             String
+  registrationHref String?
+  published        Boolean             @default(true)
+  registrations    EventRegistration[]
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+}
+
+model EventRegistration {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  name      String
+  email     String
+  phone     String?
+  message   String?
+  status    String   @default("confirmed")
+  createdAt DateTime @default(now())
+}
+
+model StoreProduct {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  tagline     String
+  category    String
+  priceNpr    Int
+  description String
+  includes    String?
+  variants    String?
+  badge       String?
+  inStock     Boolean     @default(true)
+  digital     Boolean     @default(false)
+  imageUrl    String?
+  gradient    String      @default("linear-gradient(135deg, #1a2060 0%, #0a0d22 100%)")
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model ProjectCategory {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  projects  Project[]
+  createdAt DateTime  @default(now())
+}
+
+model Project {
+  id           String          @id @default(cuid())
+  title        String
+  description  String
+  status       String
+  categoryId   String
+  category     ProjectCategory @relation(fields: [categoryId], references: [id])
+  period       String
+  tags         String
+  imageUrl     String?
+  href         String
+  featured     Boolean         @default(false)
+  outcome      String?
+  phase        String?
+  launchTarget String?
+  published    Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      String
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

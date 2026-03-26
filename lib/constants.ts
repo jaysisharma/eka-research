@@ -91,7 +91,6 @@ export const NAV_LINKS: NavLink[] = [
     href: "/opportunities",
     children: [
       { label: "Join Us", href: "/opportunities/join" },
-      { label: "Vacancy", href: "/opportunities/vacancy" },
       { label: "Mentoring Program", href: "/opportunities/mentoring" },
     ],
   },
@@ -113,9 +112,16 @@ export type Project = {
   image: string;
   href: string;
   featured?: boolean;
+  /** Completed projects: one-line impact statement */
+  outcome?: string;
+  /** Upcoming projects: current development phase */
+  phase?: string;
+  /** Upcoming projects: expected launch window */
+  launchTarget?: string;
 };
 
 export const PROJECTS: Project[] = [
+  // ── Ongoing ────────────────────────────────────────────────
   {
     id: "allsky-camera-network",
     title: "All Sky Camera Network",
@@ -130,6 +136,68 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
+    id: "himalayan-weather-network",
+    title: "Himalayan Weather Station Network",
+    description:
+      "A distributed network of automated weather stations positioned across Nepal's altitudinal gradient — from Terai lowlands to alpine zones — providing real-time atmospheric data for research and forecasting.",
+    status: "ongoing",
+    period: "2023 – present",
+    tags: ["Atmospheric Science", "Climate", "Instrumentation"],
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80",
+    href: "/projects/himalayan-weather-network",
+    featured: false,
+  },
+
+  // ── Upcoming ────────────────────────────────────────────────
+  {
+    id: "eclipse-expedition-2027",
+    title: "Eclipse Expedition 2027",
+    description:
+      "Nepal's first coordinated solar eclipse observation campaign — engaging 500+ students across 15 districts with loaned eclipse glasses, trained facilitators, and a live data collection portal.",
+    status: "upcoming",
+    period: "2027",
+    tags: ["Outreach", "Solar", "Education"],
+    image:
+      "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=800&q=80",
+    href: "/projects/eclipse-expedition-2027",
+    featured: false,
+    phase: "Planning",
+    launchTarget: "Q1 2027",
+  },
+  {
+    id: "meteor-spectral-survey",
+    title: "Nepal Meteor Spectral Survey",
+    description:
+      "The first systematic spectroscopic survey of meteors over the Himalayan region — coupling all-sky cameras with transmission gratings to classify meteoroid compositions and identify rare mineral signatures.",
+    status: "upcoming",
+    period: "2026",
+    tags: ["Meteor Science", "Spectroscopy", "Data"],
+    image:
+      "https://images.unsplash.com/photo-1520034475321-cbe63696469a?auto=format&fit=crop&w=800&q=80",
+    href: "/projects/meteor-spectral-survey",
+    featured: false,
+    phase: "Instrument Design",
+    launchTarget: "Q3 2026",
+  },
+  {
+    id: "dark-sky-initiative",
+    title: "Himalayan Dark Sky Initiative",
+    description:
+      "A scientific and policy campaign to formally designate priority mountain sites in Nepal as International Dark Sky Places — quantifying light pollution, engaging local governments, and establishing long-term monitoring.",
+    status: "upcoming",
+    period: "2026 – 2028",
+    tags: ["Light Pollution", "Policy", "Astronomy"],
+    image:
+      "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=800&q=80",
+    href: "/projects/dark-sky-initiative",
+    featured: false,
+    phase: "Site Survey",
+    launchTarget: "Mid 2026",
+  },
+
+  // ── Completed ───────────────────────────────────────────────
+  {
     id: "stratonepal",
     title: "StratoNepal Balloon Payload",
     description:
@@ -141,19 +209,35 @@ export const PROJECTS: Project[] = [
       "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
     href: "/projects/stratonepal",
     featured: false,
+    outcome: "4 successful flights reaching 28 km altitude; UV and cosmic ray datasets open-published.",
   },
   {
-    id: "eclipse-expedition-2027",
-    title: "Eclipse Expedition 2027",
+    id: "geminid-campaign-2023",
+    title: "Geminid Observation Campaign 2023",
     description:
-      "Planning Nepal's first coordinated solar eclipse observation campaign — engaging 500+ students across 15 districts with loaned eclipse glasses and live data collection.",
-    status: "upcoming",
-    period: "2027",
-    tags: ["Outreach", "Solar", "Education"],
+      "A coordinated multi-site naked-eye and photographic observation of the Geminid meteor shower, recruiting 120 citizen scientists at 8 dark-sky sites across three provinces.",
+    status: "completed",
+    period: "2023",
+    tags: ["Meteor Science", "Citizen Science", "Outreach"],
     image:
-      "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=800&q=80",
-    href: "/projects/eclipse-expedition-2027",
+      "https://images.unsplash.com/photo-1579632652768-6cb9dcf85912?auto=format&fit=crop&w=800&q=80",
+    href: "/projects/geminid-campaign-2023",
     featured: false,
+    outcome: "3,800+ meteors logged; flux curve produced and submitted to the IMO database.",
+  },
+  {
+    id: "school-telescope-initiative",
+    title: "School Telescope Initiative",
+    description:
+      "Donated and installed 18 refractor telescopes across rural schools in Koshi and Gandaki provinces, paired with a structured 6-session astronomy curriculum delivered by Eka volunteers.",
+    status: "completed",
+    period: "2022",
+    tags: ["Education", "Outreach", "Instrumentation"],
+    image:
+      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80",
+    href: "/projects/school-telescope-initiative",
+    featured: false,
+    outcome: "18 telescopes placed, 1,400+ students reached, curriculum now freely downloadable.",
   },
 ];
 
@@ -453,5 +537,272 @@ export const RESEARCH_AREAS: ResearchArea[] = [
     description:
       "Developing evidence-based methods for science communication and astronomy outreach tailored to the Nepali curriculum.",
     href: "/research#science-education",
+  },
+];
+
+/* ── VACANCIES ── */
+export type VacancyType = "full-time" | "part-time" | "internship" | "volunteer" | "contract";
+export type VacancyStatus = "open" | "closed";
+
+export type Vacancy = {
+  id: string;
+  title: string;
+  department: string;
+  type: VacancyType;
+  location: string;
+  remote: boolean;
+  /** ISO 8601 date string */
+  deadline: string;
+  status: VacancyStatus;
+  summary: string;
+  responsibilities: string[];
+  requirements: string[];
+  preferred?: string[];
+};
+
+export const VACANCIES: Vacancy[] = [
+  {
+    id: "research-assistant-meteor",
+    title: "Research Assistant — Meteor Science",
+    department: "Research",
+    type: "part-time",
+    location: "Kathmandu",
+    remote: false,
+    deadline: "2026-04-30",
+    status: "open",
+    summary:
+      "Support Eka's All Sky Camera network: process observation data, maintain field stations, and contribute to meteor trajectory analysis.",
+    responsibilities: [
+      "Operate and maintain All Sky Camera nodes across the Kathmandu valley",
+      "Process raw camera frames using Eka's Python-based pipeline tools",
+      "Assist in triangulating multi-station events and computing orbital parameters",
+      "Document anomalous events and update the shared observation log",
+      "Contribute to monthly network status reports",
+    ],
+    requirements: [
+      "Enrolled in or graduate of a BSc/MSc in physics, astronomy, or engineering",
+      "Comfortable with Python for data processing and scripting",
+      "Able to commit 15–20 hours per week, including some evening observation shifts",
+      "Based in or willing to relocate to Kathmandu",
+    ],
+    preferred: [
+      "Prior experience with image processing or astrometry software",
+      "Familiarity with FITS files or similar scientific image formats",
+    ],
+  },
+  {
+    id: "education-coordinator",
+    title: "Education Programme Coordinator",
+    department: "Education & Outreach",
+    type: "full-time",
+    location: "Kathmandu",
+    remote: false,
+    deadline: "2026-05-15",
+    status: "open",
+    summary:
+      "Design and run Eka's school and public outreach programmes — from curriculum workshops to observation nights — across Nepal.",
+    responsibilities: [
+      "Plan and deliver astronomy workshops for Class 9–12 schools across at least three provinces",
+      "Coordinate public events: observation nights, public lectures, and citizen science campaigns",
+      "Develop curriculum-aligned resource packs for Nepali physics teachers",
+      "Manage volunteer educators and coordinate event logistics",
+      "Track participation data and write quarterly programme impact reports",
+    ],
+    requirements: [
+      "Bachelor's degree or higher in science, education, or a related field",
+      "2+ years experience in programme coordination, science communication, or teaching",
+      "Fluency in both Nepali and English",
+      "Strong organisational skills and comfort with managing multiple workstreams",
+    ],
+    preferred: [
+      "Background in astronomy or physics",
+      "Experience working with schools in Nepal's hill or mountain regions",
+      "Familiarity with Nepal's secondary science curriculum frameworks",
+    ],
+  },
+  {
+    id: "data-engineering-intern",
+    title: "Data Engineering Intern",
+    department: "Research",
+    type: "internship",
+    location: "Remote / Kathmandu",
+    remote: true,
+    deadline: "2026-04-15",
+    status: "open",
+    summary:
+      "Build and maintain the pipelines that power Eka's public data portal — cleaning, archiving, and exposing meteor, weather, and space weather datasets.",
+    responsibilities: [
+      "Build and maintain ETL pipelines for ingesting camera, weather-station, and magnetometer data",
+      "Improve data validation and anomaly-detection routines in Python",
+      "Document datasets and write user-facing API guides for the member data portal",
+      "Assist with database schema design and query optimisation",
+    ],
+    requirements: [
+      "Enrolled in or recently graduated from a CS, data science, or engineering programme",
+      "Solid Python skills; comfortable with pandas or numpy",
+      "Able to work in a remote-first, async environment",
+    ],
+    preferred: [
+      "Experience with scientific data formats (FITS, NetCDF, HDF5)",
+      "Knowledge of PostgreSQL or any time-series database",
+      "Open-source contribution history",
+    ],
+  },
+];
+
+/* ── STORE ── */
+export type ProductCategory = "apparel" | "educational" | "kits" | "digital";
+
+export type ProductVariantGroup = {
+  name: string;
+  options: string[];
+};
+
+export type Product = {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string;
+  category: ProductCategory;
+  priceNpr: number;
+  description: string;
+  includes?: string[];
+  variants?: ProductVariantGroup[];
+  badge?: string;
+  inStock: boolean;
+  digital: boolean;
+  /** CSS gradient string used as the image placeholder */
+  gradient: string;
+  /** Cloudinary image URL — takes precedence over gradient */
+  imageUrl?: string;
+};
+
+export const PRODUCTS: Product[] = [
+  {
+    id: "eka-classic-tee",
+    slug: "eka-classic-tee",
+    name: "Eka Research Classic Tee",
+    tagline: "Wear the mission",
+    category: "apparel",
+    priceNpr: 1200,
+    description:
+      "100% cotton heavyweight tee in black with the Eka Research wordmark embroidered on the chest. Printed on ethically sourced fabric, made in Nepal.",
+    variants: [
+      { name: "Size", options: ["S", "M", "L", "XL", "XXL"] },
+      { name: "Colour", options: ["Black", "Navy Blue"] },
+    ],
+    badge: "Popular",
+    inStock: true,
+    digital: false,
+    gradient: "linear-gradient(135deg, #1a2060 0%, #0a0d22 100%)",
+  },
+  {
+    id: "eka-hoodie",
+    slug: "eka-hoodie",
+    name: "Eka Research Hoodie",
+    tagline: "For late-night observation sessions",
+    category: "apparel",
+    priceNpr: 2500,
+    description:
+      "Heavyweight 360gsm fleece hoodie with the Eka Research logo embroidered on the front. Kangaroo pocket, ribbed cuffs. Made in Nepal.",
+    variants: [
+      { name: "Size", options: ["S", "M", "L", "XL"] },
+      { name: "Colour", options: ["Black", "Charcoal", "Navy Blue"] },
+    ],
+    inStock: true,
+    digital: false,
+    gradient: "linear-gradient(135deg, #111827 0%, #0a0d22 100%)",
+  },
+  {
+    id: "observation-cap",
+    slug: "observation-cap",
+    name: "Observation Cap",
+    tagline: "Block the streetlights",
+    category: "apparel",
+    priceNpr: 800,
+    description:
+      "Six-panel unstructured cap with an embroidered crescent-and-star mark on the front. Adjustable strap. One size fits most.",
+    variants: [
+      { name: "Colour", options: ["Black", "Navy Blue"] },
+    ],
+    badge: "New",
+    inStock: true,
+    digital: false,
+    gradient: "linear-gradient(135deg, #0d1a2e 0%, #080c18 100%)",
+  },
+  {
+    id: "nepal-sky-map",
+    slug: "nepal-sky-map",
+    name: "Nepal Sky Map (A2 Poster)",
+    tagline: "Your sky, calibrated for Nepal",
+    category: "educational",
+    priceNpr: 650,
+    description:
+      "A2 (420×594 mm) star chart printed for Kathmandu latitude (27.7°N). Includes constellation lines, deep-sky objects visible from Nepal, and seasonal guides. Printed on 200gsm matte art paper.",
+    inStock: true,
+    digital: false,
+    gradient: "linear-gradient(135deg, #0f0528 0%, #080c18 100%)",
+  },
+  {
+    id: "stargazing-guide",
+    slug: "stargazing-guide",
+    name: "Beginner's Stargazing Guide",
+    tagline: "Start from zero, reach the stars",
+    category: "educational",
+    priceNpr: 450,
+    description:
+      "A 64-page printed guide to naked-eye astronomy from Nepal. Covers constellations visible each season, how to read a star chart, light pollution, and citizen science projects you can join.",
+    badge: "Best seller",
+    inStock: true,
+    digital: false,
+    gradient: "linear-gradient(135deg, #1a0a30 0%, #080c18 100%)",
+  },
+  {
+    id: "meteor-field-journal",
+    slug: "meteor-field-journal",
+    name: "Meteor Science Field Journal",
+    tagline: "Log every streak",
+    category: "educational",
+    priceNpr: 350,
+    description:
+      "A5 softcover journal with structured pages for logging meteor observations — time, azimuth, altitude, brightness, colour, and notes. 120 pages. Includes a quick-reference meteor magnitude chart.",
+    inStock: true,
+    digital: false,
+    gradient: "linear-gradient(135deg, #0a1a1a 0%, #080c18 100%)",
+  },
+  {
+    id: "meteor-watch-kit",
+    slug: "meteor-watch-kit",
+    name: "Meteor Watch Starter Kit",
+    tagline: "Everything you need for your first watch",
+    category: "kits",
+    priceNpr: 3500,
+    description:
+      "A curated bundle for your first meteor watch session — hand-picked by Eka's research team. Everything fits in the included drawstring bag.",
+    includes: [
+      "Nepal Sky Map (A2 Poster)",
+      "Meteor Science Field Journal",
+      "Red-light torch (preserves night vision)",
+      "Observation checklist card",
+      "Drawstring carry bag",
+    ],
+    badge: "Bundle",
+    inStock: true,
+    digital: false,
+    gradient: "linear-gradient(135deg, #0a2020 0%, #080c18 100%)",
+  },
+  {
+    id: "digital-logbook",
+    slug: "digital-logbook",
+    name: "Digital Observation Logbook",
+    tagline: "Structured logging, anywhere",
+    category: "digital",
+    priceNpr: 299,
+    description:
+      "A downloadable PDF logbook (A4, fillable) for recording meteor, planetary, and deep-sky observations. Includes 60 structured log sheets, a session summary template, and a yearly progress tracker. Works with any PDF reader.",
+    badge: "Digital download",
+    inStock: true,
+    digital: true,
+    gradient: "linear-gradient(135deg, #0a2010 0%, #080c18 100%)",
   },
 ];

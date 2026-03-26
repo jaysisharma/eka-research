@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { PROJECTS } from "@/lib/constants";
+import { FadeUp, SlideIn } from "@/components/ui/motion";
 import styles from "./FeaturedProjects.module.css";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -13,12 +14,13 @@ const STATUS_LABEL: Record<string, string> = {
 
 export default function FeaturedProjects() {
   const featured = PROJECTS.find((p) => p.featured)!;
-  const rest = PROJECTS.filter((p) => !p.featured);
+  const rest = PROJECTS.filter((p) => !p.featured).slice(0, 2);
 
   return (
     <section className={styles.section} id="projects">
       <div className={styles.inner}>
 
+        <FadeUp>
         {/* Header */}
         <div className={styles.header}>
           <span className={styles.label}>
@@ -33,11 +35,13 @@ export default function FeaturedProjects() {
             </Link>
           </div>
         </div>
+        </FadeUp>
 
         {/* Grid: 1 large + 2 stacked */}
         <div className={styles.grid}>
 
           {/* Featured card — large */}
+          <SlideIn from="left" delay={0.1}>
           <Link href={featured.href} className={`${styles.card} ${styles.cardFeatured}`}>
             <div className={styles.imageWrapper}>
               <Image
@@ -70,8 +74,10 @@ export default function FeaturedProjects() {
               </span>
             </div>
           </Link>
+          </SlideIn>
 
           {/* Side stack */}
+          <SlideIn from="right" delay={0.2}>
           <div className={styles.stack}>
             {rest.map((project) => (
               <Link key={project.id} href={project.href} className={`${styles.card} ${styles.cardSmall}`}>
@@ -104,6 +110,7 @@ export default function FeaturedProjects() {
               </Link>
             ))}
           </div>
+          </SlideIn>
 
         </div>
       </div>

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, MapPin, Clock, Users } from "lucide-react";
-import { EVENTS, type EkaEvent } from "@/lib/constants";
+import { getUpcomingEvents, type SiteEvent } from "@/lib/events";
+import { FadeUp, StaggerList, StaggerItem } from "@/components/ui/motion";
 import styles from "./Events.module.css";
 
-const TYPE_LABEL: Record<EkaEvent["type"], string> = {
+const TYPE_LABEL: Record<SiteEvent["type"], string> = {
   observation:  "Observation",
   workshop:     "Workshop",
   lecture:      "Lecture",
@@ -38,36 +39,41 @@ function SeatsBar({ seats, seatsLeft }: { seats: number; seatsLeft: number }) {
   );
 }
 
-export default function Events() {
+export default async function Events() {
+  const events = await getUpcomingEvents(3);
+
+  if (events.length === 0) return null;
+
   return (
     <section className={styles.section} id="events">
       <div className={styles.inner}>
 
-        {/* Header */}
-        <div className={styles.header}>
-          <span className={styles.label}>
-            <span className={styles.labelLine} />
-            Upcoming Events
-            <span className={styles.labelLine} />
-          </span>
-          <div className={styles.headerRow}>
-            <h2 className={styles.heading}>Come join us in person</h2>
-            <Link href="/events" className={styles.viewAll}>
-              All events <ArrowRight size={14} />
-            </Link>
+        <FadeUp>
+          <div className={styles.header}>
+            <span className={styles.label}>
+              <span className={styles.labelLine} />
+              Upcoming Events
+              <span className={styles.labelLine} />
+            </span>
+            <div className={styles.headerRow}>
+              <h2 className={styles.heading}>Come join us in person</h2>
+              <Link href="/events" className={styles.viewAll}>
+                All events <ArrowRight size={14} />
+              </Link>
+            </div>
+            <p className={styles.subheading}>
+              Observation nights, workshops, and public lectures — open to students,
+              researchers, and the curious alike.
+            </p>
           </div>
-          <p className={styles.subheading}>
-            Observation nights, workshops, and public lectures — open to students,
-            researchers, and the curious alike.
-          </p>
-        </div>
+        </FadeUp>
 
-        {/* Event list */}
-        <div className={styles.list}>
-          {EVENTS.map((event) => {
+        <StaggerList className={styles.list}>
+          {events.map((event) => {
             const date = formatDate(event.date);
             return (
-              <article key={event.id} className={styles.card}>
+              <StaggerItem key={event.id}>
+              <article className={styles.card}>
 
                 {/* Date block */}
                 <div className={styles.dateBlock} aria-label={date.full}>
@@ -84,7 +90,7 @@ export default function Events() {
                     <span className={`${styles.typeBadge} ${styles[`type_${event.type}`]}`}>
                       {TYPE_LABEL[event.type]}
                     </span>
-                    {event.seats && event.seatsLeft !== undefined && (
+                    {event.seats && event.seatsLeft != null && (
                       <SeatsBar seats={event.seats} seatsLeft={event.seatsLeft} />
                     )}
                   </div>
@@ -107,7 +113,7 @@ export default function Events() {
                         ? `${event.locationDetail}, ${event.location}`
                         : event.location}
                     </span>
-                    {event.seats && (
+                    {event.seats != null && (
                       <>
                         <span className={styles.metaDot} aria-hidden="true" />
                         <span className={styles.metaItem}>
@@ -127,10 +133,12 @@ export default function Events() {
                 )}
 
               </article>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerList>
 
+        <FadeUp delay={0.1}>
         {/* Bottom CTA strip */}
         <div className={styles.footer}>
           <p className={styles.footerText}>
@@ -140,6 +148,7 @@ export default function Events() {
             Browse all events <ArrowRight size={14} />
           </Link>
         </div>
+        </FadeUp>
 
       </div>
     </section>

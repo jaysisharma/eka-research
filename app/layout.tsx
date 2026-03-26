@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import JsonLd from "@/components/JsonLd";
-import Nav from "@/components/layout/Nav";
-import Footer from "@/components/layout/Footer";
+import { NavFooterWrapper } from "@/components/layout/NavFooterWrapper";
+import { CartProvider } from "@/components/store/CartProvider";
 import { SITE, SITE_URL } from "@/lib/constants";
 import "./globals.css";
 
@@ -100,9 +100,11 @@ export default function RootLayout({
         <JsonLd />
       </head>
       <body>
-        <Nav />
-        {children}
-        <Footer />
+        <CartProvider>
+          <NavFooterWrapper>
+            {children}
+          </NavFooterWrapper>
+        </CartProvider>
       </body>
     </html>
   );

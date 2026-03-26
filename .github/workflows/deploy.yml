@@ -66,5 +66,8 @@ jobs:
             docker compose pull
             docker compose up -d
             
+            # Run database migrations
+            docker exec eka_app npx prisma migrate deploy
+            
             # Clean up old unused images to save space on host
             docker image prune -a -f --filter "until=24h"

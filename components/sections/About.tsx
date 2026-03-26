@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Telescope, BookOpen, Users } from "lucide-react";
 import { SITE } from "@/lib/constants";
+import { SlideIn, FadeIn } from "@/components/ui/motion";
 import styles from "./About.module.css";
 
 const PILLARS = [
@@ -25,6 +26,7 @@ export default function About() {
         <div className={styles.split}>
 
           {/* ── Text column ── */}
+          <SlideIn from="left">
           <div className={styles.textCol}>
             <span className={styles.label}>
               <span className={styles.labelLine} />
@@ -74,8 +76,10 @@ export default function About() {
               Our full story <ArrowRight size={15} />
             </Link>
           </div>
+          </SlideIn>
 
           {/* ── Visual column ── */}
+          <SlideIn from="right" delay={0.15}>
           <div className={styles.visual}>
             <div className={styles.imageFrame}>
               <Image
@@ -99,6 +103,7 @@ export default function About() {
               <div className={styles.orbitDot} />
             </div>
           </div>
+          </SlideIn>
 
         </div>
       </div>

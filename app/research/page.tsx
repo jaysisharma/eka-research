@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ArrowRight, ExternalLink, Telescope, Sparkles, Sun, Wind, Atom, BookOpen } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
-import { RESEARCH_AREAS, ARTICLES } from "@/lib/constants";
+import { RESEARCH_AREAS } from "@/lib/constants";
+import { getPublishedArticles } from "@/lib/research";
 import styles from "./page.module.css";
 
 export const metadata = buildMetadata({
@@ -47,9 +48,11 @@ const INSTRUMENTS = [
   },
 ];
 
-const recentArticles = ARTICLES.slice(0, 3);
+export const dynamic = "force-dynamic";
 
-export default function ResearchPage() {
+export default async function ResearchPage() {
+  const allArticles = await getPublishedArticles();
+  const recentArticles = allArticles.slice(0, 3);
   return (
     <main>
 
@@ -242,7 +245,7 @@ export default function ResearchPage() {
               <article key={article.id} className={styles.pubItem}>
                 <div className={styles.pubImgWrap}>
                   <Image
-                    src={article.image}
+                    src={article.imageUrl ?? "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=1200&q=80"}
                     alt={article.title}
                     fill
                     sizes="120px"

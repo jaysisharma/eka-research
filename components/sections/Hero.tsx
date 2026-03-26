@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Telescope } from "lucide-react";
 import StarField from "@/components/ui/StarField";
+import { FadeUp } from "@/components/ui/motion";
 import styles from "./Hero.module.css";
 
 export default function Hero() {
@@ -65,59 +66,65 @@ export default function Hero() {
       {/* ── Content ── */}
       <div className={styles.content}>
 
-        {/* Tag */}
-        <div className={styles.tag}>
-          <span className={styles.tagDot} />
-          Space Research · Kathmandu, Nepal
-        </div>
-
-        {/* Headline */}
-        <h1 className={styles.headline}>
-          <span className={styles.headlineLine}>Expanding the Frontiers of</span>
-          <span className={styles.accentWord}>Space Science</span>
-        </h1>
-
-        {/* Subtitle */}
-        <p className={styles.subtitle}>
-          From curious students in Class 9 to PhD researchers —
-          we make space science accessible, collaborative, and inspiring
-          for every mind in Nepal and beyond.
-        </p>
-
-        {/* CTAs */}
-        <div className={styles.ctas}>
-          <Link href="/research" className={styles.ctaPrimary}>
-            <Telescope size={16} />
-            Explore Our Research
-          </Link>
-          <Link href="/opportunities/join" className={styles.ctaSecondary}>
-            Join the Community
-            <ArrowRight size={15} />
-          </Link>
-        </div>
-
-        {/* Stats */}
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <span className={styles.statValue}>2020</span>
-            <span className={styles.statLabel}>Founded</span>
+        <FadeUp delay={0.05}>
+          <div className={styles.tag}>
+            <span className={styles.tagDot} />
+            Space Research · Kathmandu, Nepal
           </div>
-          <div className={styles.statDivider} />
-          <div className={styles.stat}>
-            <span className={styles.statValue}>9–PhD</span>
-            <span className={styles.statLabel}>All Levels</span>
+        </FadeUp>
+
+        <FadeUp delay={0.18}>
+          <h1 className={styles.headline}>
+            <span className={styles.headlineLine}>Expanding the Frontiers of</span>
+            <span className={styles.accentWord}>Space Science</span>
+          </h1>
+        </FadeUp>
+
+        <FadeUp delay={0.3}>
+          <p className={styles.subtitle}>
+            From curious students in Class 9 to PhD researchers —
+            we make space science accessible, collaborative, and inspiring
+            for every mind in Nepal and beyond.
+          </p>
+        </FadeUp>
+
+        <FadeUp delay={0.42}>
+          <div className={styles.ctas}>
+            <Link href="/research" className={styles.ctaPrimary}>
+              <Telescope size={16} />
+              Explore Our Research
+            </Link>
+            <Link href="/opportunities/join" className={styles.ctaSecondary}>
+              Join the Community
+              <ArrowRight size={15} />
+            </Link>
           </div>
-          <div className={styles.statDivider} />
-          <div className={styles.stat}>
-            <span className={styles.statValue}>Open</span>
-            <span className={styles.statLabel}>Science</span>
+        </FadeUp>
+
+        <FadeUp delay={0.54}>
+          <div className={styles.stats}>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>2020</span>
+              <span className={styles.statLabel}>Founded</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.stat}>
+              <span className={styles.statValue}>9–PhD</span>
+              <span className={styles.statLabel}>All Levels</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.stat}>
+              <span className={styles.statValue}>Open</span>
+              <span className={styles.statLabel}>Science</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.stat}>
+              <span className={styles.statValue}>Nepal</span>
+              <span className={styles.statLabel}>Based</span>
+            </div>
           </div>
-          <div className={styles.statDivider} />
-          <div className={styles.stat}>
-            <span className={styles.statValue}>Nepal</span>
-            <span className={styles.statLabel}>Based</span>
-          </div>
-        </div>
+        </FadeUp>
+
       </div>
 
       {/* Scroll indicator */}

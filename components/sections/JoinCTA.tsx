@@ -9,6 +9,7 @@ import {
   Award,
 } from "lucide-react";
 import { SITE } from "@/lib/constants";
+import { SlideIn, ScaleIn } from "@/components/ui/motion";
 import styles from "./JoinCTA.module.css";
 
 const PERKS = [
@@ -32,6 +33,7 @@ export default function JoinCTA() {
       <div className={styles.inner}>
 
         {/* ── Left: Pitch ── */}
+        <SlideIn from="left">
         <div className={styles.pitch}>
           <span className={styles.label}>
             <span className={styles.labelLine} />
@@ -70,8 +72,10 @@ export default function JoinCTA() {
 
           <p className={styles.micro}>Takes 2 minutes &nbsp;·&nbsp; No credit card</p>
         </div>
+        </SlideIn>
 
         {/* ── Right: Membership card visual ── */}
+        <ScaleIn delay={0.2}>
         <div className={styles.cardWrap}>
 
           {/* Glow behind the card */}
@@ -139,6 +143,7 @@ export default function JoinCTA() {
           </div>
 
         </div>
+        </ScaleIn>
 
       </div>
     </section>

@@ -3,10 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { X, ChevronDown } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
 import styles from "./Nav.module.css";
+
+function isActive(href: string, pathname: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
 
 interface NavMobileProps {
   open: boolean;
@@ -14,6 +20,7 @@ interface NavMobileProps {
 }
 
 export default function NavMobile({ open, onClose }: NavMobileProps) {
+  const pathname = usePathname();
   const [expanded, setExpanded] = useState<string | null>(null);
 
   /* Lock body scroll when open */
@@ -86,7 +93,7 @@ export default function NavMobile({ open, onClose }: NavMobileProps) {
               key={link.href}
               href={link.href}
               onClick={onClose}
-              className={`${styles.mobileLink} ${link.highlight ? styles.highlight : ""}`}
+              className={`${styles.mobileLink} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
             >
               {link.label}
             </Link>
@@ -100,6 +107,9 @@ export default function NavMobile({ open, onClose }: NavMobileProps) {
           <span className={styles.mobileToggleLabel}>Switch theme</span>
           <ThemeToggle />
         </div>
+        <Link href="/auth/login" onClick={onClose} className={styles.mobileSignIn}>
+          Sign In
+        </Link>
         <Link href="/opportunities/join" onClick={onClose} className={styles.mobileCta}>
           Join Now
         </Link>
