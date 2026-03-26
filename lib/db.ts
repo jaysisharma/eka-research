@@ -9,7 +9,7 @@ const createPrismaClient = () => {
   if (!connectionString) return new PrismaClient(); // Fallback for build time if needed
 
   const pool = new Pool({ connectionString });
-  const adapter = new PrismaPg(pool);
+  const adapter = new PrismaPg(pool as any);
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
