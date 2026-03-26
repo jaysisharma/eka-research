@@ -45,7 +45,7 @@ services:
     networks:
       - shared_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eka_user}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eka_user} -d ${POSTGRES_DB:-eka_research}"]
       interval: 5s
       timeout: 5s
       retries: 10

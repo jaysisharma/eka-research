@@ -8,6 +8,7 @@ import catStyles from "./categories.module.css";
 
 
 // Category Actions
+// Actions
 export function CategoryActions() {
   const router = useRouter();
   const [name, setName] = useState("");
