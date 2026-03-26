@@ -42,7 +42,7 @@ export default async function AdminCategoriesPage() {
               </tr>
             </thead>
             <tbody>
-              {categories.map((cat) => (
+              {categories.map((cat: any) => (
                 <tr key={cat.id} className={styles.tr}>
                   <td className={styles.td}>
                     <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
