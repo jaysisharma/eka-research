@@ -2,8 +2,8 @@ services:
   migrate:
     image: ghcr.io/jaysisharma/eka-research/eka-research-app:migrate
     container_name: eka_migrate
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -15,15 +15,11 @@ services:
     image: ghcr.io/jaysisharma/eka-research/eka-research-app:latest
     container_name: eka_app
     restart: always
+    env_file:
+     - .env
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=${DATABASE_URL}
-      - AUTH_SECRET=${AUTH_SECRET}
-      - AUTH_URL=${AUTH_URL}
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
     depends_on:
       db:
         condition: service_healthy
