@@ -210,6 +210,15 @@
   );
 }
 
+[data-theme="light"] .imageOverlay {
+  background: linear-gradient(
+    to top,
+    rgba(14, 17, 40, 0.65) 0%,
+    rgba(14, 17, 40, 0.08) 50%,
+    rgba(14, 17, 40, 0.0) 100%
+  );
+}
+
 /* Founded badge — bottom left of image */
 .badge {
   position: absolute;
@@ -225,6 +234,11 @@
   border-radius: var(--radius-lg);
 }
 
+[data-theme="light"] .badge {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(254, 199, 62, 0.4);
+}
+
 .badgeYear {
   font-family: var(--font-heading);
   font-size: var(--text-md);
@@ -233,10 +247,18 @@
   line-height: 1;
 }
 
+[data-theme="light"] .badgeYear {
+  color: var(--color-gold-600);
+}
+
 .badgePlace {
   font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.55);
   letter-spacing: var(--tracking-wide);
+}
+
+[data-theme="light"] .badgePlace {
+  color: var(--text-secondary);
 }
 
 /* ----------------------------------------------------------

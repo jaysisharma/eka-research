@@ -142,6 +142,13 @@
   color: var(--color-gold-400);
 }
 
+/* Items with dropdowns render as <button> — strip button styles */
+.linkBtn {
+  background: none;
+  border: none;
+  cursor: default;
+}
+
 .chevron {
   transition: transform var(--transition-fast);
   flex-shrink: 0;

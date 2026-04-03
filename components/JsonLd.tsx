@@ -14,11 +14,11 @@ export default function JsonLd() {
     logo: `${SITE_URL}/icons/icon-512.png`,
     description: SITE.description,
     foundingDate: String(SITE.foundedYear),
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Kathmandu",
-      addressCountry: "NP",
-    },
+    address: [
+      { "@type": "PostalAddress", addressLocality: "Kathmandu", addressCountry: "NP" },
+      { "@type": "PostalAddress", addressCountry: "DE" },
+      { "@type": "PostalAddress", addressCountry: "TH" },
+    ],
     contactPoint: {
       "@type": "ContactPoint",
       email: SITE.email,

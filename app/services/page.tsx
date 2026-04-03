@@ -34,7 +34,7 @@ const AUDIENCES = [
     href: "/services/schools",
     title: "Bringing the universe into the classroom",
     description:
-      "Aligned with Nepal's science curriculum, our school programmes give Class 9 through bachelor-level students hands-on access to telescopes, real datasets, and active researchers.",
+      "Aligned with Nepal's science curriculum, our school programmes give students hands-on access to telescopes, real datasets, and active researchers.",
     items: [
       "Full-day workshop on naked-eye and telescopic observation",
       "Curriculum-linked resource packs for physics teachers",
@@ -105,7 +105,7 @@ export default function ServicesPage() {
         label="Services"
         title="Science that reaches "
         accentWord="everyone"
-        description="From guided meteor nights for the public to instrument access for PhD researchers — Eka Research runs programmes for every level of curiosity and expertise."
+        description="From guided meteor nights for the public to instrument access for researchers — Eka Research runs programmes for every curious mind."
         align="center"
         variant="dark"
         cta={{ label: "View upcoming events", href: "/events" }}

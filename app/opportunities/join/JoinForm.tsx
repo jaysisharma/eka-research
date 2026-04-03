@@ -5,7 +5,7 @@ import { ArrowRight, Check, Loader2 } from "lucide-react";
 import styles from "./page.module.css";
 
 const LEVELS = [
-  "Class 9–12 Student",
+  "Student",
   "Undergraduate",
   "Masters / Graduate",
   "PhD Researcher",
@@ -25,6 +25,12 @@ const INTERESTS = [
 
 type FormState = "idle" | "loading" | "success";
 
+type Errors = { name?: string; email?: string; level?: string };
+
+function validateEmail(v: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
 export default function JoinForm() {
   const formId = useId();
   const [formState, setFormState] = useState<FormState>("idle");
@@ -32,12 +38,29 @@ export default function JoinForm() {
   const [email, setEmail] = useState("");
   const [level, setLevel] = useState("");
   const [interest, setInterest] = useState("");
+  const [errors, setErrors] = useState<Errors>({});
+
+  function validate(): Errors {
+    const e: Errors = {};
+    if (!name.trim() || name.trim().length < 2) e.name = "Please enter your full name (at least 2 characters).";
+    if (!email.trim()) e.email = "Email address is required.";
+    else if (!validateEmail(email)) e.email = "Please enter a valid email address.";
+    if (!level) e.level = "Please select your level.";
+    return e;
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setErrors({});
     setFormState("loading");
     await new Promise((r) => setTimeout(r, 1100));
     setFormState("success");
+  }
+
+  function clearError(field: keyof Errors) {
+    setErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
   }
 
   if (formState === "success") {
@@ -70,12 +93,12 @@ export default function JoinForm() {
           <input
             id={`${formId}-name`}
             type="text"
-            className={styles.formInput}
+            className={`${styles.formInput} ${errors.name ? styles.formInputError : ""}`}
             placeholder="Aarav Sharma"
-            required
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => { setName(e.target.value); clearError("name"); }}
           />
+          {errors.name && <span className={styles.fieldError} role="alert">{errors.name}</span>}
         </div>
         <div className={styles.formGroup}>
           <label htmlFor={`${formId}-email`} className={styles.formLabel}>
@@ -84,12 +107,12 @@ export default function JoinForm() {
           <input
             id={`${formId}-email`}
             type="email"
-            className={styles.formInput}
+            className={`${styles.formInput} ${errors.email ? styles.formInputError : ""}`}
             placeholder="you@example.com"
-            required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); clearError("email"); }}
           />
+          {errors.email && <span className={styles.fieldError} role="alert">{errors.email}</span>}
         </div>
       </div>
 
@@ -100,16 +123,16 @@ export default function JoinForm() {
           </label>
           <select
             id={`${formId}-level`}
-            className={styles.formSelect}
-            required
+            className={`${styles.formSelect} ${errors.level ? styles.formSelectError : ""}`}
             value={level}
-            onChange={(e) => setLevel(e.target.value)}
+            onChange={(e) => { setLevel(e.target.value); clearError("level"); }}
           >
             <option value="" disabled>Select…</option>
             {LEVELS.map((l) => (
               <option key={l} value={l}>{l}</option>
             ))}
           </select>
+          {errors.level && <span className={styles.fieldError} role="alert">{errors.level}</span>}
         </div>
         <div className={styles.formGroup}>
           <label htmlFor={`${formId}-interest`} className={styles.formLabel}>

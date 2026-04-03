@@ -20,7 +20,7 @@ import styles from "./page.module.css";
 export const metadata = buildMetadata({
   title: "Member Benefits",
   description:
-    "Free membership for everyone — from Class 9 students to PhD researchers. Unlock events, telescope time, mentoring, research data, and more.",
+    "Free membership for everyone. Unlock events, telescope time, mentoring, research data, and more.",
   path: "/member-benefits",
 });
 
@@ -44,7 +44,7 @@ const STEPS = [
 
 const FAQ = [
   { q: "Is membership really free — forever?", a: "Yes, always. Eka Research is committed to keeping individual membership free. No subscriptions, no paywalls." },
-  { q: "Who can join?", a: "Anyone — from Class 9 students to PhD researchers and working professionals. No qualifications or prior experience required." },
+  { q: "Who can join?", a: "Anyone curious about space science and research. No qualifications or prior experience required." },
   { q: "Do I need to be based in Nepal?", a: "No. Nepali diaspora, international students, and global collaborators interested in South Asian space science are all welcome." },
   { q: "Is there a time commitment?", a: "None whatsoever. Participate as much or as little as you like. There are no mandatory activities or dues." },
   { q: "Can my school join as a group?", a: "Yes — email hello@ekaresearch.org for institutional and group memberships, which come with extra classroom resources and support." },
@@ -320,7 +320,7 @@ export default function MemberBenefitsPage() {
                   Join now <ArrowRight size={15} />
                 </Link>
                 <div className={styles.ctaCardStats}>
-                  {[["2 min", "To join"], ["Free", "Always"], ["Open", "All levels"]].map(([val, lbl]) => (
+                  {[["2 min", "To join"], ["Free", "Always"], ["Nepal", "Based"]].map(([val, lbl]) => (
                     <div key={lbl} className={styles.ctaStat}>
                       <span className={styles.ctaStatVal}>{val}</span>
                       <span className={styles.ctaStatLbl}>{lbl}</span>

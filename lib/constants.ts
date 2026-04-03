@@ -10,8 +10,8 @@ export const SITE = {
   name: "Eka Research",
   tagline: "Expanding the frontiers of space science",
   description:
-    "A science research and outreach organization based in Kathmandu, Nepal — making space science accessible to every curious mind.",
-  location: "Kathmandu, Nepal",
+    "A space science research and outreach organization based across Nepal, Germany, and Thailand — making space science accessible to every curious mind.",
+  location: "Nepal · Germany · Thailand",
   email: "hello@ekaresearch.org",
   foundedYear: 2020,
 } as const;
@@ -45,7 +45,7 @@ export const NAV_LINKS: NavLink[] = [
       {
         label: "Schools",
         href: "/services/schools",
-        description: "Workshops and curriculum support for class 9–bachelor level",
+        description: "Workshops and curriculum support for students and educators",
       },
       {
         label: "Researchers",

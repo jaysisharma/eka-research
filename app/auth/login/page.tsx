@@ -21,16 +21,28 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const signupHref = callbackUrl !== "/dashboard"
     ? `/auth/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`
     : "/auth/signup";
 
+  function validate() {
+    const e: { email?: string; password?: string } = {};
+    if (!email.trim()) e.email = "Email address is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Please enter a valid email address.";
+    if (!password) e.password = "Password is required.";
+    return e;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
+    setServerError("");
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setErrors({});
     setLoading(true);
 
     const result = await signIn("credentials", {
@@ -42,7 +54,7 @@ function LoginForm() {
     setLoading(false);
 
     if (result?.error) {
-      setError("That email and password don't match. Try again.");
+      setServerError("That email and password don't match. Try again.");
       return;
     }
 
@@ -50,6 +62,10 @@ function LoginForm() {
     const dest = session?.user?.role === "ADMIN" ? "/admin" : callbackUrl;
     router.push(dest);
     router.refresh();
+  }
+
+  function clearError(field: "email" | "password") {
+    setErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
   }
 
   return (
@@ -68,12 +84,12 @@ function LoginForm() {
             id="email"
             type="email"
             autoComplete="email"
-            required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={styles.input}
+            onChange={(e) => { setEmail(e.target.value); clearError("email"); }}
+            className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
             placeholder="you@example.com"
           />
+          {errors.email && <span className={styles.fieldError} role="alert">{errors.email}</span>}
         </div>
 
         <div className={styles.field}>
@@ -83,10 +99,9 @@ function LoginForm() {
               id="password"
               type={showPwd ? "text" : "password"}
               autoComplete="current-password"
-              required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={styles.input}
+              onChange={(e) => { setPassword(e.target.value); clearError("password"); }}
+              className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
               placeholder="••••••••"
             />
             <button
@@ -98,9 +113,10 @@ function LoginForm() {
               {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
+          {errors.password && <span className={styles.fieldError} role="alert">{errors.password}</span>}
         </div>
 
-        {error && <p className={styles.errorBanner} role="alert">{error}</p>}
+        {serverError && <p className={styles.errorBanner} role="alert">{serverError}</p>}
 
         <button type="submit" className={styles.submitBtn} disabled={loading}>
           {loading
@@ -134,7 +150,7 @@ export default function LoginPage() {
               Nepal&apos;s space research community
             </h2>
             <p className={styles.leftSub}>
-              From Class&nbsp;9 students to PhD researchers — everyone has a place here.
+              Everyone has a place here — researchers, students, and curious minds alike.
             </p>
             <ul className={styles.perkList}>
               {PERKS.map(({ icon: Icon, text }) => (

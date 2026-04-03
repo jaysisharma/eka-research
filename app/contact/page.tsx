@@ -26,7 +26,7 @@ const CONTACT_CHANNELS = [
   {
     icon: MapPin,
     title: "Find us",
-    description: "We're based in the heart of Kathmandu. Drop in or reach us online.",
+    description: "We operate across Nepal, Germany, and Thailand. Reach us online anytime.",
     value: SITE.location,
     href: "https://maps.google.com/?q=Kathmandu,Nepal",
     cta: "Open in Maps",
@@ -117,7 +117,7 @@ export default function ContactPage() {
               <div className={styles.locationImgWrap}>
                 <Image
                   src="https://images.unsplash.com/photo-1562679741-b2e4d3f4cbbc?auto=format&fit=crop&w=900&q=80"
-                  alt="Kathmandu skyline with Himalayan backdrop"
+                  alt="Himalayan backdrop — Eka Research home base"
                   fill
                   sizes="(max-width: 1024px) 100vw, 400px"
                   className={styles.locationImg}
@@ -125,7 +125,7 @@ export default function ContactPage() {
                 <div className={styles.locationImgOverlay} />
                 <div className={styles.locationBadge}>
                   <MapPin size={13} />
-                  <span>Kathmandu, Nepal</span>
+                  <span>Nepal · Germany · Thailand</span>
                 </div>
               </div>
             </div>

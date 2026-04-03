@@ -92,6 +92,14 @@
   opacity: 0.55;
 }
 
+[data-theme="light"] .dark .label {
+  color: var(--color-gold-600);
+}
+
+[data-theme="light"] .dark .labelLine {
+  background: var(--color-gold-600);
+}
+
 /* ----------------------------------------------------------
    TITLE
 ---------------------------------------------------------- */
@@ -105,8 +113,17 @@
   max-width: 720px;
 }
 
+/* dark variant sits on --bg-base, so use theme text tokens */
+.dark .title {
+  color: var(--text-primary);
+}
+
 .accent {
   color: var(--color-brand-gold);
+}
+
+[data-theme="light"] .dark .accent {
+  color: var(--color-gold-600);
 }
 
 /* ----------------------------------------------------------
@@ -117,6 +134,10 @@
   color: rgba(255, 255, 255, 0.6);
   line-height: var(--leading-relaxed);
   max-width: 560px;
+}
+
+.dark .description {
+  color: var(--text-secondary);
 }
 
 /* ----------------------------------------------------------

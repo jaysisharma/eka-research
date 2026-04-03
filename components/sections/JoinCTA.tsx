@@ -46,8 +46,7 @@ export default function JoinCTA() {
           </h2>
 
           <p className={styles.sub}>
-            Free membership — open to everyone from Class&nbsp;9 to PhD.
-            No applications, no fees, no prerequisites.
+            Free membership. No applications, no fees, no prerequisites.
           </p>
 
           <ul className={styles.perks}>
@@ -137,8 +136,8 @@ export default function JoinCTA() {
             </div>
             <div className={styles.floatDivider} />
             <div className={styles.floatStat}>
-              <span className={styles.floatValue}>Open</span>
-              <span className={styles.floatLabel}>All levels</span>
+              <span className={styles.floatValue}>Nepal</span>
+              <span className={styles.floatLabel}>Based</span>
             </div>
           </div>
 

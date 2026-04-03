@@ -167,6 +167,10 @@
   background: linear-gradient(to bottom, transparent 55%, rgba(9,11,24,0.55) 100%);
 }
 
+[data-theme="light"] .missionImgOverlay {
+  background: linear-gradient(to bottom, transparent 55%, rgba(14,17,40,0.5) 100%);
+}
+
 .missionImgBadge {
   position: absolute;
   bottom: var(--space-5);
@@ -182,6 +186,11 @@
   border-radius: var(--radius-lg);
 }
 
+[data-theme="light"] .missionImgBadge {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(254,199,62,0.35);
+}
+
 .missionImgBadgeVal {
   font-family: var(--font-heading);
   font-size: var(--text-sm);
@@ -190,10 +199,18 @@
   letter-spacing: var(--tracking-wide);
 }
 
+[data-theme="light"] .missionImgBadgeVal {
+  color: var(--color-gold-600);
+}
+
 .missionImgBadgeLbl {
   font-size: var(--text-xs);
   color: rgba(255,255,255,0.55);
   letter-spacing: var(--tracking-wide);
+}
+
+[data-theme="light"] .missionImgBadgeLbl {
+  color: var(--text-secondary);
 }
 
 /* ============================================================
@@ -429,6 +446,10 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(to bottom, transparent 55%, rgba(9,11,24,0.35) 100%);
+}
+
+[data-theme="light"] .teamImgOverlay {
+  background: linear-gradient(to bottom, transparent 55%, rgba(14,17,40,0.2) 100%);
 }
 
 .teamBody {

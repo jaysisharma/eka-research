@@ -15,7 +15,7 @@ const STATS = [
   { value: "6",     label: "Research disciplines" },
   { value: "200+",  label: "Outreach events" },
   { value: "2020",  label: "Year founded" },
-  { value: "9–PhD", label: "Open to all levels" },
+  { value: "Free", label: "Open membership" },
 ] as const;
 
 export default function About() {
@@ -48,8 +48,7 @@ export default function About() {
             <p className={styles.body}>
               We bring together students, educators, and researchers across Nepal
               to observe, discover, and publish — together. From Class&nbsp;9
-              curiosity to PhD‑level rigour, every level of engagement has a
-              place here.
+              there is a place for you here.
             </p>
 
             {/* Pillars */}
@@ -94,7 +93,7 @@ export default function About() {
               {/* Founded badge */}
               <div className={styles.badge} aria-hidden="true">
                 <span className={styles.badgeYear}>Est. {SITE.foundedYear}</span>
-                <span className={styles.badgePlace}>Kathmandu, Nepal</span>
+                <span className={styles.badgePlace}>Nepal · Germany · Thailand</span>
               </div>
             </div>
 

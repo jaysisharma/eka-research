@@ -10,7 +10,7 @@ import styles from "./page.module.css";
 export const metadata = buildMetadata({
   title: "About",
   description:
-    "Eka Research is a space science and outreach organisation based in Kathmandu, Nepal — making astronomy and astrophysics accessible to every curious mind.",
+    "Eka Research is a space science and outreach organisation based across Nepal, Germany, and Thailand — making astronomy and astrophysics accessible to every curious mind.",
   path: "/about",
 });
 
@@ -71,7 +71,7 @@ const TEAM = [
   {
     name: "Placeholder Name",
     role: "Education Research Lead",
-    bio: "Develops evidence-based science communication methods tailored to the Nepali curriculum — Class 9 through bachelor level.",
+    bio: "Develops evidence-based science communication methods tailored to the Nepali curriculum and classroom context.",
     img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
     featured: false,
   },
@@ -105,7 +105,7 @@ export default function AboutPage() {
         label="About Us"
         title="We exist because Nepal's skies "
         accentWord="deserve to be studied"
-        description="Eka Research is a space science and outreach organisation based in Kathmandu. We conduct original research, train scientists, and make astronomy accessible to every curious mind."
+        description="Eka Research is a space science and outreach organisation based across Nepal, Germany, and Thailand. We conduct original research, train scientists, and make astronomy accessible to every curious mind."
         align="left"
         variant="dark"
       />
@@ -160,7 +160,7 @@ export default function AboutPage() {
               <div className={styles.missionImgOverlay} />
               <div className={styles.missionImgBadge}>
                 <span className={styles.missionImgBadgeVal}>Est. {SITE.foundedYear}</span>
-                <span className={styles.missionImgBadgeLbl}>Kathmandu, Nepal</span>
+                <span className={styles.missionImgBadgeLbl}>Nepal · Germany · Thailand</span>
               </div>
             </div>
           </div>
@@ -321,7 +321,7 @@ export default function AboutPage() {
             <span className={styles.ctaAccent}>next</span>
           </h2>
           <p className={styles.ctaSub}>
-            Free membership. Open to all levels. Join the community that&apos;s building Nepal&apos;s space science future.
+            Free membership. Join the community that&apos;s building Nepal&apos;s space science future.
           </p>
           <div className={styles.ctaActions}>
             <Link href="/opportunities/join" className={styles.ctaBtn}>

@@ -17,7 +17,7 @@ import styles from "./page.module.css";
 export const metadata = buildMetadata({
   title: "Join Us",
   description:
-    "Join Eka Research for free — open to Class 9 students through PhD researchers. Unlock events, telescope time, mentoring, research data, and more.",
+    "Join Eka Research for free. Unlock events, telescope time, mentoring, research data, and more.",
   path: "/opportunities/join",
 });
 
@@ -76,7 +76,7 @@ const FAQ = [
   },
   {
     q: "Who can join?",
-    a: "Anyone — from Class 9 students to PhD researchers and working professionals. No qualifications or prior experience required.",
+    a: "Anyone curious about space science. No qualifications or prior experience required.",
   },
   {
     q: "Do I need to be based in Nepal?",

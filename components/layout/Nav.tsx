@@ -54,18 +54,26 @@ export default function Nav() {
               onMouseEnter={() => link.children && setActiveDropdown(link.label)}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <Link
-                href={link.href}
-                className={`${styles.link} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
-              >
-                {link.label}
-                {link.children && (
+              {link.children ? (
+                <button
+                  className={`${styles.link} ${styles.linkBtn} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
+                  aria-expanded={activeDropdown === link.label}
+                  aria-haspopup="true"
+                >
+                  {link.label}
                   <ChevronDown
                     size={13}
                     className={`${styles.chevron} ${activeDropdown === link.label ? styles.chevronOpen : ""}`}
                   />
-                )}
-              </Link>
+                </button>
+              ) : (
+                <Link
+                  href={link.href}
+                  className={`${styles.link} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
+                >
+                  {link.label}
+                </Link>
+              )}
 
               {link.children && activeDropdown === link.label && (
                 <NavDropdown
