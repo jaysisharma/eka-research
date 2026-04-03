@@ -105,7 +105,7 @@ function SignupForm() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Account created but sign-in failed. Please log in.");
+      setServerError("Account created but sign-in failed. Please log in.");
       router.push(loginHref);
       return;
     }
