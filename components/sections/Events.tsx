@@ -40,7 +40,12 @@ function SeatsBar({ seats, seatsLeft }: { seats: number; seatsLeft: number }) {
 }
 
 export default async function Events() {
-  const events = await getUpcomingEvents(3);
+  let events: SiteEvent[] = [];
+  try {
+    events = await getUpcomingEvents(3);
+  } catch {
+    return null;
+  }
 
   if (events.length === 0) return null;
 

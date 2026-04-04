@@ -13,9 +13,9 @@ const PILLARS = [
 
 const STATS = [
   { value: "6",     label: "Research disciplines" },
-  { value: "200+",  label: "Outreach events" },
+  { value: "Cl. 9+", label: "Audience from" },
   { value: "2020",  label: "Year founded" },
-  { value: "Free", label: "Open membership" },
+  { value: "Free",  label: "Open membership" },
 ] as const;
 
 export default function About() {
@@ -35,20 +35,21 @@ export default function About() {
             </span>
 
             <h2 className={styles.heading}>
-              Space science,{" "}
+              Science,{" "}
               <span className={styles.accentWord}>rooted in the Himalayas</span>
             </h2>
 
             <p className={styles.lead}>
-              Nepal has some of the clearest skies on Earth. For too long, the
-              science happening beneath them stayed out of reach. Eka Research
-              exists to change that.
+              Nepal has some of the clearest skies on Earth — and a generation
+              of students who deserve to do real science beneath them.
+              Eka Research exists to make that possible.
             </p>
 
             <p className={styles.body}>
-              We bring together students, educators, and researchers across Nepal
-              to observe, discover, and publish — together. From Class&nbsp;9
-              there is a place for you here.
+              We are a nonprofit interdisciplinary organisation advancing
+              physics, astrophysics, mathematics, and space science through
+              research, mentoring, and community outreach. From Class&nbsp;9
+              students to PhD researchers, there is a place for you here.
             </p>
 
             {/* Pillars */}

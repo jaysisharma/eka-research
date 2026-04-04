@@ -22,9 +22,9 @@ const AUDIENCES = [
       "Whether you spotted a meteor last night or just want to understand what a solar storm is — our public programmes are designed to be welcoming, jargon-free, and genuinely interesting.",
     items: [
       "Guided meteor observation nights at dark-sky sites",
-      "Free public lectures on space science topics",
-      "Citizen science campaigns — contribute real data",
-      "Live all-sky camera feeds during major meteor showers",
+      "Free public lectures on physics, astrophysics, and space science",
+      "Scientific writing and research communication workshops",
+      "Citizen science campaigns — contribute real data from anywhere",
     ],
     cta: "Explore public events",
   },
@@ -34,12 +34,12 @@ const AUDIENCES = [
     href: "/services/schools",
     title: "Bringing the universe into the classroom",
     description:
-      "Aligned with Nepal's science curriculum, our school programmes give students hands-on access to telescopes, real datasets, and active researchers.",
+      "Aligned with Nepal's science curriculum, our school programmes give students hands-on access to telescopes, real datasets, and active researchers — at no cost to the school.",
     items: [
-      "Full-day workshop on naked-eye and telescopic observation",
-      "Curriculum-linked resource packs for physics teachers",
-      "Telescope loan programme for rural schools",
-      "Guided access to Eka's meteor and weather datasets",
+      "Full-day workshops on observation, physics, and mathematics",
+      "Curriculum-linked resource packs for science teachers",
+      "Telescope loan programme for rural and provincial schools",
+      "Scientific writing workshops: how to read and write research",
     ],
     cta: "Book a school workshop",
   },
@@ -49,12 +49,12 @@ const AUDIENCES = [
     href: "/services/researchers",
     title: "Tools and access for serious science",
     description:
-      "Masters and PhD researchers get dedicated instrument time, raw data access, and a network of collaborators — plus mentoring from scientists who have published in international journals.",
+      "Masters and PhD researchers get dedicated instrument time, raw data access, remote internship opportunities, and a network of collaborators — plus mentoring from scientists who have published in international journals.",
     items: [
       "All Sky Camera and weather station data feeds",
       "Observation slot booking at Eka's Nagarkot site",
-      "Co-authorship and collaboration pathways",
-      "Priority access to upcoming instrument deployments",
+      "Remote internships in physics, astrophysics, and data science",
+      "Co-authorship and international collaboration pathways",
     ],
     cta: "Researcher access",
   },
@@ -105,7 +105,7 @@ export default function ServicesPage() {
         label="Services"
         title="Science that reaches "
         accentWord="everyone"
-        description="From guided meteor nights for the public to instrument access for researchers — Eka Research runs programmes for every curious mind."
+        description="From guided observation nights and scientific writing workshops for the public, to instrument access and remote internships for researchers — Eka runs programmes for every curious mind."
         align="center"
         variant="dark"
         cta={{ label: "View upcoming events", href: "/events" }}

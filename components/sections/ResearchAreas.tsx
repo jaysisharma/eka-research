@@ -21,8 +21,8 @@ export default function ResearchAreas() {
               Exploring the Universe from Nepal
             </h2>
             <p className={styles.subheading}>
-              Six active research disciplines — from high-altitude observation
-              to science education — all open to collaboration.
+              Six active disciplines spanning physics, astrophysics, mathematics,
+              and space science — all open to collaboration.
             </p>
           </div>
         </FadeUp>

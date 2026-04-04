@@ -69,7 +69,7 @@ export default function Hero() {
         <FadeUp delay={0.05}>
           <div className={styles.tag}>
             <span className={styles.tagDot} />
-            Space Research · Nepal · Germany · Thailand
+            Physics · Astrophysics · Mathematics · Space Science
           </div>
         </FadeUp>
 
@@ -82,8 +82,9 @@ export default function Hero() {
 
         <FadeUp delay={0.3}>
           <p className={styles.subtitle}>
-            We make space science accessible, collaborative, and inspiring
-            for every mind in Nepal and beyond.
+            A nonprofit research and outreach organisation rooted in Nepal —
+            making physics, astrophysics, and mathematics accessible
+            to every curious mind, from Class&nbsp;9 to PhD.
           </p>
         </FadeUp>
 
@@ -108,13 +109,13 @@ export default function Hero() {
             </div>
             <div className={styles.statDivider} />
             <div className={styles.stat}>
-              <span className={styles.statValue}>Open</span>
-              <span className={styles.statLabel}>Membership</span>
+              <span className={styles.statValue}>Cl. 9 → PhD</span>
+              <span className={styles.statLabel}>Open to all</span>
             </div>
             <div className={styles.statDivider} />
             <div className={styles.stat}>
-              <span className={styles.statValue}>Open</span>
-              <span className={styles.statLabel}>Science</span>
+              <span className={styles.statValue}>Nonprofit</span>
+              <span className={styles.statLabel}>Open science</span>
             </div>
             <div className={styles.statDivider} />
             <div className={styles.stat}>

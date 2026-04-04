@@ -10,7 +10,7 @@ import styles from "./page.module.css";
 export const metadata = buildMetadata({
   title: "About",
   description:
-    "Eka Research is a space science and outreach organisation based across Nepal, Germany, and Thailand — making astronomy and astrophysics accessible to every curious mind.",
+    "Eka Research is a nonprofit interdisciplinary research and outreach organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science for students and researchers across Nepal and beyond.",
   path: "/about",
 });
 
@@ -18,17 +18,17 @@ const VALUES = [
   {
     icon: Telescope,
     title: "Research",
-    body: "We conduct original scientific research — from meteor detection and atmospheric physics to space weather monitoring — and publish our findings openly.",
+    body: "We conduct and facilitate original scientific research — from meteor detection and atmospheric physics to astrophysics, mathematics, and space weather — publishing all findings openly.",
   },
   {
     icon: BookOpen,
-    title: "Education",
-    body: "Every student in Nepal deserves access to real science. Our workshops, curriculum resources, and mentoring bring space into classrooms at every level.",
+    title: "Mentoring",
+    body: "Every student in Nepal deserves a research mentor. We match motivated learners — from Class 9 through postgraduate — with scientists and academics guiding them through projects, publications, and career paths.",
   },
   {
     icon: Users,
     title: "Outreach",
-    body: "Science lives in communities. We run observation nights, public lectures, and citizen science campaigns that make the cosmos approachable to anyone.",
+    body: "Science lives in communities. We run observation nights, public lectures, scientific writing workshops, and citizen science campaigns that make physics and astronomy approachable to anyone.",
   },
 ];
 
@@ -103,9 +103,9 @@ export default function AboutPage() {
       {/* ── 1. Hero ── */}
       <PageHero
         label="About Us"
-        title="We exist because Nepal's skies "
-        accentWord="deserve to be studied"
-        description="Eka Research is a space science and outreach organisation based across Nepal, Germany, and Thailand. We conduct original research, train scientists, and make astronomy accessible to every curious mind."
+        title="We exist because Nepal's scientists "
+        accentWord="deserve a home"
+        description="Eka Research is a nonprofit interdisciplinary organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science through research, mentoring, and public outreach."
         align="left"
         variant="dark"
       />
@@ -122,22 +122,24 @@ export default function AboutPage() {
             </span>
 
             <blockquote className={styles.pullQuote}>
-              Space science has always lived far from Nepal.
-              We&rsquo;re changing that — one observation,
-              one student, one discovery at a time.
+              Advanced science has always lived far from Nepal.
+              We&rsquo;re changing that — one student,
+              one paper, one discovery at a time.
             </blockquote>
 
             <p className={styles.missionBody}>
-              Nepal has some of the clearest skies on Earth. Eka Research was
-              founded in {SITE.foundedYear} to ensure that the science happening
-              beneath them is done by Nepalis — not just observed from afar.
+              Founded in {SITE.foundedYear} in Kathmandu, Eka Research combines
+              original research in physics, astrophysics, mathematics, and space
+              science with a deep commitment to mentoring and public engagement.
+              Our goal is to strengthen Nepal&rsquo;s scientific ecosystem — not
+              just produce research, but build the people who will carry it forward.
             </p>
 
             <div className={styles.missionStats}>
               {[
-                { v: "6",    l: "Research disciplines" },
-                { v: "200+", l: "Outreach events" },
-                { v: "2020", l: "Founded" },
+                { v: "6",      l: "Research disciplines" },
+                { v: "Cl. 9+", l: "Audience from" },
+                { v: "2020",   l: "Founded" },
               ].map(({ v, l }) => (
                 <div key={l} className={styles.missionStat}>
                   <span className={styles.missionStatVal}>{v}</span>
@@ -176,7 +178,7 @@ export default function AboutPage() {
               <span className={styles.labelLine} />
               What we stand for
             </span>
-            <h2 className={styles.sectionHeading}>Three pillars, one purpose</h2>
+            <h2 className={styles.sectionHeading}>Research. Mentoring. Outreach.</h2>
           </div>
 
           <div className={styles.values}>

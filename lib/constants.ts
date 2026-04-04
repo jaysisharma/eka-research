@@ -10,7 +10,7 @@ export const SITE = {
   name: "Eka Research",
   tagline: "Expanding the frontiers of space science",
   description:
-    "A space science research and outreach organization based across Nepal, Germany, and Thailand — making space science accessible to every curious mind.",
+    "A nonprofit interdisciplinary research and outreach organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science while making rigorous science accessible to every curious mind across Nepal and beyond.",
   location: "Nepal · Germany · Thailand",
   email: "hello@ekaresearch.org",
   foundedYear: 2020,
@@ -519,24 +519,24 @@ export const RESEARCH_AREAS: ResearchArea[] = [
     href: "/research#atmospheric-physics",
   },
   {
-    id: "astrophysics",
+    id: "astrophysics-and-physics",
     icon: "Atom",
     image:
       "https://images.unsplash.com/photo-1543722530-d2c3201371e7?auto=format&fit=crop&w=800&q=80",
-    title: "Astrophysics",
+    title: "Astrophysics & Physics",
     description:
-      "Theoretical and computational research into stellar evolution, galactic dynamics, and high-energy astrophysical phenomena.",
+      "Theoretical, computational, and mathematical research into stellar evolution, galactic dynamics, high-energy phenomena, and foundational physics.",
     href: "/research#astrophysics",
   },
   {
-    id: "science-education",
+    id: "science-communication",
     icon: "BookOpen",
     image:
       "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80",
-    title: "Science Education Research",
+    title: "Science Communication",
     description:
-      "Developing evidence-based methods for science communication and astronomy outreach tailored to the Nepali curriculum.",
-    href: "/research#science-education",
+      "Evidence-based methods for communicating physics and astronomy — from classroom curriculum design to public science writing and research mentoring.",
+    href: "/research#science-communication",
   },
 ];
 
