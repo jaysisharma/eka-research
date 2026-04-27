@@ -49,7 +49,7 @@ const AUDIENCES = [
     href: "/services/researchers",
     title: "Tools and access for serious science",
     description:
-      "Masters and PhD researchers get dedicated instrument time, raw data access, remote internship opportunities, and a network of collaborators — plus mentoring from scientists who have published in international journals.",
+      "Researchers and students get dedicated instrument time, raw data access, remote internship opportunities, and a network of collaborators — plus mentoring from scientists who have published in international journals.",
     items: [
       "All Sky Camera and weather station data feeds",
       "Observation slot booking at Eka's Nagarkot site",

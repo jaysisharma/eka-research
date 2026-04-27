@@ -27,7 +27,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY prisma ./prisma
 COPY prisma.config.ts ./prisma.config.ts
-CMD ["npx", "prisma", "migrate", "deploy"]
+COPY package.json ./package.json
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed"]
 
 # ── Stage 4: production runner ───────────────────────────────
 FROM node:20-alpine AS runner

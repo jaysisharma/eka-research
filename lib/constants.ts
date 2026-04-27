@@ -10,7 +10,7 @@ export const SITE = {
   name: "Eka Research",
   tagline: "Expanding the frontiers of space science",
   description:
-    "A nonprofit interdisciplinary research and outreach organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science while making rigorous science accessible to every curious mind across Nepal and beyond.",
+    "An interdisciplinary research and outreach organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science while making rigorous science accessible to every curious mind across Nepal and beyond.",
   location: "Nepal · Germany · Thailand",
   email: "hello@ekaresearch.org",
   foundedYear: 2020,
@@ -50,7 +50,7 @@ export const NAV_LINKS: NavLink[] = [
       {
         label: "Researchers",
         href: "/services/researchers",
-        description: "Exclusive resources for masters & PhD students",
+        description: "Exclusive resources for researchers and students",
       },
       {
         label: "All Sky Camera",
@@ -446,7 +446,7 @@ export const ARTICLES: Article[] = [
     type: "preprint",
     disciplines: ["Science Education"],
     abstract:
-      "We surveyed 320 students (Class 9–12) and 45 physics teachers across five provinces to assess the state of astronomy education in Nepali secondary schools. Identified barriers include limited access to equipment, no dedicated astronomy curriculum, and a lack of trained educators.",
+      "We surveyed 320 students and 45 physics teachers across five provinces to assess the state of astronomy education in Nepali secondary schools. Identified barriers include limited access to equipment, no dedicated astronomy curriculum, and a lack of trained educators.",
     image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80",
     arxiv: "2211.03847",
   },
@@ -602,7 +602,7 @@ export const VACANCIES: Vacancy[] = [
     summary:
       "Design and run Eka's school and public outreach programmes — from curriculum workshops to observation nights — across Nepal.",
     responsibilities: [
-      "Plan and deliver astronomy workshops for Class 9–12 schools across at least three provinces",
+      "Plan and deliver astronomy workshops for schools across at least three provinces",
       "Coordinate public events: observation nights, public lectures, and citizen science campaigns",
       "Develop curriculum-aligned resource packs for Nepali physics teachers",
       "Manage volunteer educators and coordinate event logistics",

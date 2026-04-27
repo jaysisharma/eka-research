@@ -10,7 +10,7 @@ import styles from "./page.module.css";
 export const metadata = buildMetadata({
   title: "About",
   description:
-    "Eka Research is a nonprofit interdisciplinary research and outreach organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science for students and researchers across Nepal and beyond.",
+    "Eka Research is an interdisciplinary research and outreach organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science for students and researchers across Nepal and beyond.",
   path: "/about",
 });
 
@@ -23,7 +23,7 @@ const VALUES = [
   {
     icon: BookOpen,
     title: "Mentoring",
-    body: "Every student in Nepal deserves a research mentor. We match motivated learners — from Class 9 through postgraduate — with scientists and academics guiding them through projects, publications, and career paths.",
+    body: "Every student in Nepal deserves a research mentor. We match motivated learners with scientists and academics guiding them through projects, publications, and career paths.",
   },
   {
     icon: Users,
@@ -105,7 +105,7 @@ export default function AboutPage() {
         label="About Us"
         title="We exist because Nepal's scientists "
         accentWord="deserve a home"
-        description="Eka Research is a nonprofit interdisciplinary organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science through research, mentoring, and public outreach."
+        description="Eka Research is an interdisciplinary organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science through research, mentoring, and public outreach."
         align="left"
         variant="dark"
       />
@@ -137,9 +137,10 @@ export default function AboutPage() {
 
             <div className={styles.missionStats}>
               {[
-                { v: "6",      l: "Research disciplines" },
-                { v: "Cl. 9+", l: "Audience from" },
                 { v: "2020",   l: "Founded" },
+                { v: "All",    l: "Open to" },
+                { v: "Open",   l: "Science" },
+                { v: "3",      l: "Countries" },
               ].map(({ v, l }) => (
                 <div key={l} className={styles.missionStat}>
                   <span className={styles.missionStatVal}>{v}</span>

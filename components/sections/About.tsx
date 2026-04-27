@@ -12,10 +12,10 @@ const PILLARS = [
 ] as const;
 
 const STATS = [
-  { value: "6",     label: "Research disciplines" },
-  { value: "Cl. 9+", label: "Audience from" },
-  { value: "2020",  label: "Year founded" },
-  { value: "Free",  label: "Open membership" },
+  { value: "2020",  label: "Founded" },
+  { value: "All",   label: "Open to" },
+  { value: "Open",  label: "Science" },
+  { value: "3",     label: "Countries" },
 ] as const;
 
 export default function About() {
@@ -46,10 +46,10 @@ export default function About() {
             </p>
 
             <p className={styles.body}>
-              We are a nonprofit interdisciplinary organisation advancing
+              We are an interdisciplinary organisation advancing
               physics, astrophysics, mathematics, and space science through
-              research, mentoring, and community outreach. From Class&nbsp;9
-              students to PhD researchers, there is a place for you here.
+              research, mentoring, and community outreach. Our programs are
+              open to anyone with a passion for discovery.
             </p>
 
             {/* Pillars */}

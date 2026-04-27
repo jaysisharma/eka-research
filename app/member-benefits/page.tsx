@@ -75,7 +75,7 @@ export default function MemberBenefitsPage() {
             </h1>
 
             <p className={styles.heroSub}>
-              Open to everyone — Class&nbsp;9 students to PhD researchers.
+              Open to everyone — all students and researchers.
               No fees, no applications, no prerequisites.
             </p>
 

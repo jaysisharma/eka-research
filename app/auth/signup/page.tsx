@@ -9,8 +9,8 @@ import styles from "./page.module.css";
 import { ROLE_LABELS } from "@/lib/access";
 
 const LEVELS = [
-  "Student", "Bachelor's student", "Master's student",
-  "PhD student", "Researcher / Academic", "Working professional", "Other",
+  "Student", "Undergraduate student", "Postgraduate student",
+  "Researcher / Academic", "Working professional", "Other",
 ];
 
 const INTERESTS = [

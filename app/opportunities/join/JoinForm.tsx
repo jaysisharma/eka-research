@@ -8,7 +8,7 @@ const LEVELS = [
   "Student",
   "Undergraduate",
   "Masters / Graduate",
-  "PhD Researcher",
+  "Researcher / Academic",
   "Professional / Working",
   "Other",
 ];

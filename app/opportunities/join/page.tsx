@@ -114,7 +114,7 @@ export default function JoinPage() {
             </h1>
 
             <p className={styles.heroSub}>
-              From Class&nbsp;9 students to PhD researchers — membership is
+              From students to researchers — membership is
               free, instant, and comes with real access to instruments, data,
               and people doing active research in Nepal.
             </p>

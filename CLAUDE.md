@@ -4,7 +4,7 @@
 
 ## What this is
 Space research organization website. Based in Nepal.
-Audience: Class 9 students through PhD/Masters researchers + admin.
+Audience: Students and researchers across all levels + admin.
 Goal: Feel credible, informative, and visually compelling within 3 seconds of landing.
 
 ## Stack

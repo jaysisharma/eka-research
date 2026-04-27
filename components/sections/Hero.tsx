@@ -82,9 +82,9 @@ export default function Hero() {
 
         <FadeUp delay={0.3}>
           <p className={styles.subtitle}>
-            A nonprofit research and outreach organisation rooted in Nepal —
+            An independent research and outreach organisation rooted in Nepal —
             making physics, astrophysics, and mathematics accessible
-            to every curious mind, from Class&nbsp;9 to PhD.
+            to every curious mind.
           </p>
         </FadeUp>
 
@@ -109,12 +109,12 @@ export default function Hero() {
             </div>
             <div className={styles.statDivider} />
             <div className={styles.stat}>
-              <span className={styles.statValue}>Cl. 9 → PhD</span>
+              <span className={styles.statValue}>All</span>
               <span className={styles.statLabel}>Open to all</span>
             </div>
             <div className={styles.statDivider} />
             <div className={styles.stat}>
-              <span className={styles.statValue}>Nonprofit</span>
+              <span className={styles.statValue}>Open</span>
               <span className={styles.statLabel}>Open science</span>
             </div>
             <div className={styles.statDivider} />
