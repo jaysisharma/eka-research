@@ -61,7 +61,7 @@ export default function JoinCTA() {
           </ul>
 
           <div className={styles.actions}>
-            <Link href="/opportunities/join" className={styles.btnPrimary}>
+            <Link href="/auth/signup" className={styles.btnPrimary}>
               Join now — it&apos;s free <ArrowRight size={16} />
             </Link>
             <Link href="/member-benefits" className={styles.btnGhost}>

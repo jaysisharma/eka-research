@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
-import { Eye, EyeOff, ArrowRight, Loader2, Telescope, Star, Globe } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Loader2, Telescope, Star, Globe, CheckCircle2 } from "lucide-react";
 import styles from "./page.module.css";
 
 const PERKS = [
@@ -17,6 +17,7 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/dashboard";
+  const verified = params.get("verified") === "1";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,6 +71,13 @@ function LoginForm() {
 
   return (
     <div className={styles.formInner}>
+      {verified && (
+        <div className={styles.verifiedBanner} role="status">
+          <CheckCircle2 size={15} />
+          Email verified — sign in to continue.
+        </div>
+      )}
+
       <div className={styles.formHeader}>
         <h1 className={styles.formHeading}>Welcome back</h1>
         <p className={styles.formSub}>
@@ -114,6 +122,7 @@ function LoginForm() {
             </button>
           </div>
           {errors.password && <span className={styles.fieldError} role="alert">{errors.password}</span>}
+          <Link href="/auth/forgot-password" className={styles.forgotLink}>Forgot password?</Link>
         </div>
 
         {serverError && <p className={styles.errorBanner} role="alert">{serverError}</p>}

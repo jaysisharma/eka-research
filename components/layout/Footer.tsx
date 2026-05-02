@@ -82,7 +82,7 @@ export default function Footer() {
             <div className={styles.contact}>
               <span className={styles.contactItem}>
                 <MapPin size={13} />
-                {SITE.location}
+                {SITE.hq}
               </span>
               <a
                 href={`mailto:${SITE.email}`}
@@ -133,7 +133,7 @@ export default function Footer() {
       <div className={styles.bottom}>
         <div className={styles.bottomInner}>
           <p className={styles.copy}>
-            © {year} {SITE.name}. Est. {SITE.foundedYear}, {SITE.location}.
+            © {year} {SITE.name}. Est. {SITE.foundedYear}, {SITE.hq}.
           </p>
           <div className={styles.legal}>
             <Link href="/privacy" className={styles.legalLink}>Privacy Policy</Link>

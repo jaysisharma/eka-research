@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { LogOut, LayoutDashboard, Calendar, Database, Users, ShoppingBag } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Database, Users, ShoppingBag, Shield } from "lucide-react";
 import styles from "./layout.module.css";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -41,6 +41,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
               <ShoppingBag size={16} />
               My Orders
             </Link>
+            {user.role === "ADMIN" && (
+              <Link href="/admin" className={styles.navItemAdmin}>
+                <Shield size={16} />
+                Admin Panel
+              </Link>
+            )}
           </nav>
         </div>
 

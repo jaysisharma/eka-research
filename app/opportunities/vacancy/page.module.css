@@ -1,0 +1,304 @@
+/* ============================================================
+   VACANCIES PAGE
+   ============================================================ */
+
+/* ── SHARED ── */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-brand-gold);
+  align-self: flex-start;
+}
+
+.labelLine {
+  width: 20px;
+  height: 1.5px;
+  background: var(--color-brand-gold);
+  border-radius: var(--radius-full);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--bg-base);
+  border-bottom: 1px solid var(--border-default);
+  padding: calc(var(--nav-height) + var(--space-20)) var(--container-pad) var(--space-16);
+}
+
+.heroInner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.heroHeading {
+  font-family: var(--font-heading);
+  font-weight: var(--weight-bold);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+
+.accent { color: var(--color-brand-gold); }
+
+.heroDesc {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+  max-width: 560px;
+}
+
+/* ── AUTH NOTICE BANNER ── */
+.authBanner {
+  background: color-mix(in srgb, var(--color-brand-gold) 8%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-brand-gold) 20%, transparent);
+  padding: var(--space-4) var(--container-pad);
+}
+
+.authBannerInner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-brand-gold);
+}
+
+.authBannerText {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.authBannerLink {
+  color: var(--color-brand-gold);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+.authBannerLink:hover { text-decoration: underline; }
+
+/* ── LIST ── */
+.listSection {
+  background: var(--bg-base);
+  padding: var(--space-12) var(--container-pad) var(--space-24);
+}
+
+.listInner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.empty {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  padding: var(--space-16) 0;
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border-default);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+/* ── VACANCY CARD ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-8);
+  background: var(--bg-base);
+  transition: background var(--transition-fast);
+}
+
+.card:hover { background: var(--bg-subtle); }
+
+/* Card header row */
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.typeBadge {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-brand-navy);
+  background: var(--color-brand-gold);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.metaDot {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--text-muted);
+}
+
+.dept {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.cardAttrs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.attr {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* Title + summary */
+.cardTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2vw, 1.375rem);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+}
+
+.cardSummary {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+/* Requirements / preferred */
+.cardSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cardSectionLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cardListItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.bullet {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-gold);
+  margin-top: 7px;
+  opacity: 0.7;
+}
+
+.bulletGhost {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--text-muted);
+  margin-top: 7px;
+  opacity: 0.5;
+}
+
+/* Card footer */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+  flex-wrap: wrap;
+}
+
+.applyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-brand-gold);
+  color: var(--color-brand-navy);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: opacity var(--transition-fast), gap var(--transition-fast);
+  white-space: nowrap;
+}
+
+.applyBtn:hover { opacity: 0.88; gap: var(--space-3); }
+
+.applyNote {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.applyNoteLink {
+  color: var(--color-brand-gold);
+  text-decoration: none;
+  font-weight: var(--weight-medium);
+}
+
+.applyNoteLink:hover { text-decoration: underline; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .cardHead {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .cardAttrs {
+    gap: var(--space-3);
+  }
+}

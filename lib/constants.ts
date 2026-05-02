@@ -11,7 +11,8 @@ export const SITE = {
   tagline: "Expanding the frontiers of space science",
   description:
     "An interdisciplinary research and outreach organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science while making rigorous science accessible to every curious mind across Nepal and beyond.",
-  location: "Nepal · Germany · Thailand",
+  hq: "Nepal",
+  presence: "Germany | Thailand",
   email: "hello@ekaresearch.org",
   foundedYear: 2020,
 } as const;
@@ -90,8 +91,9 @@ export const NAV_LINKS: NavLink[] = [
     label: "Opportunities",
     href: "/opportunities",
     children: [
-      { label: "Join Us", href: "/opportunities/join" },
+      { label: "Join Us", href: "/auth/signup" },
       { label: "Mentoring Program", href: "/opportunities/mentoring" },
+      { label: "Vacancies", href: "/opportunities/vacancy" },
     ],
   },
   { label: "Store", href: "/store" },

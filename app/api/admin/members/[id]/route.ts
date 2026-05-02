@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { sendRoleNotificationEmail } from "@/lib/mail";
 import type { UserRole } from "@/lib/access";
 
 const VALID_ROLES: UserRole[] = [
@@ -23,16 +24,54 @@ export async function PATCH(
   }
   const { id } = await params;
   const body = await req.json();
-  const { role } = body;
+  const { role, action } = body;
 
+  // Approve pending role request
+  if (action === "approve") {
+    const user = await db.user.findUnique({
+      where: { id },
+      select: { email: true, name: true, requestedRole: true },
+    });
+    if (!user?.requestedRole) {
+      return NextResponse.json({ error: "No pending role request" }, { status: 400 });
+    }
+    const updated = await db.user.update({
+      where: { id },
+      data: { role: user.requestedRole, requestedRole: null },
+    });
+    // Notify user — fire-and-forget, don't fail the request if email fails
+    sendRoleNotificationEmail(user.email, user.name, user.requestedRole, true).catch(() => null);
+    return NextResponse.json(updated);
+  }
+
+  // Deny pending role request
+  if (action === "deny") {
+    const user = await db.user.findUnique({
+      where: { id },
+      select: { email: true, name: true, requestedRole: true },
+    });
+    const updated = await db.user.update({
+      where: { id },
+      data: { requestedRole: null },
+    });
+    if (user?.requestedRole) {
+      sendRoleNotificationEmail(user.email, user.name, user.requestedRole, false).catch(() => null);
+    }
+    return NextResponse.json(updated);
+  }
+
+  // Manual role change
   if (!VALID_ROLES.includes(role as UserRole)) {
     return NextResponse.json({ error: "Invalid role" }, { status: 400 });
   }
-  // Prevent demoting yourself from admin
   if (id === session.user.id && role !== "ADMIN") {
     return NextResponse.json({ error: "Cannot change your own role" }, { status: 400 });
   }
-  const updated = await db.user.update({ where: { id }, data: { role } });
+  // Clear requestedRole to keep it in sync with the new role
+  const updated = await db.user.update({
+    where: { id },
+    data: { role, requestedRole: null },
+  });
   return NextResponse.json(updated);
 }
 

@@ -94,7 +94,10 @@ export default function About() {
               {/* Founded badge */}
               <div className={styles.badge} aria-hidden="true">
                 <span className={styles.badgeYear}>Est. {SITE.foundedYear}</span>
-                <span className={styles.badgePlace}>Nepal · Germany · Thailand</span>
+                <span className={styles.badgePlace}>
+                  Headquartered in {SITE.hq}<br />
+                  International Presence: {SITE.presence}
+                </span>
               </div>
             </div>
 

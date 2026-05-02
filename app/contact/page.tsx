@@ -26,8 +26,8 @@ const CONTACT_CHANNELS = [
   {
     icon: MapPin,
     title: "Find us",
-    description: "We operate across Nepal, Germany, and Thailand. Reach us online anytime.",
-    value: SITE.location,
+    description: `Headquartered in ${SITE.hq}. International Presence: ${SITE.presence}`,
+    value: `${SITE.hq} | ${SITE.presence}`,
     href: "https://maps.google.com/?q=Kathmandu,Nepal",
     cta: "Open in Maps",
   },
@@ -125,7 +125,10 @@ export default function ContactPage() {
                 <div className={styles.locationImgOverlay} />
                 <div className={styles.locationBadge}>
                   <MapPin size={13} />
-                  <span>Nepal · Germany · Thailand</span>
+                  <span>
+                    Headquartered in {SITE.hq}<br />
+                    International Presence: {SITE.presence}
+                  </span>
                 </div>
               </div>
             </div>

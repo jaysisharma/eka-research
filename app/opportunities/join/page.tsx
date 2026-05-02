@@ -8,10 +8,10 @@ import {
   Database,
   Network,
   Award,
+  ArrowRight,
 } from "lucide-react";
 import { buildMetadata } from "@/lib/seo";
 import { SITE } from "@/lib/constants";
-import JoinForm from "./JoinForm";
 import styles from "./page.module.css";
 
 export const metadata = buildMetadata({
@@ -146,7 +146,9 @@ export default function JoinPage() {
                 <h2 className={styles.formCardHeading}>Create your free membership</h2>
                 <p className={styles.formCardSub}>Takes under 2 minutes. No approval needed.</p>
               </div>
-              <JoinForm />
+              <Link href="/auth/signup" className={styles.formCardBtn}>
+                Create your free account <ArrowRight size={16} />
+              </Link>
             </div>
           </div>
 

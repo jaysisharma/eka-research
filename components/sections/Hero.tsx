@@ -94,7 +94,7 @@ export default function Hero() {
               <Telescope size={16} />
               Explore Our Research
             </Link>
-            <Link href="/opportunities/join" className={styles.ctaSecondary}>
+            <Link href="/auth/signup" className={styles.ctaSecondary}>
               Join the Community
               <ArrowRight size={15} />
             </Link>

@@ -7,15 +7,23 @@ datasource db {
 }
 
 model User {
-  id            String              @id @default(cuid())
-  name          String
-  email         String              @unique
-  password      String
-  role          String              @default("FREE_USER")
-  level         String?
-  interest      String?
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
+  id                String              @id @default(cuid())
+  name              String
+  email             String              @unique
+  password          String
+  role              String              @default("FREE_USER")
+  requestedRole     String?
+  level             String?
+  interest          String?
+  emailVerified       Boolean             @default(false)
+  verificationOtp     String?
+  otpExpiry           DateTime?
+  passwordResetToken  String?
+  resetTokenExpiry    DateTime?
+  loginAttempts       Int                 @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
   orders              Order[]
   subscription        Subscription?
   registrations       EventRegistration[]

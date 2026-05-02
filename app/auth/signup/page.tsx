@@ -3,7 +3,6 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { Eye, EyeOff, ArrowRight, Loader2, Check, Telescope, CalendarCheck, Database, GraduationCap } from "lucide-react";
 import styles from "./page.module.css";
 import { ROLE_LABELS } from "@/lib/access";
@@ -21,8 +20,8 @@ const INTERESTS = [
 
 const ACCOUNT_TYPES = [
   { value: "FREE_USER"  as const, label: "Free Member",  desc: "Events, news & community" },
-  { value: "TEACHER"    as const, label: "Teacher",      desc: "Free premium with .edu email" },
-  { value: "RESEARCHER" as const, label: "Researcher",   desc: "Free premium with .edu email" },
+  { value: "TEACHER"    as const, label: "Teacher",      desc: "Auto-verified with university email" },
+  { value: "RESEARCHER" as const, label: "Researcher",   desc: "Auto-verified with university email" },
 ];
 
 const PERKS = [
@@ -53,6 +52,7 @@ function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [assignedRole, setAssignedRole] = useState<string>("");
+  const [pending, setPending] = useState(false);
 
   const showEduNote = accountType === "TEACHER" || accountType === "RESEARCHER";
 
@@ -71,13 +71,14 @@ function SignupForm() {
   }
 
   function successMessage() {
+    if (pending) return "Your request is pending admin verification — you'll be upgraded once approved";
     if (assignedRole === "TEACHER") return "You've joined as a Teacher with premium access";
     if (assignedRole === "RESEARCHER") return "You've joined as a Researcher with premium access";
     const label = ROLE_LABELS[assignedRole as keyof typeof ROLE_LABELS] ?? "Free Member";
     return `You've joined as a ${label}`;
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setServerError("");
     const errs = validate();
@@ -92,26 +93,19 @@ function SignupForm() {
     });
 
     const data = await res.json();
+    setLoading(false);
 
     if (!res.ok) {
       setServerError(data.error ?? "Registration failed.");
-      setLoading(false);
       return;
     }
 
     setAssignedRole(data.role ?? "FREE_USER");
-
-    const result = await signIn("credentials", { email, password, redirect: false });
-    setLoading(false);
-
-    if (result?.error) {
-      setServerError("Account created but sign-in failed. Please log in.");
-      router.push(loginHref);
-      return;
-    }
-
+    setPending(!!data.pending);
     setSuccess(true);
-    setTimeout(() => { router.push(callbackUrl); router.refresh(); }, 2000);
+
+    const verifyHref = `/auth/verify?email=${encodeURIComponent(email)}${callbackUrl !== "/dashboard" ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`;
+    setTimeout(() => router.push(verifyHref), 1500);
   }
 
   if (success) {
@@ -155,7 +149,7 @@ function SignupForm() {
           </div>
           {showEduNote && (
             <p className={styles.eduNote}>
-              Your .edu email unlocks research papers and datasets at no cost — our way of supporting academic work in Nepal.
+              University or .edu email? You&apos;ll be auto-verified instantly. Other emails go through a quick admin review.
             </p>
           )}
         </div>
@@ -199,6 +193,14 @@ function SignupForm() {
             </button>
           </div>
           {fieldErrors.password && <span className={styles.fieldError} role="alert">{fieldErrors.password}</span>}
+          {!fieldErrors.password && password.length > 0 && (
+            <ul className={styles.pwdHints}>
+              <li className={password.length >= 8          ? styles.hintOk : styles.hintFail}>At least 8 characters</li>
+              <li className={/[A-Z]/.test(password)        ? styles.hintOk : styles.hintFail}>One uppercase letter</li>
+              <li className={/[0-9]/.test(password)        ? styles.hintOk : styles.hintFail}>One number</li>
+              <li className={/[^A-Za-z0-9]/.test(password) ? styles.hintOk : styles.hintFail}>One special character</li>
+            </ul>
+          )}
         </div>
 
         {/* Level + Interest — 2 columns */}

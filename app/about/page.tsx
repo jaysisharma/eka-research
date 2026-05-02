@@ -163,7 +163,10 @@ export default function AboutPage() {
               <div className={styles.missionImgOverlay} />
               <div className={styles.missionImgBadge}>
                 <span className={styles.missionImgBadgeVal}>Est. {SITE.foundedYear}</span>
-                <span className={styles.missionImgBadgeLbl}>Nepal · Germany · Thailand</span>
+                <span className={styles.missionImgBadgeLbl}>
+                  Headquartered in {SITE.hq}<br />
+                  International Presence: {SITE.presence}
+                </span>
               </div>
             </div>
           </div>

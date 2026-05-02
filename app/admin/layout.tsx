@@ -7,7 +7,7 @@ import styles from "./layout.module.css";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session || session.user.role !== "ADMIN") redirect("/auth/login");
+  if (!session || session.user.role !== "ADMIN") redirect("/admin/login");
 
   const user = session.user;
 

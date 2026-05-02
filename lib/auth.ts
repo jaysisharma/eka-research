@@ -34,8 +34,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const user = await db.user.findUnique({ where: { email } });
         if (!user) return null;
 
+        // Account lockout check
+        if (user.lockedUntil && new Date() < user.lockedUntil) return null;
+
         const valid = await bcrypt.compare(password, user.password);
-        if (!valid) return null;
+
+        if (!valid) {
+          const attempts = (user.loginAttempts ?? 0) + 1;
+          await db.user.update({
+            where: { id: user.id },
+            data: {
+              loginAttempts: attempts,
+              // Lock for 30 minutes after 5 failed attempts
+              ...(attempts >= 5 ? { lockedUntil: new Date(Date.now() + 30 * 60 * 1000) } : {}),
+            },
+          });
+          return null;
+        }
+
+        if (!user.emailVerified) return null;
+
+        // Reset lockout state on successful login
+        await db.user.update({
+          where: { id: user.id },
+          data: { loginAttempts: 0, lockedUntil: null },
+        });
 
         return {
           id: user.id,

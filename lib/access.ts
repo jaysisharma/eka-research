@@ -27,13 +27,22 @@ export function hasAccess(role: string | undefined | null, feature: AccessFeatur
   return (ACCESS[feature] as readonly string[]).includes(role);
 }
 
-export function isEduEmail(email: string): boolean {
-  return email.toLowerCase().endsWith(".edu");
+// Matches .edu, .edu.np, .ac.np, .ac.uk, .ac.in, .edu.au, .ac.nz, .edu.pk, etc.
+export function isAcademicEmail(email: string): boolean {
+  const lower = email.toLowerCase();
+  return lower.endsWith(".edu") || /\.(edu|ac)\.[a-z]{2,}$/.test(lower);
 }
 
-export function resolveRole(accountType: string, email: string): UserRole {
-  if ((accountType === "TEACHER" || accountType === "RESEARCHER") && isEduEmail(email)) {
-    return accountType as UserRole;
+export function resolveRole(
+  accountType: string,
+  email: string
+): { role: UserRole; requestedRole: string | null } {
+  const isAcademic = isAcademicEmail(email);
+  if ((accountType === "TEACHER" || accountType === "RESEARCHER") && isAcademic) {
+    return { role: accountType as UserRole, requestedRole: null };
   }
-  return "FREE_USER";
+  if (accountType === "TEACHER" || accountType === "RESEARCHER") {
+    return { role: "FREE_USER", requestedRole: accountType };
+  }
+  return { role: "FREE_USER", requestedRole: null };
 }
