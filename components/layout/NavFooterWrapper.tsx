@@ -6,11 +6,11 @@ import Footer from "./Footer";
 
 export function NavFooterWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAdmin     = pathname.startsWith("/admin");
   const isAuth      = pathname.startsWith("/auth");
   const isDashboard = pathname.startsWith("/dashboard");
+  const isAdmin     = pathname.startsWith("/admin");
 
-  if (isAdmin || isAuth || isDashboard) return <>{children}</>;
+  if (isAuth || isDashboard || isAdmin) return <>{children}</>;
 
   return (
     <>

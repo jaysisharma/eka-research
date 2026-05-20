@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import JsonLd from "@/components/JsonLd";
 import { NavFooterWrapper } from "@/components/layout/NavFooterWrapper";
 import { CartProvider } from "@/components/store/CartProvider";
+import SessionProvider from "@/components/providers/SessionProvider";
 import { SITE, SITE_URL } from "@/lib/constants";
 import "./globals.css";
 
@@ -100,11 +101,13 @@ export default function RootLayout({
         <JsonLd />
       </head>
       <body>
-        <CartProvider>
-          <NavFooterWrapper>
-            {children}
-          </NavFooterWrapper>
-        </CartProvider>
+        <SessionProvider>
+          <CartProvider>
+            <NavFooterWrapper>
+              {children}
+            </NavFooterWrapper>
+          </CartProvider>
+        </SessionProvider>
       </body>
     </html>
   );

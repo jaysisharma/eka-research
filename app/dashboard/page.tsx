@@ -1,113 +1,342 @@
-export const dynamic = "force-dynamic";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
+"use client";
+
 import Link from "next/link";
-import { Calendar, Database, BookOpen, Users, ArrowRight } from "lucide-react";
+import { useSession } from "next-auth/react";
+
+import {
+  LayoutDashboard,
+  User,
+  Telescope,
+  CalendarDays,
+  Database,
+  FolderKanban,
+  ChevronRight,
+  Plus,
+  LogOut,
+} from "lucide-react";
+
 import styles from "./page.module.css";
 
-function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-}
-
-const QUICK_LINKS = [
-  { Icon: Calendar,  label: "Upcoming events",    href: "/events",    desc: "Observation nights and workshops" },
-  { Icon: Database,  label: "Research data",      href: "/research",  desc: "Datasets and publications" },
-  { Icon: BookOpen,  label: "Articles",            href: "/articles",  desc: "Latest from the team" },
-  { Icon: Users,     label: "Team",                href: "/team",      desc: "Meet the researchers" },
+const METRICS = [
+  {
+    label: "Pending Reviews",
+    value: "08",
+  },
+  {
+    label: "Active Sessions",
+    value: "12",
+  },
+  {
+    label: "Datasets",
+    value: "482",
+  },
+  {
+    label: "Array Uptime",
+    value: "99.8%",
+  },
 ];
 
-export default async function DashboardPage() {
-  const session = await auth();
-  if (!session) redirect("/auth/login");
+const ACTIVITIES = [
+  {
+    title: "Lyrid Meteor Observation Completed",
+    type: "Research Session",
+    time: "2h ago",
+  },
+  {
+    title: "Atmospheric Dataset Uploaded",
+    type: "Dataset",
+    time: "5h ago",
+  },
+  {
+    title: "Calibration Suite Execution Finished",
+    type: "System Run",
+    time: "8h ago",
+  },
+  {
+    title: "Observation Validation Completed",
+    type: "Verification",
+    time: "Yesterday",
+  },
+];
 
-  const user = await db.user.findUnique({
-    where: { id: session.user.id },
-    select: { name: true, email: true, level: true, interest: true, createdAt: true },
-  });
+const ACTIONS = [
+  "New Observation",
+  "Upload Dataset",
+  "Schedule Session",
+  "Invite Member",
+];
 
-  if (!user) redirect("/auth/login");
-
-  const firstName = user.name.split(" ")[0];
+export default function DashboardPage() {
+  const { data: session } = useSession();
+  const userName = session?.user?.name ?? "Researcher";
 
   return (
-    <div className={styles.page}>
+    <div className={styles.layout}>
 
-      {/* ── HEADER ── */}
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.heading}>Welcome back, {firstName}</h1>
-          <p className={styles.sub}>Member since {formatDate(user.createdAt)}</p>
-        </div>
-        <span className={styles.memberBadge}>Active member</span>
-      </div>
 
-      {/* ── PROFILE CARD ── */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionHeading}>Your profile</h2>
-        <div className={styles.profileCard}>
-          <div className={styles.profileAvatar}>
-            {user.name[0].toUpperCase()}
-          </div>
-          <dl className={styles.profileGrid}>
-            <div className={styles.profileItem}>
-              <dt className={styles.profileKey}>Full name</dt>
-              <dd className={styles.profileVal}>{user.name}</dd>
-            </div>
-            <div className={styles.profileItem}>
-              <dt className={styles.profileKey}>Email</dt>
-              <dd className={styles.profileVal}>{user.email}</dd>
-            </div>
-            {user.level && (
-              <div className={styles.profileItem}>
-                <dt className={styles.profileKey}>Academic level</dt>
-                <dd className={styles.profileVal}>{user.level}</dd>
-              </div>
-            )}
-            {user.interest && (
-              <div className={styles.profileItem}>
-                <dt className={styles.profileKey}>Area of interest</dt>
-                <dd className={styles.profileVal}>{user.interest}</dd>
-              </div>
-            )}
-          </dl>
-        </div>
-      </section>
+      {/* ───────────────────── */}
+      {/* MAIN */}
+      {/* ───────────────────── */}
 
-      {/* ── QUICK LINKS ── */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionHeading}>Explore</h2>
-        <div className={styles.linkGrid}>
-          {QUICK_LINKS.map(({ Icon, label, href, desc }) => (
-            <Link key={href} href={href} className={styles.linkCard}>
-              <div className={styles.linkIcon}>
-                <Icon size={18} strokeWidth={1.75} />
-              </div>
-              <div className={styles.linkBody}>
-                <span className={styles.linkLabel}>{label}</span>
-                <span className={styles.linkDesc}>{desc}</span>
-              </div>
-              <ArrowRight size={14} className={styles.linkArrow} />
-            </Link>
-          ))}
-        </div>
-      </section>
+      <main className={styles.main}>
 
-      {/* ── MENTORING CTA ── */}
-      <section className={styles.section}>
-        <div className={styles.mentorCta}>
+        {/* PAGE HEADER */}
+
+        <header className={styles.pageHeader}>
+
           <div>
-            <h3 className={styles.mentorCtaHeading}>Apply for mentoring</h3>
-            <p className={styles.mentorCtaDesc}>
-              Get matched 1-on-1 with an active researcher or academic. Free for all members.
+            <h1 className={styles.pageTitle}>
+              Dashboard
+            </h1>
+
+            <p className={styles.pageSubtitle}>
+              Welcome back, {userName}
             </p>
           </div>
-          <Link href="/opportunities/mentoring" className={styles.mentorCtaBtn}>
-            Learn more <ArrowRight size={14} />
-          </Link>
-        </div>
-      </section>
+        </header>
 
+        {/* FOCUS CARD */}
+
+        <section className={styles.focusCard}>
+
+          <div className={styles.focusTop}>
+
+            <span className={styles.focusLabel}>
+              TODAY'S PRIORITY
+            </span>
+
+            <span className={styles.focusStatus}>
+              Active
+            </span>
+          </div>
+
+          <h2 className={styles.focusTitle}>
+            Deep Space Atmospheric Observation
+          </h2>
+
+          <p className={styles.focusText}>
+            Continue reviewing incoming telescope
+            observation data and validate pending
+            atmospheric readings.
+          </p>
+
+          <div className={styles.focusActions}>
+
+            <button className={styles.primaryBtn}>
+              Continue Session
+            </button>
+
+            <button className={styles.secondaryBtn}>
+              Open Details
+            </button>
+          </div>
+        </section>
+
+        {/* METRICS */}
+
+        <section className={styles.metricsGrid}>
+          {METRICS.map((item) => (
+            <div
+              key={item.label}
+              className={styles.metricCard}
+            >
+              <span className={styles.metricLabel}>
+                {item.label}
+              </span>
+
+              <strong className={styles.metricValue}>
+                {item.value}
+              </strong>
+            </div>
+          ))}
+        </section>
+
+        {/* CONTENT */}
+
+        <section className={styles.contentGrid}>
+
+          {/* LEFT */}
+
+          <div className={styles.leftCol}>
+
+            {/* ACTIVITY */}
+
+            <div className={styles.card}>
+
+              <div className={styles.cardHeader}>
+
+                <h3 className={styles.cardTitle}>
+                  Recent Activity
+                </h3>
+
+                <Link
+                  href="/activity"
+                  className={styles.cardLink}
+                >
+                  View All
+                </Link>
+              </div>
+
+              <div className={styles.activityList}>
+                {ACTIVITIES.map((item) => (
+                  <div
+                    key={item.title}
+                    className={styles.activityItem}
+                  >
+                    <div className={styles.activityLeft}>
+
+                      <div className={styles.activityDot} />
+
+                      <div>
+
+                        <h4 className={styles.activityTitle}>
+                          {item.title}
+                        </h4>
+
+                        <div className={styles.activityMeta}>
+                          <span>{item.type}</span>
+
+                          <span>•</span>
+
+                          <span>{item.time}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <ChevronRight
+                      size={16}
+                      className={styles.activityArrow}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* QUICK ACTIONS */}
+
+            <div className={styles.card}>
+
+              <div className={styles.cardHeader}>
+                <h3 className={styles.cardTitle}>
+                  Quick Actions
+                </h3>
+              </div>
+
+              <div className={styles.actionsGrid}>
+                {ACTIONS.map((item) => (
+                  <button
+                    key={item}
+                    className={styles.actionBtn}
+                  >
+                    <Plus size={16} />
+
+                    <span>{item}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT */}
+
+          <aside className={styles.rightCol}>
+
+            {/* ASSIGNED TASKS */}
+
+            <div className={styles.card}>
+
+              <div className={styles.cardHeader}>
+                <h3 className={styles.cardTitle}>
+                  Assigned Tasks
+                </h3>
+              </div>
+
+              <div className={styles.taskList}>
+
+                <div className={styles.taskItem}>
+
+                  <div>
+                    <h4 className={styles.taskTitle}>
+                      Validate Observation Logs
+                    </h4>
+
+                    <p className={styles.taskMeta}>
+                      Due Today
+                    </p>
+                  </div>
+
+                  <span className={styles.taskBadge}>
+                    High
+                  </span>
+                </div>
+
+                <div className={styles.taskItem}>
+
+                  <div>
+                    <h4 className={styles.taskTitle}>
+                      Review Dataset Upload
+                    </h4>
+
+                    <p className={styles.taskMeta}>
+                      Tomorrow
+                    </p>
+                  </div>
+
+                  <span className={styles.taskBadge}>
+                    Medium
+                  </span>
+                </div>
+
+                <div className={styles.taskItem}>
+
+                  <div>
+                    <h4 className={styles.taskTitle}>
+                      Prepare Session Report
+                    </h4>
+
+                    <p className={styles.taskMeta}>
+                      Friday
+                    </p>
+                  </div>
+
+                  <span className={styles.taskBadge}>
+                    Low
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* UPCOMING */}
+
+            <div className={styles.card}>
+
+              <div className={styles.cardHeader}>
+                <h3 className={styles.cardTitle}>
+                  Upcoming
+                </h3>
+              </div>
+
+              <div className={styles.upcomingList}>
+
+                <div className={styles.upcomingItem}>
+                  <span>Research Symposium</span>
+                  <strong>Tomorrow</strong>
+                </div>
+
+                <div className={styles.upcomingItem}>
+                  <span>Dataset Review Meeting</span>
+                  <strong>Friday</strong>
+                </div>
+
+                <div className={styles.upcomingItem}>
+                  <span>Observation Session</span>
+                  <strong>May 24</strong>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </main>
     </div>
   );
 }

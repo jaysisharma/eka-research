@@ -2,53 +2,87 @@ import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { LogOut } from "lucide-react";
-import AdminNav from "./AdminNav";
-import styles from "./layout.module.css";
+import styles from "@/app/dashboard/layout.module.css";
+import { SidebarNav } from "@/components/dashboard/SidebarNav";
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await auth();
-  if (!session || session.user.role !== "ADMIN") redirect("/admin/login");
+
+  if (!session) {
+    redirect("/auth/login");
+  }
 
   const user = session.user;
 
+  // Enforce ADMIN role security at layout level
+  if (user.role !== "ADMIN") {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className={styles.shell}>
-
+    <div className={styles.container}>
+      {/* ───────────────────── */}
+      {/* SIDEBAR */}
+      {/* ───────────────────── */}
       <aside className={styles.sidebar}>
+        {/* LOGO */}
         <div className={styles.sidebarTop}>
-          <div className={styles.logoRow}>
-            <Link href="/" className={styles.siteName}>
-              Eka <span className={styles.siteAccent}>Research</span>
-            </Link>
-            <span className={styles.adminBadge}>Admin</span>
-          </div>
-
-          <AdminNav />
+          <Link href="/" className={styles.logo}>
+            EKA<span>.</span>
+          </Link>
         </div>
 
-        <div className={styles.sidebarBottom}>
-          <div className={styles.userRow}>
-            <div className={styles.avatar}>
-              {user.name?.[0]?.toUpperCase() ?? "A"}
-            </div>
-            <div className={styles.userInfo}>
-              <span className={styles.userName}>{user.name}</span>
-              <span className={styles.userRole}>Administrator</span>
-            </div>
+        {/* NAVIGATION */}
+        <SidebarNav role={user.role as string} />
+
+        {/* FOOTER */}
+        <div className={styles.sidebarFooter}>
+          <div className={styles.userCard}>
+            <Link href="/dashboard/profile" className={styles.userInfo}>
+              <div className={styles.avatar}>
+                {user.name?.[0]?.toUpperCase()}
+              </div>
+
+              <div>
+                <h3 className={styles.userName}>
+                  {user.name}
+                </h3>
+
+                <p className={styles.userRole}>
+                  Administrator
+                </p>
+              </div>
+            </Link>
+
+            <form
+              action={async () => {
+                "use server";
+                await signOut({
+                  redirectTo: "/",
+                });
+              }}
+            >
+              <button type="submit" className={styles.logoutBtn}>
+                <LogOut size={16} />
+                <span>Sign Out</span>
+              </button>
+            </form>
           </div>
-          <form action={async () => {
-            "use server";
-            await signOut({ redirectTo: "/" });
-          }}>
-            <button type="submit" className={styles.signOutBtn} title="Sign out">
-              <LogOut size={15} />
-            </button>
-          </form>
         </div>
       </aside>
 
-      <main className={styles.main}>{children}</main>
-
+      {/* ───────────────────── */}
+      {/* MAIN CONTENT */}
+      {/* ───────────────────── */}
+      <div className={styles.viewport}>
+        <main className={styles.content}>
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { X, ChevronDown } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
@@ -21,6 +22,7 @@ interface NavMobileProps {
 
 export default function NavMobile({ open, onClose }: NavMobileProps) {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
   const [expanded, setExpanded] = useState<string | null>(null);
 
   /* Lock body scroll when open */
@@ -107,12 +109,25 @@ export default function NavMobile({ open, onClose }: NavMobileProps) {
           <span className={styles.mobileToggleLabel}>Switch theme</span>
           <ThemeToggle />
         </div>
-        <Link href="/auth/login" onClick={onClose} className={styles.mobileSignIn}>
-          Sign In
-        </Link>
-        <Link href="/opportunities/join" onClick={onClose} className={styles.mobileCta}>
-          Join Now
-        </Link>
+        {status === "authenticated" ? (
+          <div className={styles.mobileAuthActions}>
+            <Link href="/dashboard/profile" onClick={onClose} className={styles.mobileProfileLink}>
+              Profile
+            </Link>
+            <Link href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard"} onClick={onClose} className={styles.mobileCta}>
+              Dashboard
+            </Link>
+          </div>
+        ) : (
+          <>
+            <Link href="/auth/login" onClick={onClose} className={styles.mobileSignIn}>
+              Sign In
+            </Link>
+            <Link href="/opportunities/join" onClick={onClose} className={styles.mobileCta}>
+              Join Now
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

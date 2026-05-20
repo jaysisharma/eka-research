@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { ChevronDown, Menu, User } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
 import NavDropdown from "./NavDropdown";
@@ -18,6 +19,7 @@ function isActive(href: string, pathname: string) {
 
 export default function Nav() {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -62,8 +64,8 @@ export default function Nav() {
                 >
                   {link.label}
                   <ChevronDown
-                    size={13}
-                    className={`${styles.chevron} ${activeDropdown === link.label ? styles.chevronOpen : ""}`}
+                     size={13}
+                     className={`${styles.chevron} ${activeDropdown === link.label ? styles.chevronOpen : ""}`}
                   />
                 </button>
               ) : (
@@ -88,12 +90,26 @@ export default function Nav() {
         {/* Right actions */}
         <div className={styles.actions}>
           <ThemeToggle />
-          <Link href="/auth/login" className={styles.signIn}>
-            Sign In
-          </Link>
-          <Link href="/opportunities/join" className={styles.cta}>
-            Join Now
-          </Link>
+          {status === "authenticated" ? (
+            <div className={styles.authActions}>
+              <Link href="/dashboard/profile" className={styles.profileLink}>
+                <User size={16} />
+                <span>Profile</span>
+              </Link>
+              <Link href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard"} className={styles.cta}>
+                Dashboard
+              </Link>
+            </div>
+          ) : (
+            <>
+              <Link href="/auth/login" className={styles.signIn}>
+                Sign In
+              </Link>
+              <Link href="/opportunities/join" className={styles.cta}>
+                Join Now
+              </Link>
+            </>
+          )}
           <button
             className={styles.hamburger}
             onClick={() => setMobileOpen(true)}

@@ -1,0 +1,283 @@
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: var(--space-10) 0 var(--space-20);
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.minimalWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+/* Header */
+.minimalHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding-bottom: var(--space-10);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.avatarLarge {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--color-brand-gold), #b45309);
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 900;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.userNameTitle {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.userRoleText {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-brand-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Sections */
+.settingsSections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.minimalSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.sectionHeading {
+  font-size: 14px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Forms */
+.minimalForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  background-color: rgba(255, 255, 255, 0.01);
+  padding: var(--space-8);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputGroup label {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.inputGroup input, 
+.inputGroup select {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #fff;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.inputGroup input:focus, 
+.inputGroup select:focus {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.disabledInput {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.saveAction {
+  margin-top: var(--space-4);
+  background-color: #fff;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveAction:hover {
+  background-color: var(--color-brand-gold);
+  transform: translateY(-1px);
+}
+
+/* Membership Box */
+.membershipBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(234, 179, 8, 0.03);
+  padding: 20px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(234, 179, 8, 0.1);
+}
+
+.boxLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.goldIcon {
+  color: var(--color-brand-gold);
+}
+
+.boxTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.boxDesc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.upgradeInlineBtn {
+  background-color: var(--color-brand-gold);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.upgradeInlineBtn:hover {
+  background-color: #facc15;
+}
+
+.statusBadgePending {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.statusBadgeActive {
+  font-size: 11px;
+  font-weight: 700;
+  color: #4ade80;
+  background-color: rgba(34, 197, 94, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* Account Actions */
+.dangerActions {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.textBtn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteTextBtn {
+  background: none;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteTextBtn:hover {
+  background-color: rgba(239, 68, 68, 0.05);
+  border-color: #f87171;
+}
+
+.statusMsg {
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.success { color: #4ade80; background: rgba(34, 197, 94, 0.05); }
+.error { color: #f87171; background: rgba(239, 68, 68, 0.05); }
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+  color: var(--color-brand-gold);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: var(--space-8) var(--space-4); }
+  .minimalHeader { flex-direction: column; text-align: center; }
+  .membershipBox { flex-direction: column; gap: 16px; text-align: center; }
+  .boxLeft { flex-direction: column; }
+}
