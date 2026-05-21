@@ -113,6 +113,98 @@ const ROLE_LABELS: Record<string, string> = {
   ADMIN: "Admin",
 };
 
+/** Sent to info@ekaresearch.org when a researcher submits a paper */
+export async function sendPaperSubmissionNotification(params: {
+  submitterName: string;
+  submitterEmail: string;
+  paperTitle: string;
+  paperType: string;
+  journal: string;
+  paperId: string;
+}) {
+  const adminUrl = `${process.env.AUTH_URL ?? ""}/admin/papers`;
+
+  const html = wrap(`
+    ${header("New research paper submitted")}
+    <div style="padding:32px 40px;">
+      <p style="margin:0 0 20px;color:#b0b8d4;line-height:1.6;font-size:14px;">
+        A researcher has submitted a paper for review. Please log in to approve or reject it.
+      </p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#b0b8d4;margin-bottom:24px;">
+        <tr>
+          <td style="padding:8px 0;color:#5a6480;width:130px;vertical-align:top;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.08em;">Submitted by</td>
+          <td style="padding:8px 0;color:#e8eaf6;">${params.submitterName} &lt;<a href="mailto:${params.submitterEmail}" style="color:#FEC73E;text-decoration:none;">${params.submitterEmail}</a>&gt;</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;color:#5a6480;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.08em;">Title</td>
+          <td style="padding:8px 0;color:#e8eaf6;">${params.paperTitle}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;color:#5a6480;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.08em;">Type</td>
+          <td style="padding:8px 0;color:#e8eaf6;text-transform:capitalize;">${params.paperType}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;color:#5a6480;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.08em;">Journal</td>
+          <td style="padding:8px 0;color:#e8eaf6;">${params.journal}</td>
+        </tr>
+      </table>
+      <div style="text-align:center;">
+        <a href="${adminUrl}" style="display:inline-block;padding:14px 32px;background:#FEC73E;color:#0a0d1a;font-weight:700;font-size:14px;border-radius:8px;text-decoration:none;">Review in Admin Panel</a>
+      </div>
+    </div>
+  `);
+
+  await send(
+    "info@ekaresearch.org",
+    `[Review Required] New paper: "${params.paperTitle}"`,
+    html,
+  );
+}
+
+/** Sent to the researcher when admin approves or rejects their paper */
+export async function sendPaperDecisionEmail(params: {
+  to: string;
+  name: string;
+  paperTitle: string;
+  decision: "approved" | "rejected";
+}) {
+  const approved = params.decision === "approved";
+
+  const html = wrap(`
+    ${header(approved ? "Your paper has been published" : "Paper submission update")}
+    <div style="padding:32px 40px;">
+      <p style="margin:0 0 16px;color:#b0b8d4;line-height:1.6;font-size:14px;">Hi ${params.name},</p>
+      ${approved
+        ? `<p style="margin:0 0 24px;color:#b0b8d4;line-height:1.6;font-size:14px;">
+             Great news! Your paper <strong style="color:#FEC73E;">"${params.paperTitle}"</strong>
+             has been reviewed and is now <strong style="color:#3DCFA0;">published</strong> on the
+             Eka Research website.
+           </p>
+           <div style="text-align:center;margin-bottom:24px;">
+             <a href="${process.env.AUTH_URL ?? ""}/research" style="display:inline-block;padding:14px 32px;background:#FEC73E;color:#0a0d1a;font-weight:700;font-size:14px;border-radius:8px;text-decoration:none;">View on Research Archive</a>
+           </div>`
+        : `<p style="margin:0 0 24px;color:#b0b8d4;line-height:1.6;font-size:14px;">
+             Your submission <strong style="color:#e8eaf6;">"${params.paperTitle}"</strong>
+             has been reviewed. Unfortunately, it was not approved for publication at this time.
+           </p>
+           <p style="margin:0 0 24px;color:#b0b8d4;line-height:1.6;font-size:14px;">
+             If you have questions or would like feedback, please reach out to us at
+             <a href="mailto:hello@ekaresearch.org" style="color:#FEC73E;">hello@ekaresearch.org</a>.
+           </p>`
+      }
+      <p style="margin:0;font-size:12px;color:#4a5a7a;line-height:1.6;">Eka Research Team</p>
+    </div>
+  `);
+
+  await send(
+    params.to,
+    approved
+      ? `Your paper "${params.paperTitle}" is now live on Eka Research`
+      : `Update on your submission: "${params.paperTitle}"`,
+    html,
+  );
+}
+
 export async function sendRoleNotificationEmail(
   to: string,
   name: string,

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { sendPaperDecisionEmail } from "@/lib/mail";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -28,7 +29,18 @@ export async function PATCH(req: Request, { params }: Params) {
       submissionStatus: action === "approve" ? "approved" : "rejected",
       published:        action === "approve",
     },
+    include: { submitter: { select: { name: true, email: true } } },
   });
+
+  // Email the researcher — fire-and-forget
+  if (paper.submitter?.email) {
+    sendPaperDecisionEmail({
+      to:         paper.submitter.email,
+      name:       paper.submitter.name,
+      paperTitle: paper.title,
+      decision:   action === "approve" ? "approved" : "rejected",
+    }).catch(() => { /* non-fatal */ });
+  }
 
   return NextResponse.json(paper);
 }

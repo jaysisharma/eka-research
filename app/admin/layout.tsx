@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { auth, signOut } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { LogOut } from "lucide-react";
 import styles from "@/app/dashboard/layout.module.css";
 import { SidebarNav } from "@/components/dashboard/SidebarNav";
+import { LogoutButton } from "@/components/dashboard/LogoutButton";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 
 export default async function AdminLayout({
@@ -55,18 +55,7 @@ export default async function AdminLayout({
 
           <div className={styles.footerActionsCompact}>
             <ThemeToggle />
-            <form
-              action={async () => {
-                "use server";
-                await signOut({
-                  redirectTo: "/",
-                });
-              }}
-            >
-              <button type="submit" className={styles.logoutBtnCompact} aria-label="Sign Out">
-                <LogOut size={16} />
-              </button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
       </aside>

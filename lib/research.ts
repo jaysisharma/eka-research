@@ -65,7 +65,11 @@ function toArticle(a: DbArticle): ResearchArticle {
 
 export async function getPublishedArticles(): Promise<ResearchArticle[]> {
   const rows = await db.researchArticle.findMany({
-    where: { published: true },
+    // Double-guard: both admin approval flags must be set
+    where: {
+      published:        true,
+      submissionStatus: "approved",
+    },
     orderBy: [{ year: "desc" }, { date: "desc" }],
   });
   return rows.map(toArticle);

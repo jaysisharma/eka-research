@@ -3,11 +3,14 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
-  BookOpen, Plus, ArrowRight, Clock,
+  BookOpen, Plus, Clock,
   CheckCircle2, XCircle, ExternalLink, FileText,
+  PartyPopper, ChevronRight,
 } from "lucide-react";
 import { buildMetadata } from "@/lib/seo";
 import styles from "./page.module.css";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "My Research",
@@ -38,11 +41,17 @@ const TYPE_LABEL: Record<string, string> = {
   report:     "Report",
 };
 
-export default async function ResearchPage() {
+export default async function ResearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ submitted?: string }>;
+}) {
   const session = await auth();
   if (!session) redirect("/auth/login");
 
   const { id: userId, role } = session.user as { id: string; role: string };
+  const { submitted } = await searchParams;
+  const justSubmitted = submitted === "1";
 
   if (!ALLOWED_ROLES.includes(role)) {
     redirect("/upgrade");
@@ -60,6 +69,21 @@ export default async function ResearchPage() {
 
   return (
     <div className={styles.page}>
+
+      {/* ── SUBMISSION SUCCESS BANNER ── */}
+      {justSubmitted && (
+        <div className={styles.successBanner}>
+          <PartyPopper size={18} className={styles.successIcon} />
+          <div>
+            <p className={styles.successTitle}>Paper submitted successfully!</p>
+            <p className={styles.successDesc}>
+              Your paper is now under review. The Eka admin team will verify it
+              before publishing it to the research archive. You&apos;ll receive an
+              email once a decision is made.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ── HEADER ── */}
       <header className={styles.header}>
@@ -206,6 +230,12 @@ export default async function ResearchPage() {
                   {paper.journal && (
                     <span className={styles.journalLabel}>{paper.journal}</span>
                   )}
+                  <Link
+                    href={`/dashboard/research/${paper.id}`}
+                    className={styles.viewBtn}
+                  >
+                    View details <ChevronRight size={13} />
+                  </Link>
                 </div>
               </div>
             );

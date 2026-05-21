@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { sendPaperSubmissionNotification } from "@/lib/mail";
 
 const ALLOWED_ROLES = ["PAID_MEMBER", "TEACHER", "RESEARCHER", "MENTOR", "ADMIN"];
 
@@ -48,6 +49,16 @@ export async function POST(req: NextRequest) {
         submissionStatus: "pending",
       },
     });
+
+    // Notify admin — fire-and-forget (don't block the response if mail fails)
+    sendPaperSubmissionNotification({
+      submitterName:  session.user.name ?? "Unknown",
+      submitterEmail: session.user.email ?? "",
+      paperTitle:     title as string,
+      paperType:      type as string,
+      journal:        journal as string,
+      paperId:        article.id,
+    }).catch(() => { /* non-fatal */ });
 
     return NextResponse.json({ id: article.id }, { status: 201 });
   } catch {

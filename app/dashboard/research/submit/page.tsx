@@ -45,6 +45,9 @@ export default function SubmitPaperPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Submission failed.");
 
+      // refresh() clears the Next.js RSC cache so the server component
+      // re-renders fresh and picks up ?submitted=1 on navigation
+      router.refresh();
       router.push("/dashboard/research?submitted=1");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
