@@ -8,6 +8,8 @@ import { SITE } from "@/lib/constants";
 import { db } from "@/lib/db";
 import styles from "./page.module.css";
 
+
+
 const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
 
