@@ -1,230 +1,283 @@
-"use client";
-
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 import {
-  Users,
-  Database,
-  ShieldCheck,
-  RefreshCw,
-  Server,
-  Terminal,
-  TrendingUp,
-  Calendar,
-  Activity,
+  Users, BookOpen, Calendar, MessageSquare,
+  ArrowRight, Briefcase, GraduationCap,
+  ShoppingBag, Newspaper, Clock,
 } from "lucide-react";
 import styles from "./page.module.css";
 
-/* ── Static placeholder data ─────────────────────────────────────────── */
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric", month: "short", year: "numeric",
+  });
+}
 
-const SITE_STATS = [
-  { label: "Total Users",           value: "1,248", trend: "+14 this week",       icon: Users       },
-  { label: "Active Subscriptions",  value: "89",    trend: "+6 this week",        icon: TrendingUp  },
-  { label: "Research Submissions",  value: "14",    trend: "0 pending review",    icon: Database    },
-  { label: "Event Registrations",   value: "382",   trend: "+42 since yesterday", icon: Calendar    },
-];
+const ROLE_COLOR: Record<string, string> = {
+  ADMIN:       "gold",
+  RESEARCHER:  "blue",
+  PAID_MEMBER: "purple",
+  TEACHER:     "green",
+  MENTOR:      "teal",
+  FREE_USER:   "default",
+};
 
-const AUDIT_LOGS_INITIAL = [
-  { title: "Database credentials reset",               category: "Migration",     time: "10m ago",  user: "System"   },
-  { title: "Seeded user accounts synchronised",        category: "Seeding",       time: "12m ago",  user: "System"   },
-  { title: "Removed obsolete admin directories",       category: "Git Clean",     time: "30m ago",  user: "DevAgent" },
-  { title: "AccessGate components compiled cleanly",   category: "Compiler",      time: "42m ago",  user: "DevAgent" },
-  { title: "NextAuth session provider initialised",    category: "Auth Provider", time: "1h ago",   user: "System"   },
-];
+const ROLE_LABEL: Record<string, string> = {
+  ADMIN:       "Admin",
+  RESEARCHER:  "Researcher",
+  PAID_MEMBER: "Pro Member",
+  TEACHER:     "Teacher",
+  MENTOR:      "Mentor",
+  FREE_USER:   "Free",
+};
 
-const SITE_ACTIVITY = [
-  { title: "Lyrid Meteor Observation Completed",     type: "Research Session", time: "2h ago"   },
-  { title: "Atmospheric Dataset Uploaded",           type: "Dataset",          time: "5h ago"   },
-  { title: "New Member Registration: A. Sherpa",     type: "Account",          time: "6h ago"   },
-  { title: "Calibration Suite Execution Finished",   type: "System Run",       time: "8h ago"   },
-  { title: "Observation Validation Completed",       type: "Verification",     time: "Yesterday" },
-];
+export default async function AdminDashboardPage() {
+  const session = await auth();
+  if (!session || session.user.role !== "ADMIN") redirect("/auth/login");
 
-const SYSTEM_STATS = [
-  { label: "Active Connections",  value: "34"              },
-  { label: "DB CPU Usage",        value: "1.2%"            },
-  { label: "Storage Capacity",    value: "14.2 / 100 GB"   },
-  { label: "Environment",         value: "Development"     },
-];
+  const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
 
-const QUICK_OPS = [
-  { label: "Sync DB",        desc: "Check connection pool and caches.",    icon: Database    },
-  { label: "Clear Locks",    desc: "Reset temporary login lockout limits.", icon: Terminal    },
-  { label: "Integrity Run",  desc: "Audit database constraints.",           icon: ShieldCheck },
-  { label: "Seed Clean",     desc: "Re-align test and seed metrics.",       icon: Server      },
-];
+  /* ── Real data from DB ────────────────────────────────────────────── */
+  const [
+    totalUsers,
+    pendingPapers,
+    upcomingEvents,
+    unreadMessages,
+    unreadVacancyApps,
+    unreadMentoringApps,
+    pendingOrders,
+    recentUsers,
+    recentOrders,
+  ] = await Promise.all([
+    db.user.count(),
+    db.researchArticle.count({ where: { submissionStatus: "pending" } }),
+    db.event.count({ where: { published: true, date: { gte: today } } }),
+    db.contactMessage.count({ where: { read: false } }),
+    db.vacancyApplication.count({ where: { read: false } }),
+    db.mentoringApplication.count({ where: { read: false } }),
+    db.order.count({ where: { status: "pending" } }),
 
-/* ── Component ───────────────────────────────────────────────────────── */
+    db.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { id: true, name: true, email: true, role: true, createdAt: true },
+    }),
+    db.order.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { id: true, name: true, totalNpr: true, status: true, createdAt: true },
+    }),
+  ]);
 
-export default function AdminDashboard() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const totalAlerts = pendingPapers + unreadMessages + unreadVacancyApps + unreadMentoringApps + pendingOrders;
 
-  const [logs,    setLogs]    = useState(AUDIT_LOGS_INITIAL);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (status === "unauthenticated") router.push("/auth/login");
-    else if (status === "authenticated" && session?.user?.role !== "ADMIN") router.push("/dashboard");
-  }, [status, session, router]);
-
-  if (status === "loading" || !session || session.user.role !== "ADMIN") {
-    return (
-      <div className={styles.loadingScreen}>
-        <RefreshCw className={styles.spinner} size={28} />
-        <p>Authenticating admin session…</p>
-      </div>
-    );
-  }
-
-  const handleRefresh = async () => {
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setLogs([
-      { title: "Admin panel refreshed", category: "Admin UI", time: "Just now", user: session.user.name ?? "Admin" },
-      ...AUDIT_LOGS_INITIAL,
-    ]);
-    setLoading(false);
-  };
+  const STATS = [
+    { label: "Total Users",       value: totalUsers,      icon: Users,        href: "/admin/users"   },
+    { label: "Pending Papers",    value: pendingPapers,   icon: BookOpen,     href: "/admin/papers"  },
+    { label: "Upcoming Events",   value: upcomingEvents,  icon: Calendar,     href: "/admin/events"  },
+    { label: "Unread Messages",   value: unreadMessages,  icon: MessageSquare,href: "/admin/messages"},
+  ];
 
   return (
     <div className={styles.page}>
-      {/* ── HEADER ── */}
+
+      {/* ── HEADER ─────────────────────────────────────────────── */}
       <header className={styles.header}>
         <div>
-          <h1 className={styles.pageTitle}>Admin Dashboard</h1>
+          <h1 className={styles.pageTitle}>Dashboard</h1>
           <p className={styles.pageSubtitle}>
-            Welcome back, <strong>{session.user.name}</strong> — here's what's happening across the platform.
+            Welcome back, <strong>{session.user.name}</strong>.
+            {totalAlerts > 0 && (
+              <span className={styles.alertPill}>{totalAlerts} item{totalAlerts !== 1 ? "s" : ""} need attention</span>
+            )}
           </p>
         </div>
-
-        <button onClick={handleRefresh} className={styles.refreshBtn} disabled={loading}>
-          <RefreshCw size={15} className={loading ? styles.spinning : undefined} />
-          {loading ? "Refreshing…" : "Refresh"}
-        </button>
+        <Link href="/" className={styles.viewSiteBtn} target="_blank">
+          View Site <ArrowRight size={13} />
+        </Link>
       </header>
 
-      {/* ── SITE STATS ── */}
+      {/* ── STATS ROW ──────────────────────────────────────────── */}
       <section className={styles.statsGrid}>
-        {SITE_STATS.map(({ label, value, trend, icon: Icon }) => (
-          <div key={label} className={styles.statCard}>
+        {STATS.map(({ label, value, icon: Icon, href }) => (
+          <Link key={label} href={href} className={styles.statCard}>
             <div className={styles.statTop}>
               <span className={styles.statLabel}>{label}</span>
-              <span className={styles.statIcon}><Icon size={16} /></span>
+              <span className={styles.statIconWrap}><Icon size={15} /></span>
             </div>
             <strong className={styles.statValue}>{value}</strong>
-            <span className={styles.statTrend}><Activity size={10} />{trend}</span>
-          </div>
+          </Link>
         ))}
       </section>
 
-      {/* ── MAIN GRID ── */}
+      {/* ── MAIN GRID ──────────────────────────────────────────── */}
       <div className={styles.mainGrid}>
 
         {/* LEFT COLUMN */}
         <div className={styles.leftCol}>
 
-          {/* AUDIT LOGS */}
-          <section className={styles.card}>
-            <div className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>System Audit Logs</h2>
-              <button onClick={handleRefresh} className={styles.cardAction} disabled={loading}>
-                <RefreshCw size={12} className={loading ? styles.spinning : undefined} />
-                {loading ? "Refreshing…" : "Refresh logs"}
-              </button>
-            </div>
-
-            <div className={styles.logList}>
-              {logs.map((log, i) => (
-                <div key={i} className={styles.logItem}>
-                  <div className={styles.logLeft}>
-                    <span className={styles.logDot} />
-                    <div>
-                      <p className={styles.logTitle}>{log.title}</p>
-                      <p className={styles.logMeta}>
-                        <span>{log.category}</span>
-                        <span>·</span>
-                        <span>{log.user}</span>
-                      </p>
-                    </div>
-                  </div>
-                  <span className={styles.logTime}>{log.time}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* SITE ACTIVITY */}
-          <section className={styles.card}>
-            <div className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>Site Activity</h2>
-            </div>
-
-            <div className={styles.activityList}>
-              {SITE_ACTIVITY.map((item, i) => (
-                <div key={i} className={styles.activityItem}>
-                  <div className={styles.activityLeft}>
-                    <span className={styles.activityDot} />
-                    <div>
-                      <p className={styles.activityTitle}>{item.title}</p>
-                      <p className={styles.activityMeta}>{item.type}</p>
-                    </div>
-                  </div>
-                  <span className={styles.activityTime}>{item.time}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
-        {/* RIGHT COLUMN */}
-        <div className={styles.rightCol}>
-
-          {/* QUICK OPERATIONS */}
-          <section className={styles.card}>
-            <div className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>Quick Operations</h2>
-            </div>
-
-            <div className={styles.opsGrid}>
-              {QUICK_OPS.map(({ label, desc, icon: Icon }) => (
-                <button key={label} onClick={handleRefresh} className={styles.opBtn}>
-                  <span className={styles.opIcon}><Icon size={16} /></span>
-                  <div>
-                    <span className={styles.opLabel}>{label}</span>
-                    <p className={styles.opDesc}>{desc}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* SYSTEM HEALTH */}
-          <section className={styles.card}>
-            <div className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>System Health</h2>
-            </div>
-
-            <div className={styles.healthList}>
-              {/* API status row */}
-              <div className={styles.healthItem}>
-                <span className={styles.healthLabel}>API Status</span>
-                <span className={styles.healthOnline}>
-                  <span className={styles.onlineDot} />
-                  Online
-                </span>
+          {/* NEEDS ATTENTION */}
+          {totalAlerts > 0 && (
+            <section className={styles.card}>
+              <div className={styles.cardHeader}>
+                <h2 className={styles.cardTitle}>
+                  <Clock size={15} /> Needs Attention
+                </h2>
               </div>
+              <div className={styles.attentionList}>
+                {pendingPapers > 0 && (
+                  <Link href="/admin/papers" className={styles.attentionItem}>
+                    <span className={styles.attentionDot} data-color="gold" />
+                    <span className={styles.attentionText}>
+                      <strong>{pendingPapers}</strong> research paper{pendingPapers !== 1 ? "s" : ""} awaiting review
+                    </span>
+                    <ArrowRight size={13} className={styles.attentionArrow} />
+                  </Link>
+                )}
+                {unreadMessages > 0 && (
+                  <Link href="/admin/messages" className={styles.attentionItem}>
+                    <span className={styles.attentionDot} data-color="blue" />
+                    <span className={styles.attentionText}>
+                      <strong>{unreadMessages}</strong> unread contact message{unreadMessages !== 1 ? "s" : ""}
+                    </span>
+                    <ArrowRight size={13} className={styles.attentionArrow} />
+                  </Link>
+                )}
+                {unreadVacancyApps > 0 && (
+                  <Link href="/admin/opportunities/applications" className={styles.attentionItem}>
+                    <span className={styles.attentionDot} data-color="purple" />
+                    <span className={styles.attentionText}>
+                      <strong>{unreadVacancyApps}</strong> new vacancy application{unreadVacancyApps !== 1 ? "s" : ""}
+                    </span>
+                    <ArrowRight size={13} className={styles.attentionArrow} />
+                  </Link>
+                )}
+                {unreadMentoringApps > 0 && (
+                  <Link href="/admin/opportunities/mentoring" className={styles.attentionItem}>
+                    <span className={styles.attentionDot} data-color="teal" />
+                    <span className={styles.attentionText}>
+                      <strong>{unreadMentoringApps}</strong> new mentoring application{unreadMentoringApps !== 1 ? "s" : ""}
+                    </span>
+                    <ArrowRight size={13} className={styles.attentionArrow} />
+                  </Link>
+                )}
+                {pendingOrders > 0 && (
+                  <Link href="/admin/store/orders" className={styles.attentionItem}>
+                    <span className={styles.attentionDot} data-color="green" />
+                    <span className={styles.attentionText}>
+                      <strong>{pendingOrders}</strong> pending store order{pendingOrders !== 1 ? "s" : ""}
+                    </span>
+                    <ArrowRight size={13} className={styles.attentionArrow} />
+                  </Link>
+                )}
+              </div>
+            </section>
+          )}
 
-              {SYSTEM_STATS.map((s) => (
-                <div key={s.label} className={styles.healthItem}>
-                  <span className={styles.healthLabel}>{s.label}</span>
-                  <span className={styles.healthValue}>{s.value}</span>
-                </div>
-              ))}
+          {/* RECENT USERS */}
+          <section className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}><Users size={15} /> Recent Sign-ups</h2>
+              <Link href="/admin/users" className={styles.cardLink}>
+                View all <ArrowRight size={12} />
+              </Link>
             </div>
+
+            {recentUsers.length === 0 ? (
+              <p className={styles.empty}>No users yet.</p>
+            ) : (
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentUsers.map((u) => (
+                    <tr key={u.id}>
+                      <td className={styles.tdName}>{u.name}</td>
+                      <td className={styles.tdMuted}>{u.email}</td>
+                      <td>
+                        <span
+                          className={styles.roleBadge}
+                          data-color={ROLE_COLOR[u.role] ?? "default"}
+                        >
+                          {ROLE_LABEL[u.role] ?? u.role}
+                        </span>
+                      </td>
+                      <td className={styles.tdMuted}>{formatDate(u.createdAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+
+          {/* RECENT ORDERS */}
+          <section className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}><ShoppingBag size={15} /> Recent Orders</h2>
+              <Link href="/admin/store/orders" className={styles.cardLink}>
+                View all <ArrowRight size={12} />
+              </Link>
+            </div>
+
+            {recentOrders.length === 0 ? (
+              <p className={styles.empty}>No orders yet.</p>
+            ) : (
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentOrders.map((o) => (
+                    <tr key={o.id}>
+                      <td className={styles.tdMono}>#{o.id.slice(-7).toUpperCase()}</td>
+                      <td className={styles.tdName}>{o.name}</td>
+                      <td className={styles.tdMuted}>NPR {o.totalNpr.toLocaleString()}</td>
+                      <td>
+                        <span className={styles.orderStatus} data-status={o.status}>
+                          {o.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+
+        </div>
+
+        {/* RIGHT COLUMN — quick actions */}
+        <div className={styles.rightCol}>
+          <section className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>Quick Actions</h2>
+            </div>
+            <nav className={styles.quickLinks}>
+              <Link href="/admin/users"                         className={styles.quickLink}><Users size={15} />          Manage Users</Link>
+              <Link href="/admin/papers"                        className={styles.quickLink}><BookOpen size={15} />       Review Papers</Link>
+              <Link href="/admin/news/new"                      className={styles.quickLink}><Newspaper size={15} />      Add News Post</Link>
+              <Link href="/admin/events"                        className={styles.quickLink}><Calendar size={15} />       Manage Events</Link>
+              <Link href="/admin/messages"                      className={styles.quickLink}><MessageSquare size={15} />  View Messages</Link>
+              <Link href="/admin/opportunities/vacancies"       className={styles.quickLink}><Briefcase size={15} />      Vacancies</Link>
+              <Link href="/admin/opportunities/applications"    className={styles.quickLink}><GraduationCap size={15} />  Applications</Link>
+              <Link href="/admin/store/orders"                  className={styles.quickLink}><ShoppingBag size={15} />    Store Orders</Link>
+            </nav>
           </section>
         </div>
+
       </div>
     </div>
   );
