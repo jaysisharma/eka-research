@@ -1,0 +1,142 @@
+/* ── ADMIN VACANCIES PAGE ─────────────────────────────────────────────────── */
+
+.page {
+  min-height: 100vh; background: var(--bg-base);
+  color: var(--text-primary); padding: 36px 40px; font-family: var(--font-body);
+}
+
+/* HEADER */
+.header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
+.pageTitle    { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; }
+.pageSubtitle { font-size: 14px; color: var(--text-secondary); }
+
+.addBtn {
+  display: flex; align-items: center; gap: 8px;
+  height: 40px; padding: 0 18px; border-radius: 8px;
+  border: none; background: var(--color-brand-gold); color: #000;
+  font-size: 13px; font-weight: 800; cursor: pointer;
+  white-space: nowrap; text-decoration: none;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.addBtn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+/* STAT PILLS */
+.statRow { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+.statPill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 10px;
+  background: var(--bg-surface); border: 1px solid var(--border-default);
+}
+.statPillValue { font-size: 18px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); }
+.statPillLabel { font-size: 12px; color: var(--text-muted); }
+
+/* TOOLBAR */
+.toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+
+.searchWrap { position: relative; flex: 1; min-width: 200px; max-width: 300px; }
+.searchIcon {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%); color: var(--text-muted); pointer-events: none;
+}
+.searchInput {
+  width: 100%; height: 38px; padding: 0 12px 0 36px;
+  border-radius: 8px; border: 1px solid var(--border-default);
+  background: var(--bg-surface); color: var(--text-primary);
+  font-size: 13px; outline: none; transition: border-color 0.2s;
+}
+.searchInput::placeholder { color: var(--text-muted); }
+.searchInput:focus        { border-color: var(--color-brand-gold); }
+
+.filterBtns  { display: flex; gap: 6px; flex-wrap: wrap; }
+.filterBtn {
+  height: 34px; padding: 0 12px; border-radius: 8px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface); color: var(--text-muted);
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  white-space: nowrap; transition: all 0.15s;
+}
+.filterBtn:hover  { border-color: var(--color-brand-gold); color: var(--text-primary); }
+.filterActive     { background: var(--color-brand-gold); border-color: var(--color-brand-gold); color: #000; }
+.totalBadge { margin-left: auto; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+
+/* TABLE */
+.tableWrap {
+  background: var(--bg-surface); border: 1px solid var(--border-default);
+  border-radius: 14px; overflow: hidden;
+}
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  padding: 11px 16px; text-align: left;
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-muted);
+  background: var(--bg-subtle); border-bottom: 1px solid var(--border-default); white-space: nowrap;
+}
+.table td {
+  padding: 14px 16px; border-bottom: 1px solid var(--border-default); vertical-align: middle;
+}
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr { transition: background 0.12s; }
+.table tbody tr:hover { background: var(--bg-subtle); }
+
+/* CELLS */
+.positionName { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+.positionDept { font-size: 11px; color: var(--text-muted); }
+
+.typeBadge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+  background: rgba(254, 199, 62, 0.10); color: var(--color-brand-gold);
+  border: 1px solid rgba(254, 199, 62, 0.2);
+}
+
+.deadlineCell { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+.deadlineWrap { display: flex; flex-direction: column; gap: 4px; }
+.soonBadge    {
+  display: inline-block; padding: 2px 8px; border-radius: 20px;
+  font-size: 10px; font-weight: 800;
+  background: rgba(245,158,11,0.12); color: #f59e0b;
+}
+.rollingText  { color: var(--text-muted); font-style: italic; font-size: 12px; }
+.appsCell     { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+
+/* STATUS */
+.statusBadge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 800; white-space: nowrap;
+}
+.statusDraft  { background: rgba(148,163,184,0.10); color: var(--text-muted); }
+.statusOpen   { background: rgba(16,185,129,0.10);  color: var(--color-success); }
+.statusClosed { background: rgba(240,96,112,0.10);  color: var(--color-error); }
+
+/* ACTIONS */
+.actions { display: flex; align-items: center; gap: 6px; }
+.editBtn {
+  height: 30px; padding: 0 10px; border-radius: 6px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-subtle); color: var(--text-secondary);
+  display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; transition: all 0.15s;
+}
+.editBtn:hover { background: var(--bg-inset); color: var(--text-primary); }
+.deleteBtn {
+  height: 30px; padding: 0 10px; border-radius: 6px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-subtle); color: var(--color-error);
+  display: inline-flex; align-items: center; cursor: pointer; transition: all 0.15s;
+}
+.deleteBtn:hover    { background: rgba(240,96,112,0.08); border-color: rgba(240,96,112,0.3); }
+.deleteBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* EMPTY / LOADING */
+.empty { padding: 60px 24px; text-align: center; color: var(--text-muted); font-size: 14px; }
+.loadingScreen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 60vh; gap: 16px; color: var(--text-muted); font-size: 14px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { animation: spin 0.8s linear infinite; }
+
+/* RESPONSIVE */
+@media (max-width: 1000px) { .page { padding: 20px; } }
+@media (max-width: 720px) {
+  .table th:nth-child(4), .table td:nth-child(4) { display: none; }
+}

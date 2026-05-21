@@ -76,26 +76,48 @@ model NewsPost {
 }
 
 model ResearchArticle {
-  id               String   @id @default(cuid())
-  title            String
-  authors          String
-  ekaAuthors       String
-  journal          String
-  year             Int
-  date             String
-  type             String
-  disciplines      String
-  abstract         String
-  imageUrl         String?
-  doi              String?
-  arxiv            String?
-  featured         Boolean  @default(false)
-  published        Boolean  @default(true)
-  submittedBy      String?
-  submitter        User?    @relation(fields: [submittedBy], references: [id], onDelete: SetNull)
-  submissionStatus String   @default("approved")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  title                String
+  abstract             String
+  type                 String                         // journal | conference | preprint | report
+  publicationStatus    String   @default("draft")    // draft | under_review | accepted | published
+
+  // Authors
+  authors              String                         // JSON string[]  — external authors, one per line
+  internalContributors String   @default("[]")        // JSON string[]  — user IDs of EKA contributors
+
+  // Publication
+  journal              String   @default("")
+  publicationDate      String   @default("")          // "YYYY-MM-DD" or human-readable
+  year                 Int      @default(0)           // derived from publicationDate on save
+  doi                  String?
+  arxiv                String?
+
+  // Classification
+  disciplines          String   @default("[]")        // JSON string[]
+
+  // Files & links
+  pdfUrl               String?  // stored path or external URL
+  externalUrl          String?  // canonical paper link
+  githubUrl            String?
+  datasetUrl           String?
+
+  // Legacy / compat
+  ekaAuthors           String   @default("[]")
+  imageUrl             String?
+  date                 String   @default("")
+
+  // Visibility
+  featured             Boolean  @default(false)
+  published            Boolean  @default(true)
+
+  // Admin workflow
+  submittedBy          String?
+  submitter            User?    @relation(fields: [submittedBy], references: [id], onDelete: SetNull)
+  submissionStatus     String   @default("approved")  // pending | approved | rejected
+
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model Event {
@@ -188,4 +210,96 @@ model Subscription {
   status    String   @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  topic        String
+  organisation String?
+  message      String
+  read         Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+// ── Opportunities ────────────────────────────────────────────────────────────
+
+enum VacancyType {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+  VOLUNTEER
+}
+
+enum VacancyStatus {
+  DRAFT
+  OPEN
+  CLOSED
+}
+
+model Vacancy {
+  id           String               @id @default(cuid())
+  title        String
+  type         VacancyType
+  department   String
+  description  String
+  deadline     DateTime?
+  status       VacancyStatus        @default(DRAFT)
+  applications VacancyApplication[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model VacancyApplication {
+  id        String   @id @default(cuid())
+  vacancyId String
+  vacancy   Vacancy  @relation(fields: [vacancyId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  phone     String?
+  message   String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([vacancyId])
+}
+
+model Mentor {
+  id        String   @id @default(cuid())
+  name      String
+  expertise String
+  bio       String?
+  imageUrl  String?
+  linkedIn  String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MentoringProgram {
+  id           String                 @id @default(cuid())
+  description  String
+  duration     String
+  structure    String?
+  nextCohort   DateTime?
+  isOpen       Boolean                @default(false)
+  applications MentoringApplication[]
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+}
+
+model MentoringApplication {
+  id         String           @id @default(cuid())
+  programId  String
+  program    MentoringProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  name       String
+  email      String
+  phone      String?
+  background String?
+  goals      String?
+  read       Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+
+  @@index([programId])
 }

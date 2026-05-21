@@ -34,42 +34,7 @@ export type NavLink = {
 export const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  {
-    label: "Services",
-    href: "/services",
-    children: [
-      {
-        label: "The Public",
-        href: "/services/public",
-        description: "Open outreach events and science communication for all ages",
-      },
-      {
-        label: "Schools",
-        href: "/services/schools",
-        description: "Workshops and curriculum support for students and educators",
-      },
-      {
-        label: "Researchers",
-        href: "/services/researchers",
-        description: "Exclusive resources for researchers and students",
-      },
-      {
-        label: "All Sky Camera",
-        href: "/services/allsky",
-        description: "Live full-sky imaging — meteor showers and aurora activity",
-      },
-      {
-        label: "Weather Station",
-        href: "/services/weather",
-        description: "Real-time atmospheric data from Kathmandu valley",
-      },
-      {
-        label: "Mentoring Program",
-        href: "/services/mentoring",
-        description: "Connect with mentors from academia and industry",
-      },
-    ],
-  },
+  { label: "Services", href: "/services" },
   {
     label: "Research",
     href: "/research",

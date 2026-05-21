@@ -10,6 +10,7 @@ import styles from "./layout.module.css";
 
 import { SidebarNav } from "@/components/dashboard/SidebarNav";
 import { UpgradeCard } from "@/components/dashboard/UpgradeCard";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 
 export default async function DashboardLayout({
   children,
@@ -46,55 +47,43 @@ export default async function DashboardLayout({
         <SidebarNav role={user.role as string} />
 
         {/* FOOTER */}
-
-        <div className={styles.sidebarFooter}>
-
+        <div className={styles.sidebarFooter} style={{ borderTop: "none", padding: 0 }}>
           {user.role === "FREE_USER" && (
             <UpgradeCard />
           )}
 
-          <div className={styles.userCard}>
-
-            <Link
-              href="/dashboard/profile"
-              className={styles.userInfo}
-            >
+          {/* COMPACT FOOTER */}
+          <div className={styles.sidebarFooterCompact}>
+            <Link href="/dashboard/profile" className={styles.userInfoCompact}>
               <div className={styles.avatar}>
                 {user.name?.[0]?.toUpperCase()}
               </div>
-
-              <div>
-                <h3 className={styles.userName}>
-                  {user.name}
-                </h3>
-
-                <p className={styles.userRole}>
+              <div className={styles.userTextCompact}>
+                <span className={styles.userNameCompact}>{user.name}</span>
+                <span className={styles.userRoleCompact}>
                   {user.role === "ADMIN" ? "Administrator" :
                    user.role === "FREE_USER" ? "Regular User" :
                    user.role === "PAID_MEMBER" ? "Premium Member" :
                    user.role.charAt(0) + user.role.slice(1).toLowerCase().replace("_", " ")}
-                </p>
+                </span>
               </div>
             </Link>
 
-            <form
-              action={async () => {
-                "use server";
-
-                await signOut({
-                  redirectTo: "/",
-                });
-              }}
-            >
-              <button
-                type="submit"
-                className={styles.logoutBtn}
+            <div className={styles.footerActionsCompact}>
+              <ThemeToggle />
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut({
+                    redirectTo: "/",
+                  });
+                }}
               >
-                <LogOut size={16} />
-
-                <span>Sign Out</span>
-              </button>
-            </form>
+                <button type="submit" className={styles.logoutBtnCompact} aria-label="Sign Out">
+                  <LogOut size={16} />
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </aside>

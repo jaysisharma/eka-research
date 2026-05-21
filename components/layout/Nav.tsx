@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { ChevronDown, Menu, User } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
 import NavDropdown from "./NavDropdown";
@@ -92,10 +92,6 @@ export default function Nav() {
           <ThemeToggle />
           {status === "authenticated" ? (
             <div className={styles.authActions}>
-              <Link href="/dashboard/profile" className={styles.profileLink}>
-                <User size={16} />
-                <span>Profile</span>
-              </Link>
               <Link href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard"} className={styles.cta}>
                 Dashboard
               </Link>

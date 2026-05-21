@@ -1,10 +1,17 @@
 export const dynamic = "force-dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, MapPin, ArrowRight, Twitter, Github, ExternalLink } from "lucide-react";
-import PageHero from "@/components/ui/PageHero";
+import {
+  Mail,
+  MapPin,
+  ArrowRight,
+  Github,
+  Clock,
+  Globe,
+} from "lucide-react";
 import { buildMetadata } from "@/lib/seo";
 import { SITE } from "@/lib/constants";
+import ContactForm from "./ContactForm";
 import styles from "./page.module.css";
 
 export const metadata = buildMetadata({
@@ -14,224 +21,164 @@ export const metadata = buildMetadata({
   path: "/contact",
 });
 
-const CONTACT_CHANNELS = [
+const MISSION_STATS = [
+  { icon: Clock, label: "Response time", value: "≤ 2 business days" },
+  { icon: Globe, label: "Timezone", value: "NPT (UTC +5:45)" },
+  { icon: MapPin, label: "Bases", value: "Nepal · Germany · Thailand" },
+];
+
+const CHANNELS = [
   {
     icon: Mail,
-    title: "Email us",
-    description: "For partnerships, collaboration, membership questions, or anything else.",
+    label: "Email",
     value: SITE.email,
     href: `mailto:${SITE.email}`,
-    cta: "Send an email",
+    meta: "Primary contact",
   },
   {
     icon: MapPin,
-    title: "Find us",
-    description: `Headquartered in ${SITE.hq}. International Presence: ${SITE.presence}`,
-    value: `${SITE.hq} | ${SITE.presence}`,
+    label: "Location",
+    value: `${SITE.hq} · ${SITE.presence}`,
     href: "https://maps.google.com/?q=Kathmandu,Nepal",
-    cta: "Open in Maps",
+    meta: "Open in Maps",
   },
-];
-
-const TOPICS = [
-  { label: "Research collaboration", value: "research" },
-  { label: "Media & press enquiry", value: "media" },
-  { label: "School / institution partnership", value: "school" },
-  { label: "Membership question", value: "membership" },
-  { label: "Event sponsorship", value: "sponsorship" },
-  { label: "Other", value: "other" },
-];
-
-const SOCIALS = [
-  { label: "Twitter / X", href: "https://twitter.com/ekaresearch", Icon: Twitter },
-  { label: "GitHub", href: "https://github.com/ekaresearch", Icon: Github },
+  {
+    icon: Github,
+    label: "Follow",
+    value: "@ekaresearch",
+    href: "https://github.com/ekaresearch",
+    meta: "GitHub",
+  },
 ];
 
 export default function ContactPage() {
   return (
     <main>
-
       {/* ── 1. Hero ── */}
-      <PageHero
-        label="Contact"
-        title="Let&apos;s work "
-        accentWord="together"
-        description="Whether you're a researcher, teacher, student, journalist, or simply curious — we'd love to hear from you. Eka Research is an open organisation."
-        align="left"
-        variant="dark"
-      />
-
-      {/* ── 2. Two-column: channels + form ── */}
-      <section className={styles.mainSection}>
-        <div className={styles.mainInner}>
-
-          {/* Left — contact info */}
-          <div className={styles.infoCol}>
-            <div className={styles.infoHeader}>
-              <span className={styles.label}>
-                <span className={styles.labelLine} />
-                Get in touch
-              </span>
-              <h2 className={styles.infoHeading}>We read every message</h2>
-              <p className={styles.infoBody}>
-                Our team responds within 2 business days. For urgent research
-                matters or media deadlines, flag it in the subject line and we&apos;ll
-                prioritise.
-              </p>
-            </div>
-
-            <div className={styles.channels}>
-              {CONTACT_CHANNELS.map(({ icon: Icon, title, description, value, href, cta }) => (
-                <a key={title} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className={styles.channel}>
-                  <div className={styles.channelIconWrap}>
-                    <Icon size={20} strokeWidth={1.75} />
+      <section className={styles.hero}>
+        <div className={styles.glowA} aria-hidden="true" />
+        <div className={styles.glowB} aria-hidden="true" />
+        <div className={styles.heroInner}>
+          <div className={styles.heroLeft}>
+            <span className={styles.eyebrow}>
+              <span className={styles.eyebrowLine} />
+              Contact
+            </span>
+            <h1 className={styles.heroTitle}>
+              Let&apos;s work
+              <br />
+              <span className={styles.heroAccent}>together</span>
+            </h1>
+            <p className={styles.heroDesc}>
+              Whether you&apos;re a researcher, teacher, student, journalist,
+              or simply curious — we&apos;d love to hear from you. Eka Research
+              is an open organisation.
+            </p>
+          </div>
+          <div className={styles.heroRight}>
+            <div className={styles.statsPanel}>
+              <div className={styles.statsPanelHead}>
+                <span className={styles.statsPanelLabel}>Mission status</span>
+                <span className={styles.activeDot} aria-hidden="true" />
+              </div>
+              {MISSION_STATS.map(({ icon: Icon, label, value }) => (
+                <div key={label} className={styles.stat}>
+                  <div className={styles.statIcon}>
+                    <Icon size={14} strokeWidth={1.75} />
                   </div>
-                  <div className={styles.channelText}>
-                    <span className={styles.channelTitle}>{title}</span>
-                    <span className={styles.channelDesc}>{description}</span>
-                    <span className={styles.channelValue}>{value}</span>
-                    <span className={styles.channelCta}>
-                      {cta} <ArrowRight size={12} />
-                    </span>
+                  <div className={styles.statText}>
+                    <span className={styles.statLabel}>{label}</span>
+                    <span className={styles.statValue}>{value}</span>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
-
-            {/* Socials */}
-            <div className={styles.socialsBlock}>
-              <span className={styles.socialsLabel}>Follow our work</span>
-              <div className={styles.socialLinks}>
-                {SOCIALS.map(({ label, href, Icon }) => (
-                  <a key={label} href={href} target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-                    <Icon size={16} strokeWidth={1.75} />
-                    {label}
-                    <ExternalLink size={11} className={styles.socialExtIcon} />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Location image card */}
-            <div className={styles.locationCard}>
-              <div className={styles.locationImgWrap}>
-                <Image
-                  src="https://images.unsplash.com/photo-1562679741-b2e4d3f4cbbc?auto=format&fit=crop&w=900&q=80"
-                  alt="Himalayan backdrop — Eka Research home base"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 400px"
-                  className={styles.locationImg}
-                />
-                <div className={styles.locationImgOverlay} />
-                <div className={styles.locationBadge}>
-                  <MapPin size={13} />
-                  <span>
-                    Headquartered in {SITE.hq}<br />
-                    International Presence: {SITE.presence}
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
-
-          {/* Right — contact form */}
-          <div className={styles.formCol}>
-            <div className={styles.formCard}>
-              <h3 className={styles.formHeading}>Send us a message</h3>
-              <p className={styles.formSub}>All fields marked * are required.</p>
-
-              <form className={styles.form} action="mailto:hello@ekaresearch.org" method="post" encType="text/plain">
-
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="name" className={styles.formLabel}>Full name *</label>
-                    <input id="name" name="name" type="text" required className={styles.formInput} placeholder="Your name" />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="email" className={styles.formLabel}>Email address *</label>
-                    <input id="email" name="email" type="email" required className={styles.formInput} placeholder="you@example.com" />
-                  </div>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="topic" className={styles.formLabel}>Topic *</label>
-                  <select id="topic" name="topic" required className={styles.formSelect}>
-                    <option value="">Select a topic…</option>
-                    {TOPICS.map((t) => (
-                      <option key={t.value} value={t.value}>{t.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="org" className={styles.formLabel}>Organisation / institution</label>
-                  <input id="org" name="org" type="text" className={styles.formInput} placeholder="University, school, company…" />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="message" className={styles.formLabel}>Message *</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={6}
-                    className={styles.formTextarea}
-                    placeholder="Tell us what you're working on, what you need, or what you'd like to discuss…"
-                  />
-                </div>
-
-                <button type="submit" className={styles.submitBtn}>
-                  Send message <ArrowRight size={15} />
-                </button>
-
-                <p className={styles.formNote}>
-                  We typically reply within 2 business days. Your message is sent directly to our team — no third-party forms.
-                </p>
-              </form>
-            </div>
-          </div>
-
         </div>
       </section>
 
-      {/* ── 3. Partner teaser ── */}
-      <section className={styles.partnerSection}>
-        <div className={styles.partnerInner}>
-          <div className={styles.partnerImgWrap}>
-            <Image
-              src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80"
-              alt="Stars over the Himalayas — Eka Research field site"
-              fill
-              sizes="100vw"
-              className={styles.partnerImg}
-            />
-            <div className={styles.partnerImgOverlay} />
-          </div>
-          <div className={styles.partnerContent}>
-            <span className={styles.label} style={{ color: "rgba(255,255,255,0.7)" }}>
-              <span className={styles.labelLineWhite} />
-              Partnerships
+      {/* ── 2. Channels bar ── */}
+      <div className={styles.channelsBar}>
+        <div className={styles.channelsInner}>
+          {CHANNELS.map(({ icon: Icon, label, value, href, meta }) => (
+            <a
+              key={label}
+              href={href}
+              target={href.startsWith("http") ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              className={styles.channel}
+            >
+              <div className={styles.channelTop}>
+                <div className={styles.channelIcon}>
+                  <Icon size={16} strokeWidth={1.75} />
+                </div>
+                <span className={styles.channelLabel}>{label}</span>
+              </div>
+              <span className={styles.channelValue}>{value}</span>
+              <span className={styles.channelMeta}>
+                {meta}
+                <ArrowRight size={11} className={styles.channelArrow} />
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 3. Form ── */}
+      <section className={styles.formSection}>
+        <div className={styles.formInner}>
+          <div className={styles.formHead}>
+            <span className={styles.eyebrow}>
+              <span className={styles.eyebrowLine} />
+              Get in touch
             </span>
-            <h2 className={styles.partnerHeading}>
-              Open science starts with{" "}
-              <span className={styles.partnerAccent}>open partnerships</span>
-            </h2>
-            <p className={styles.partnerBody}>
-              We collaborate with universities, NGOs, government agencies, and private institutions.
-              If you share our commitment to accessible science, we want to talk.
+            <h2 className={styles.formTitle}>Send us a message</h2>
+            <p className={styles.formSubtitle}>
+              We read every message. Flag urgent matters in the subject line and
+              we&apos;ll prioritise.
             </p>
-            <div className={styles.partnerActions}>
-              <Link href={`mailto:${SITE.email}`} className={styles.partnerBtn}>
-                Start a conversation <ArrowRight size={14} />
-              </Link>
-              <Link href="/about#partners" className={styles.partnerLink}>
-                Our current partners
-              </Link>
-            </div>
           </div>
+
+          <ContactForm />
         </div>
       </section>
 
+      {/* ── 4. Partnerships CTA ── */}
+      <section className={styles.cta}>
+        <div className={styles.ctaImgWrap} aria-hidden="true">
+          <Image
+            src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80"
+            alt="Stars over the Himalayas — Eka Research field site"
+            fill
+            sizes="100vw"
+            className={styles.ctaImg}
+          />
+          <div className={styles.ctaOverlay} />
+        </div>
+        <div className={styles.ctaContent}>
+          <span className={styles.ctaEyebrow}>
+            <span className={styles.ctaLine} />
+            Partnerships
+          </span>
+          <h2 className={styles.ctaHeading}>
+            Open science starts with{" "}
+            <span className={styles.ctaAccent}>open partnerships</span>
+          </h2>
+          <p className={styles.ctaBody}>
+            We collaborate with universities, NGOs, government agencies, and
+            private institutions. If you share our commitment to accessible
+            science, we want to talk.
+          </p>
+          <div className={styles.ctaActions}>
+            <Link href={`mailto:${SITE.email}`} className={styles.ctaBtn}>
+              Start a conversation <ArrowRight size={14} />
+            </Link>
+            <Link href="/about#partners" className={styles.ctaSecondary}>
+              See our partners
+            </Link>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

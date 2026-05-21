@@ -334,6 +334,96 @@ async function main() {
   } else {
     console.log(`  Events already has ${eventCount} records — skipping.`);
   }
+
+  // ── Seed Vacancies ──────────────────────────────────────────────────
+  const vacancyCount = await db.vacancy.count();
+  if (vacancyCount === 0) {
+    await db.vacancy.createMany({
+      data: [
+        {
+          title: "Space Science Research Intern",
+          type: "INTERNSHIP",
+          department: "Astronomy & Astrophysics",
+          description: "We are seeking a highly motivated undergraduate or graduate student to join our Astronomy division. You will work on analyzing incoming telescope observation logs and planetary imagery. Requirements: Basic knowledge of Python and astrophysical concepts. Duration: 3 months (Kathmandu based / hybrid).",
+          deadline: new Date("2026-06-30T23:59:59Z"),
+          status: "OPEN",
+        },
+        {
+          title: "Aerospace Engineer (Satellite R&D)",
+          type: "FULL_TIME",
+          department: "Engineering & Instrumentation",
+          description: "Join Eka's engineering division to lead the design and assembly of ground-based instrument payloads and high-altitude balloon subsystems. Requirements: Bachelor's degree in Aerospace, Mechanical, or Electronics Engineering; experience with CAD tools and embedded systems.",
+          deadline: new Date("2026-07-15T23:59:59Z"),
+          status: "OPEN",
+        },
+        {
+          title: "Atmospheric Science Data Analyst",
+          type: "PART_TIME",
+          department: "Atmospheric Physics",
+          description: "Review and calibrate air quality and meteorological datasets from our mountain sensor grid. Experience with Jupyter notebooks and statistical modeling is required. Part-time (20 hours/week).",
+          deadline: null,
+          status: "OPEN",
+        },
+        {
+          title: "Science Communication & Outreach Officer",
+          type: "VOLUNTEER",
+          department: "Public Programs",
+          description: "Help design science program newsletters, engage with our community on social media, and coordinate school telescope stargazing visits. Perfect for high school seniors or college students wanting to practice science writing.",
+          deadline: new Date("2026-05-31T23:59:59Z"),
+          status: "DRAFT",
+        }
+      ]
+    });
+    console.log("✓ Seeded 4 vacancies");
+  } else {
+    console.log(`  Vacancies already has ${vacancyCount} records — skipping.`);
+  }
+
+  // ── Seed MentoringProgram & Mentors ──────────────────────────────────
+  const mentoringProgramCount = await db.mentoringProgram.count();
+  if (mentoringProgramCount === 0) {
+    await db.mentoringProgram.create({
+      data: {
+        description: "Connect 1-on-1 with experienced space science researchers, academics, and outreach specialists. You will work together to navigate academic paths, master coding for astrophysics, or design community outreach programs.",
+        duration: "6 months",
+        structure: "Minimum monthly meeting. Flexible remote-friendly coordination. Milestone checkpoints in months 2, 4, and 6.",
+        nextCohort: new Date("2026-09-01T00:00:00Z"),
+        isOpen: true,
+      }
+    });
+
+    await db.mentor.createMany({
+      data: [
+        {
+          name: "Dr. Abhas Sharma",
+          expertise: "Observational Astronomy",
+          bio: "Astrophysicist specializing in variable stars and optical photometry systems. Abhas returned to Nepal after research stints in the UK and Australia to lead Eka's telescope network.",
+          imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+          linkedIn: "https://linkedin.com/in/abhas-sharma-dummy",
+          active: true,
+        },
+        {
+          name: "Dr. Prabha Thapa",
+          expertise: "Atmospheric Physics",
+          bio: "Senior scientist focusing on stratosphere-troposphere exchange dynamics and aerosol variations across the Himalayan ridge. Lead researcher of the StratoNepal balloon missions.",
+          imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80",
+          linkedIn: "https://linkedin.com/in/prabha-thapa-dummy",
+          active: true,
+        },
+        {
+          name: "Rajan Adhikari, M.Sc.",
+          expertise: "Instrumentation & Embedded Systems",
+          bio: "Electrical engineer designing all-sky meteor camera networks and custom data logging sensors. Rajan coaches students in hardware prototyping and microcontroller firmware.",
+          imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
+          linkedIn: "https://linkedin.com/in/rajan-adhikari-dummy",
+          active: true,
+        }
+      ]
+    });
+    console.log("✓ Seeded mentoring program and 3 mentors");
+  } else {
+    console.log(`  MentoringProgram already has ${mentoringProgramCount} records — skipping.`);
+  }
 }
 
 main()

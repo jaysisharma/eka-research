@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { LogOut } from "lucide-react";
 import styles from "@/app/dashboard/layout.module.css";
 import { SidebarNav } from "@/components/dashboard/SidebarNav";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 
 export default async function AdminLayout({
   children,
@@ -26,38 +27,34 @@ export default async function AdminLayout({
   return (
     <div className={styles.container}>
       {/* ───────────────────── */}
-      {/* SIDEBAR */}
+      {/* SIDEBAR — always dark */}
       {/* ───────────────────── */}
       <aside className={styles.sidebar}>
         {/* LOGO */}
-        <div className={styles.sidebarTop}>
+        <div className={styles.sidebarBrand}>
           <Link href="/" className={styles.logo}>
-            EKA<span>.</span>
+            EKA<span className={styles.logoDot}>.</span>
           </Link>
         </div>
 
-        {/* NAVIGATION */}
-        <SidebarNav role={user.role as string} />
+        {/* NAVIGATION — adminMode collapses the redundant "Admin Console" entry
+             and points "Dashboard" to /admin/dashboard */}
+        <SidebarNav role={user.role as string} adminMode />
 
-        {/* FOOTER */}
-        <div className={styles.sidebarFooter}>
-          <div className={styles.userCard}>
-            <Link href="/dashboard/profile" className={styles.userInfo}>
-              <div className={styles.avatar}>
-                {user.name?.[0]?.toUpperCase()}
-              </div>
+        {/* COMPACT FOOTER */}
+        <div className={styles.sidebarFooterCompact}>
+          <Link href="/dashboard/profile" className={styles.userInfoCompact}>
+            <div className={styles.avatar}>
+              {user.name?.[0]?.toUpperCase()}
+            </div>
+            <div className={styles.userTextCompact}>
+              <span className={styles.userNameCompact}>{user.name}</span>
+              <span className={styles.userRoleCompact}>Administrator</span>
+            </div>
+          </Link>
 
-              <div>
-                <h3 className={styles.userName}>
-                  {user.name}
-                </h3>
-
-                <p className={styles.userRole}>
-                  Administrator
-                </p>
-              </div>
-            </Link>
-
+          <div className={styles.footerActionsCompact}>
+            <ThemeToggle />
             <form
               action={async () => {
                 "use server";
@@ -66,9 +63,8 @@ export default async function AdminLayout({
                 });
               }}
             >
-              <button type="submit" className={styles.logoutBtn}>
+              <button type="submit" className={styles.logoutBtnCompact} aria-label="Sign Out">
                 <LogOut size={16} />
-                <span>Sign Out</span>
               </button>
             </form>
           </div>
@@ -76,7 +72,7 @@ export default async function AdminLayout({
       </aside>
 
       {/* ───────────────────── */}
-      {/* MAIN CONTENT */}
+      {/* MAIN CONTENT         */}
       {/* ───────────────────── */}
       <div className={styles.viewport}>
         <main className={styles.content}>

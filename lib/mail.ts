@@ -64,6 +64,46 @@ export async function sendPasswordResetEmail(to: string, name: string, resetUrl:
   await send(to, "Reset your Eka Research password", html);
 }
 
+export async function sendContactNotification(msg: {
+  name: string;
+  email: string;
+  topic: string;
+  organisation?: string | null;
+  message: string;
+}) {
+  const topicLabel = msg.topic
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+
+  const html = wrap(`
+    ${header("New contact message")}
+    <div style="padding:32px 40px;">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#b0b8d4;">
+        <tr>
+          <td style="padding:8px 0;color:#5a6480;width:110px;vertical-align:top;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.08em;">From</td>
+          <td style="padding:8px 0;color:#e8eaf6;">${msg.name} &lt;<a href="mailto:${msg.email}" style="color:#FEC73E;text-decoration:none;">${msg.email}</a>&gt;</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;color:#5a6480;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.08em;">Topic</td>
+          <td style="padding:8px 0;color:#e8eaf6;">${topicLabel}</td>
+        </tr>
+        ${msg.organisation ? `<tr>
+          <td style="padding:8px 0;color:#5a6480;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.08em;">Organisation</td>
+          <td style="padding:8px 0;color:#e8eaf6;">${msg.organisation}</td>
+        </tr>` : ""}
+      </table>
+      <div style="margin-top:24px;padding:20px 24px;background:#0d1a3a;border:1px solid #1e2e5c;border-radius:10px;">
+        <p style="margin:0;font-size:14px;color:#b0b8d4;line-height:1.7;white-space:pre-wrap;">${msg.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+      </div>
+      <p style="margin:24px 0 0;font-size:12px;color:#4a5a7a;">
+        Reply directly to this email to respond to ${msg.name}.
+      </p>
+    </div>
+  `);
+
+  await send("info@ekaresearch.org", `[Contact] ${topicLabel} — ${msg.name}`, html);
+}
+
 const ROLE_LABELS: Record<string, string> = {
   FREE_USER: "Free Member",
   TEACHER: "Teacher",

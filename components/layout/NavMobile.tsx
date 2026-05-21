@@ -111,9 +111,6 @@ export default function NavMobile({ open, onClose }: NavMobileProps) {
         </div>
         {status === "authenticated" ? (
           <div className={styles.mobileAuthActions}>
-            <Link href="/dashboard/profile" onClick={onClose} className={styles.mobileProfileLink}>
-              Profile
-            </Link>
             <Link href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard"} onClick={onClose} className={styles.mobileCta}>
               Dashboard
             </Link>
