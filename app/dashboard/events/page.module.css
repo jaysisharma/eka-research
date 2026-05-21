@@ -1,0 +1,221 @@
+/* ── MY EVENTS PAGE ─────────────────────────────────────── */
+.page {
+  padding: var(--space-8) var(--space-10);
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.heading {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.sub {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.browseBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+.browseBtn:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-strong);
+}
+
+/* ── SECTION HEADING ── */
+.sectionHeading {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+/* ── LIST ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  transition: border-color var(--transition-fast);
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+}
+
+.dimmed {
+  opacity: 0.55;
+}
+
+.cardLeft {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cardRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* ── TYPE BADGES ── */
+.typeBadge {
+  display: inline-flex;
+  width: fit-content;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+}
+
+.type_workshop    { color: #7C3AED; background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.22); }
+.type_seminar     { color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 10%, transparent); border-color: color-mix(in srgb, var(--color-primary) 22%, transparent); }
+.type_conference  { color: var(--color-brand-gold); background: color-mix(in srgb, var(--color-brand-gold) 10%, transparent); border-color: color-mix(in srgb, var(--color-brand-gold) 22%, transparent); }
+.type_webinar     { color: var(--color-success); background: color-mix(in srgb, var(--color-success) 10%, transparent); border-color: color-mix(in srgb, var(--color-success) 22%, transparent); }
+.type_observation { color: #EC4899; background: rgba(236, 72, 153, 0.1); border-color: rgba(236, 72, 153, 0.22); }
+.type_default     { color: var(--text-muted); background: var(--bg-subtle); border-color: var(--border-default); }
+
+/* ── EVENT CONTENT ── */
+.eventTitle {
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.eventMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.metaDivider {
+  color: var(--border-strong);
+}
+
+.eventDesc {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ── REGISTERED BADGE ── */
+.registeredBadge {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-success) 25%, transparent);
+  white-space: nowrap;
+}
+
+.seatsLabel {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── EMPTY STATE ── */
+.emptyFull {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-16) var(--space-8);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.emptyTitle {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.emptySub {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 360px;
+  line-height: 1.6;
+}
+
+.emptyBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-brand-gold);
+  color: #000;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+.emptyBtn:hover { opacity: 0.88; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .page { padding: var(--space-6); }
+  .card { flex-direction: column; }
+  .cardRight { align-items: flex-start; }
+}

@@ -1,342 +1,332 @@
-"use client";
-
+import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { redirect } from "next/navigation";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-
 import {
-  LayoutDashboard,
-  User,
-  Telescope,
-  CalendarDays,
-  Database,
-  FolderKanban,
-  ChevronRight,
-  Plus,
-  LogOut,
+  Calendar, ShoppingBag, BookOpen,
+  ArrowRight, Award, Star, Telescope, FileText,
+  CheckCircle2, Clock, Send,
 } from "lucide-react";
-
+import { ROLE_LABELS } from "@/lib/access";
+import type { UserRole } from "@/lib/access";
 import styles from "./page.module.css";
 
-const METRICS = [
-  {
-    label: "Pending Reviews",
-    value: "08",
-  },
-  {
-    label: "Active Sessions",
-    value: "12",
-  },
-  {
-    label: "Datasets",
-    value: "482",
-  },
-  {
-    label: "Array Uptime",
-    value: "99.8%",
-  },
-];
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 
-const ACTIVITIES = [
-  {
-    title: "Lyrid Meteor Observation Completed",
-    type: "Research Session",
-    time: "2h ago",
-  },
-  {
-    title: "Atmospheric Dataset Uploaded",
-    type: "Dataset",
-    time: "5h ago",
-  },
-  {
-    title: "Calibration Suite Execution Finished",
-    type: "System Run",
-    time: "8h ago",
-  },
-  {
-    title: "Observation Validation Completed",
-    type: "Verification",
-    time: "Yesterday",
-  },
-];
+const SUBMISSION_STATUS_LABEL: Record<string, string> = {
+  pending:  "Under Review",
+  approved: "Published",
+  rejected: "Rejected",
+};
 
-const ACTIONS = [
-  "New Observation",
-  "Upload Dataset",
-  "Schedule Session",
-  "Invite Member",
-];
+const VACANCY_TYPE_LABEL: Record<string, string> = {
+  FULL_TIME:  "Full-time",
+  PART_TIME:  "Part-time",
+  INTERNSHIP: "Internship",
+  VOLUNTEER:  "Volunteer",
+};
 
-export default function DashboardPage() {
-  const { data: session } = useSession();
-  const userName = session?.user?.name ?? "Researcher";
+export default async function DashboardPage() {
+  const session = await auth();
+  if (!session) redirect("/auth/login");
+
+  const { id: userId, email, name, role } = session.user as {
+    id: string; email: string; name: string; role: string;
+  };
+
+  /* ── fetch data ─────────────────────────────────────────── */
+  const [registeredEvents, recentOrders, myPapers] = await Promise.all([
+    db.eventRegistration.findMany({
+      where: { userId },
+      include: { event: true },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+    }),
+    db.order.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+    }),
+    (role === "RESEARCHER" || role === "PAID_MEMBER" || role === "ADMIN")
+      ? db.researchArticle.findMany({
+          where: { submittedBy: userId },
+          orderBy: { createdAt: "desc" },
+          take: 3,
+          select: {
+            id: true, title: true, type: true,
+            publicationStatus: true, submissionStatus: true,
+            createdAt: true,
+          },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  /* researcher stats */
+  let paperStats = { total: 0, pending: 0, published: 0 };
+  if (role === "RESEARCHER" || role === "ADMIN") {
+    const [total, pending, published] = await Promise.all([
+      db.researchArticle.count({ where: { submittedBy: userId } }),
+      db.researchArticle.count({ where: { submittedBy: userId, submissionStatus: "pending" } }),
+      db.researchArticle.count({ where: { submittedBy: userId, submissionStatus: "approved" } }),
+    ]);
+    paperStats = { total, pending, published };
+  }
+
+  const roleLabel = ROLE_LABELS[role as UserRole] ?? role;
+  const firstName = name?.split(" ")[0] ?? "there";
 
   return (
-    <div className={styles.layout}>
+    <div className={styles.page}>
 
-
-      {/* ───────────────────── */}
-      {/* MAIN */}
-      {/* ───────────────────── */}
-
-      <main className={styles.main}>
-
-        {/* PAGE HEADER */}
-
-        <header className={styles.pageHeader}>
-
-          <div>
-            <h1 className={styles.pageTitle}>
-              Dashboard
-            </h1>
-
-            <p className={styles.pageSubtitle}>
-              Welcome back, {userName}
-            </p>
-          </div>
-        </header>
-
-        {/* FOCUS CARD */}
-
-        <section className={styles.focusCard}>
-
-          <div className={styles.focusTop}>
-
-            <span className={styles.focusLabel}>
-              TODAY'S PRIORITY
-            </span>
-
-            <span className={styles.focusStatus}>
-              Active
-            </span>
-          </div>
-
-          <h2 className={styles.focusTitle}>
-            Deep Space Atmospheric Observation
-          </h2>
-
-          <p className={styles.focusText}>
-            Continue reviewing incoming telescope
-            observation data and validate pending
-            atmospheric readings.
+      {/* ── PAGE HEADER ───────────────────────────────────── */}
+      <header className={styles.header}>
+        <div>
+          <h1 className={styles.heading}>Welcome back, {firstName}</h1>
+          <p className={styles.sub}>
+            <span className={styles.roleBadge}>{roleLabel}</span>
+            {email}
           </p>
+        </div>
+      </header>
 
-          <div className={styles.focusActions}>
+      {/* ── FREE USER: upgrade banner ─────────────────────── */}
+      {role === "FREE_USER" && (
+        <div className={styles.upgradeBanner}>
+          <div className={styles.upgradeBannerLeft}>
+            <Award size={20} className={styles.goldIcon} />
+            <div>
+              <p className={styles.upgradeBannerTitle}>Unlock Premium Access</p>
+              <p className={styles.upgradeBannerDesc}>
+                Get access to research papers, member benefits, and exclusive
+                Eka events by upgrading your membership.
+              </p>
+            </div>
+          </div>
+          <Link href="/upgrade" className={styles.upgradeBtn}>
+            Upgrade Now <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
 
-            <button className={styles.primaryBtn}>
-              Continue Session
-            </button>
-
-            <button className={styles.secondaryBtn}>
-              Open Details
-            </button>
+      {/* ── RESEARCHER: stats row ─────────────────────────── */}
+      {role === "RESEARCHER" && (
+        <section className={styles.statsRow}>
+          <div className={styles.statCard}>
+            <span className={styles.statLabel}>Total Papers</span>
+            <strong className={styles.statValue}>{paperStats.total}</strong>
+          </div>
+          <div className={styles.statCard}>
+            <Clock size={16} className={styles.statIcon} />
+            <span className={styles.statLabel}>Under Review</span>
+            <strong className={styles.statValue}>{paperStats.pending}</strong>
+          </div>
+          <div className={styles.statCard}>
+            <CheckCircle2 size={16} className={styles.statIconSuccess} />
+            <span className={styles.statLabel}>Published</span>
+            <strong className={styles.statValue}>{paperStats.published}</strong>
+          </div>
+          <div className={styles.statCard}>
+            <Telescope size={16} className={styles.statIcon} />
+            <span className={styles.statLabel}>Role</span>
+            <strong className={styles.statValue} style={{ fontSize: "var(--text-sm)", letterSpacing: 0 }}>Researcher</strong>
           </div>
         </section>
+      )}
 
-        {/* METRICS */}
-
-        <section className={styles.metricsGrid}>
-          {METRICS.map((item) => (
-            <div
-              key={item.label}
-              className={styles.metricCard}
-            >
-              <span className={styles.metricLabel}>
-                {item.label}
-              </span>
-
-              <strong className={styles.metricValue}>
-                {item.value}
-              </strong>
+      {/* ── PAID_MEMBER: benefits card ────────────────────── */}
+      {role === "PAID_MEMBER" && (
+        <div className={styles.benefitsCard}>
+          <div className={styles.benefitsLeft}>
+            <Star size={18} className={styles.goldIcon} />
+            <div>
+              <p className={styles.benefitsTitle}>Premium Member</p>
+              <p className={styles.benefitsDesc}>
+                You have full access to research papers, exclusive downloads,
+                and priority event registration.
+              </p>
             </div>
-          ))}
-        </section>
+          </div>
+          <Link href="/research" className={styles.benefitsLink}>
+            Browse Papers <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
 
-        {/* CONTENT */}
+      {/* ── CONTENT GRID ─────────────────────────────────── */}
+      <div className={styles.grid}>
 
-        <section className={styles.contentGrid}>
+        {/* ── LEFT COL ── */}
+        <div className={styles.leftCol}>
 
-          {/* LEFT */}
-
-          <div className={styles.leftCol}>
-
-            {/* ACTIVITY */}
-
-            <div className={styles.card}>
-
+          {/* Researcher: recent papers */}
+          {(role === "RESEARCHER" || role === "PAID_MEMBER") && (
+            <section className={styles.card}>
               <div className={styles.cardHeader}>
-
-                <h3 className={styles.cardTitle}>
-                  Recent Activity
-                </h3>
-
-                <Link
-                  href="/activity"
-                  className={styles.cardLink}
-                >
-                  View All
+                <h2 className={styles.cardTitle}>
+                  <BookOpen size={16} /> My Research Papers
+                </h2>
+                <Link href="/dashboard/research" className={styles.cardLink}>
+                  View All <ArrowRight size={13} />
                 </Link>
               </div>
 
-              <div className={styles.activityList}>
-                {ACTIVITIES.map((item) => (
-                  <div
-                    key={item.title}
-                    className={styles.activityItem}
-                  >
-                    <div className={styles.activityLeft}>
-
-                      <div className={styles.activityDot} />
-
-                      <div>
-
-                        <h4 className={styles.activityTitle}>
-                          {item.title}
-                        </h4>
-
-                        <div className={styles.activityMeta}>
-                          <span>{item.type}</span>
-
-                          <span>•</span>
-
-                          <span>{item.time}</span>
-                        </div>
+              {myPapers.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <FileText size={28} strokeWidth={1.25} />
+                  <p>No papers submitted yet.</p>
+                  <Link href="/dashboard/research" className={styles.emptyAction}>
+                    Submit your first paper
+                  </Link>
+                </div>
+              ) : (
+                <ul className={styles.paperList}>
+                  {myPapers.map((p) => (
+                    <li key={p.id} className={styles.paperItem}>
+                      <div className={styles.paperMeta}>
+                        <span className={styles.paperTypeBadge}>{p.type}</span>
+                        <span className={
+                          p.submissionStatus === "approved"
+                            ? styles.statusApproved
+                            : p.submissionStatus === "pending"
+                            ? styles.statusPending
+                            : styles.statusRejected
+                        }>
+                          {SUBMISSION_STATUS_LABEL[p.submissionStatus] ?? p.submissionStatus}
+                        </span>
                       </div>
+                      <p className={styles.paperTitle}>{p.title}</p>
+                      <p className={styles.paperDate}>{formatDate(p.createdAt)}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {role === "RESEARCHER" && (
+                <Link href="/dashboard/research" className={styles.submitAction}>
+                  <Send size={14} /> Submit New Paper
+                </Link>
+              )}
+            </section>
+          )}
+
+          {/* Registered events */}
+          <section className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>
+                <Calendar size={16} /> Upcoming Events
+              </h2>
+              <Link href="/dashboard/events" className={styles.cardLink}>
+                View All <ArrowRight size={13} />
+              </Link>
+            </div>
+
+            {registeredEvents.length === 0 ? (
+              <div className={styles.emptyState}>
+                <Calendar size={28} strokeWidth={1.25} />
+                <p>No registered events yet.</p>
+                <Link href="/events" className={styles.emptyAction}>
+                  Browse events
+                </Link>
+              </div>
+            ) : (
+              <ul className={styles.eventList}>
+                {registeredEvents.map((reg) => (
+                  <li key={reg.id} className={styles.eventItem}>
+                    <div className={styles.eventDot} />
+                    <div className={styles.eventBody}>
+                      <p className={styles.eventName}>{reg.event.title}</p>
+                      <p className={styles.eventMeta}>
+                        <span>{reg.event.date}</span>
+                        <span>·</span>
+                        <span>{reg.event.location}</span>
+                      </p>
                     </div>
-
-                    <ChevronRight
-                      size={16}
-                      className={styles.activityArrow}
-                    />
-                  </div>
+                    <span className={styles.eventTypeBadge}>{reg.event.type}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
+            )}
+          </section>
+        </div>
+
+        {/* ── RIGHT COL ── */}
+        <aside className={styles.rightCol}>
+
+          {/* Recent orders */}
+          <section className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>
+                <ShoppingBag size={16} /> Recent Orders
+              </h2>
+              <Link href="/dashboard/orders" className={styles.cardLink}>
+                View All <ArrowRight size={13} />
+              </Link>
             </div>
 
-            {/* QUICK ACTIONS */}
-
-            <div className={styles.card}>
-
-              <div className={styles.cardHeader}>
-                <h3 className={styles.cardTitle}>
-                  Quick Actions
-                </h3>
+            {recentOrders.length === 0 ? (
+              <div className={styles.emptyState}>
+                <ShoppingBag size={28} strokeWidth={1.25} />
+                <p>No orders placed yet.</p>
+                <Link href="/store" className={styles.emptyAction}>Visit the store</Link>
               </div>
-
-              <div className={styles.actionsGrid}>
-                {ACTIONS.map((item) => (
-                  <button
-                    key={item}
-                    className={styles.actionBtn}
-                  >
-                    <Plus size={16} />
-
-                    <span>{item}</span>
-                  </button>
+            ) : (
+              <ul className={styles.orderList}>
+                {recentOrders.map((order) => (
+                  <li key={order.id} className={styles.orderItem}>
+                    <div>
+                      <p className={styles.orderId}>
+                        #{order.id.slice(-8).toUpperCase()}
+                      </p>
+                      <p className={styles.orderDate}>{formatDate(order.createdAt)}</p>
+                    </div>
+                    <div className={styles.orderRight}>
+                      <span className={`${styles.orderStatus} ${styles[`os_${order.status}`]}`}>
+                        {order.status}
+                      </span>
+                      <span className={styles.orderTotal}>
+                        NPR {order.totalNpr.toLocaleString()}
+                      </span>
+                    </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
+            )}
+          </section>
+
+          {/* Quick links */}
+          <section className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>Quick Links</h2>
             </div>
-          </div>
-
-          {/* RIGHT */}
-
-          <aside className={styles.rightCol}>
-
-            {/* ASSIGNED TASKS */}
-
-            <div className={styles.card}>
-
-              <div className={styles.cardHeader}>
-                <h3 className={styles.cardTitle}>
-                  Assigned Tasks
-                </h3>
-              </div>
-
-              <div className={styles.taskList}>
-
-                <div className={styles.taskItem}>
-
-                  <div>
-                    <h4 className={styles.taskTitle}>
-                      Validate Observation Logs
-                    </h4>
-
-                    <p className={styles.taskMeta}>
-                      Due Today
-                    </p>
-                  </div>
-
-                  <span className={styles.taskBadge}>
-                    High
-                  </span>
-                </div>
-
-                <div className={styles.taskItem}>
-
-                  <div>
-                    <h4 className={styles.taskTitle}>
-                      Review Dataset Upload
-                    </h4>
-
-                    <p className={styles.taskMeta}>
-                      Tomorrow
-                    </p>
-                  </div>
-
-                  <span className={styles.taskBadge}>
-                    Medium
-                  </span>
-                </div>
-
-                <div className={styles.taskItem}>
-
-                  <div>
-                    <h4 className={styles.taskTitle}>
-                      Prepare Session Report
-                    </h4>
-
-                    <p className={styles.taskMeta}>
-                      Friday
-                    </p>
-                  </div>
-
-                  <span className={styles.taskBadge}>
-                    Low
-                  </span>
-                </div>
-              </div>
+            <div className={styles.quickLinks}>
+              <Link href="/events" className={styles.quickLink}>
+                <Calendar size={15} /> Browse Events
+              </Link>
+              <Link href="/research" className={styles.quickLink}>
+                <BookOpen size={15} /> Research Papers
+              </Link>
+              <Link href="/opportunities/vacancy" className={styles.quickLink}>
+                <FileText size={15} /> Job Openings
+              </Link>
+              <Link href="/store" className={styles.quickLink}>
+                <ShoppingBag size={15} /> Store
+              </Link>
+              {role === "FREE_USER" && (
+                <Link href="/upgrade" className={styles.quickLinkGold}>
+                  <Award size={15} /> Upgrade Membership
+                </Link>
+              )}
             </div>
+          </section>
 
-            {/* UPCOMING */}
-
-            <div className={styles.card}>
-
-              <div className={styles.cardHeader}>
-                <h3 className={styles.cardTitle}>
-                  Upcoming
-                </h3>
-              </div>
-
-              <div className={styles.upcomingList}>
-
-                <div className={styles.upcomingItem}>
-                  <span>Research Symposium</span>
-                  <strong>Tomorrow</strong>
-                </div>
-
-                <div className={styles.upcomingItem}>
-                  <span>Dataset Review Meeting</span>
-                  <strong>Friday</strong>
-                </div>
-
-                <div className={styles.upcomingItem}>
-                  <span>Observation Session</span>
-                  <strong>May 24</strong>
-                </div>
-              </div>
-            </div>
-          </aside>
-        </section>
-      </main>
+        </aside>
+      </div>
     </div>
   );
 }
