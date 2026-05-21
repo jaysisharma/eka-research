@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, CalendarDays, Tag, Clock } from "lucide-react";
+
 import PageHero from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
-import { PROJECTS, type ProjectStatus } from "@/lib/constants";
+import { PROJECTS, type Project, type ProjectStatus } from "@/lib/constants";
+import { db } from "@/lib/db";
+import ProjectCatalogExplorer from "@/components/projects/ProjectCatalogExplorer";
 import styles from "./page.module.css";
 
 export const metadata = buildMetadata({
@@ -14,37 +14,65 @@ export const metadata = buildMetadata({
   path: "/projects",
 });
 
-const STATUS_LABEL: Record<ProjectStatus, string> = {
-  ongoing:   "Ongoing",
-  completed: "Completed",
-  upcoming:  "Upcoming",
-};
+interface PageProps {
+  searchParams: Promise<{ status?: string }>;
+}
 
-const STATUS_CLASS: Record<ProjectStatus, string> = {
-  ongoing:   "statusOngoing",
-  completed: "statusCompleted",
-  upcoming:  "statusUpcoming",
-};
+export default async function ProjectsPage({ searchParams }: PageProps) {
+  // Extract initial status tab if any is requested in search params
+  const { status } = await searchParams;
+  const initialStatus = (status as string) || "all";
 
-const ongoing   = PROJECTS.filter((p) => p.status === "ongoing");
-const completed = PROJECTS.filter((p) => p.status === "completed");
-const upcoming  = PROJECTS.filter((p) => p.status === "upcoming");
+  // Query projects from database dynamically
+  let rawDbProjects: any[] = [];
+  try {
+    rawDbProjects = await db.project.findMany({
+      where: { published: true },
+      include: { category: true },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Failed to query projects from database:", error);
+  }
 
-const featured = ongoing[0] ?? PROJECTS[0];
-const restOngoing = ongoing.slice(1);
+  // Parse and map database projects to our standardized Project interface
+  let loadedProjects: Project[] = [];
+  if (rawDbProjects && rawDbProjects.length > 0) {
+    loadedProjects = rawDbProjects.map((dbProj) => {
+      let parsedTags: string[] = [];
+      try {
+        parsedTags = dbProj.tags ? JSON.parse(dbProj.tags) : [];
+        if (!Array.isArray(parsedTags)) {
+          parsedTags = [];
+        }
+      } catch (e) {
+        parsedTags = dbProj.tags
+          ? dbProj.tags.split(",").map((t: string) => t.trim()).filter(Boolean)
+          : [];
+      }
 
-const IMPACT = [
-  { value: "5",     label: "Active instruments" },
-  { value: "3,800+", label: "Meteors recorded" },
-  { value: "28 km",  label: "Max balloon altitude" },
-  { value: "3",     label: "Active projects" },
-];
+      return {
+        id: dbProj.id,
+        title: dbProj.title,
+        description: dbProj.description,
+        status: dbProj.status as ProjectStatus,
+        period: dbProj.period,
+        tags: parsedTags,
+        image: dbProj.imageUrl || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+        href: dbProj.href || `/projects/${dbProj.id}`,
+        featured: dbProj.featured,
+        outcome: dbProj.outcome || undefined,
+        phase: dbProj.phase || undefined,
+        launchTarget: dbProj.launchTarget || undefined,
+      };
+    });
+  } else {
+    // Seamless fallback to our static high-quality PROJECTS constant array
+    loadedProjects = PROJECTS;
+  }
 
-export default function ProjectsPage() {
   return (
-    <main>
-
-      {/* ── 1. Hero ── */}
+    <main className={styles.main}>
       <PageHero
         label="Projects"
         title="Instruments in the field. "
@@ -52,228 +80,18 @@ export default function ProjectsPage() {
         description="From real-time sky surveillance to stratospheric ballooning — every Eka project generates data that matters and knowledge that's shared freely."
         align="left"
         variant="dark"
-        cta={{ label: "See ongoing work", href: "#ongoing" }}
+        cta={{ label: "Explore all work", href: "#explorer" }}
         ctaSecondary={{ label: "View publications", href: "/articles" }}
       />
 
-      {/* ── 2. Impact stats strip ── */}
-      <section className={styles.statsStrip}>
-        <div className={styles.statsInner}>
-          {IMPACT.map(({ value, label }) => (
-            <div key={label} className={styles.statItem}>
-              <span className={styles.statValue}>{value}</span>
-              <span className={styles.statLabel}>{label}</span>
-            </div>
-          ))}
+      <section className={styles.explorerSection} id="explorer">
+        <div className={styles.explorerInner}>
+          <ProjectCatalogExplorer
+            projects={loadedProjects}
+            initialStatus={initialStatus}
+          />
         </div>
       </section>
-
-      {/* ── 3. Featured / ongoing ── */}
-      <section className={styles.section} id="ongoing">
-        <div className={styles.sectionInner}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.label}>
-              <span className={styles.labelLine} />
-              Ongoing
-            </span>
-            <h2 className={styles.sectionHeading}>Active research projects</h2>
-          </div>
-
-          {/* Large featured card */}
-          <div className={styles.featuredCard}>
-            <div className={styles.featuredImgWrap}>
-              <Image
-                src={featured.image}
-                alt={featured.title}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                className={styles.featuredImg}
-              />
-              <div className={styles.featuredImgOverlay} />
-              <div className={`${styles.featuredStatusBadge} ${styles[STATUS_CLASS[featured.status]]}`}>
-                <span className={styles.statusDot} />
-                {STATUS_LABEL[featured.status]}
-              </div>
-            </div>
-
-            <div className={styles.featuredBody}>
-              <div className={styles.featuredMeta}>
-                <span className={styles.featuredPeriod}>
-                  <CalendarDays size={13} />
-                  {featured.period}
-                </span>
-              </div>
-              <h2 className={styles.featuredTitle}>{featured.title}</h2>
-              <p className={styles.featuredDesc}>{featured.description}</p>
-              <div className={styles.featuredTags}>
-                {featured.tags.map((t) => (
-                  <span key={t} className={styles.tag}>
-                    <Tag size={11} />
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <Link href={featured.href} className={styles.featuredLink}>
-                Project details <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-
-          {/* Additional ongoing projects */}
-          {restOngoing.length > 0 && (
-            <div className={styles.projectsGrid}>
-              {restOngoing.map((p) => (
-                <ProjectCard key={p.id} project={p} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ── 4. Upcoming ── */}
-      {upcoming.length > 0 && (
-        <section className={`${styles.section} ${styles.sectionSurface}`} id="upcoming">
-          <div className={styles.sectionInner}>
-            <div className={styles.sectionHeader}>
-              <span className={styles.label}>
-                <span className={styles.labelLine} />
-                Upcoming
-              </span>
-              <h2 className={styles.sectionHeading}>Coming soon</h2>
-              <p className={styles.sectionSub}>
-                Projects in planning and early development — get involved before they launch.
-              </p>
-            </div>
-
-            <div className={styles.upcomingGrid}>
-              {upcoming.map((p) => (
-                <div key={p.id} className={styles.upcomingCard}>
-                  <div className={styles.upcomingImgWrap}>
-                    <Image
-                      src={p.image}
-                      alt={p.title}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      className={styles.upcomingImg}
-                    />
-                    <div className={styles.upcomingImgOverlay} />
-                    <div className={`${styles.upcomingBadge} ${styles.statusUpcoming}`}>
-                      <Clock size={12} />
-                      {p.period}
-                    </div>
-                  </div>
-                  <div className={styles.upcomingBody}>
-                    <h3 className={styles.upcomingTitle}>{p.title}</h3>
-                    <p className={styles.upcomingDesc}>{p.description}</p>
-                    <div className={styles.featuredTags}>
-                      {p.tags.map((t) => (
-                        <span key={t} className={styles.tag}>
-                          <Tag size={11} />
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                    <Link href={p.href} className={styles.cardLink}>
-                      Learn more <ArrowRight size={13} />
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── 5. Completed ── */}
-      {completed.length > 0 && (
-        <section className={styles.section} id="past">
-          <div className={styles.sectionInner}>
-            <div className={styles.sectionHeader}>
-              <span className={styles.label}>
-                <span className={styles.labelLine} />
-                Past Projects
-              </span>
-              <h2 className={styles.sectionHeading}>Completed work</h2>
-              <p className={styles.sectionSub}>
-                Every completed project leaves behind open data, published findings, and lessons that feed our next mission.
-              </p>
-            </div>
-
-            <div className={styles.projectsGrid}>
-              {completed.map((p) => (
-                <ProjectCard key={p.id} project={p} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── 6. CTA ── */}
-      <section className={styles.ctaSection}>
-        <div className={styles.ctaInner}>
-          <div className={styles.ctaGlow} aria-hidden="true" />
-          <h2 className={styles.ctaHeading}>
-            Want to contribute to a{" "}
-            <span className={styles.ctaAccent}>live project?</span>
-          </h2>
-          <p className={styles.ctaSub}>
-            Members get early access to project data, collaboration opportunities, and the chance to contribute to published research.
-          </p>
-          <div className={styles.ctaActions}>
-            <Link href="/member-benefits" className={styles.ctaBtn}>
-              Become a member <ArrowRight size={16} />
-            </Link>
-            <Link href="/contact" className={styles.ctaBtnGhost}>
-              Partner with us
-            </Link>
-          </div>
-        </div>
-      </section>
-
     </main>
-  );
-}
-
-/* ── Shared project card ── */
-function ProjectCard({ project }: { project: (typeof PROJECTS)[number] }) {
-  return (
-    <Link href={project.href} className={styles.projectCard}>
-      <div className={styles.projectImgWrap}>
-        <Image
-          src={project.image}
-          alt={project.title}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={styles.projectImg}
-        />
-        <div className={styles.projectImgOverlay} />
-        <div className={`${styles.projectStatusBadge} ${styles[STATUS_CLASS[project.status]]}`}>
-          <span className={styles.statusDot} />
-          {STATUS_LABEL[project.status]}
-        </div>
-      </div>
-      <div className={styles.projectBody}>
-        <div className={styles.projectMetaRow}>
-          <span className={styles.projectPeriod}>
-            <CalendarDays size={12} />
-            {project.period}
-          </span>
-        </div>
-        <h3 className={styles.projectTitle}>{project.title}</h3>
-        <p className={styles.projectDesc}>{project.description}</p>
-        <div className={styles.projectTags}>
-          {project.tags.map((t) => (
-            <span key={t} className={styles.tag}>
-              <Tag size={10} />
-              {t}
-            </span>
-          ))}
-        </div>
-        <span className={styles.cardLink}>
-          Details <ArrowRight size={13} />
-        </span>
-      </div>
-    </Link>
   );
 }

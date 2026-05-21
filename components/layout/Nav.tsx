@@ -5,10 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { ChevronDown, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
-import NavDropdown from "./NavDropdown";
 import NavMobile from "./NavMobile";
 import styles from "./Nav.module.css";
 
@@ -22,7 +21,6 @@ export default function Nav() {
   const { data: session, status } = useSession();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -50,39 +48,13 @@ export default function Nav() {
         {/* Desktop nav links */}
         <nav className={styles.links} aria-label="Main navigation">
           {NAV_LINKS.map((link) => (
-            <div
-              key={link.label}
-              className={styles.linkGroup}
-              onMouseEnter={() => link.children && setActiveDropdown(link.label)}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              {link.children ? (
-                <button
-                  className={`${styles.link} ${styles.linkBtn} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
-                  aria-expanded={activeDropdown === link.label}
-                  aria-haspopup="true"
-                >
-                  {link.label}
-                  <ChevronDown
-                     size={13}
-                     className={`${styles.chevron} ${activeDropdown === link.label ? styles.chevronOpen : ""}`}
-                  />
-                </button>
-              ) : (
-                <Link
-                  href={link.href}
-                  className={`${styles.link} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
-                >
-                  {link.label}
-                </Link>
-              )}
-
-              {link.children && activeDropdown === link.label && (
-                <NavDropdown
-                  items={link.children}
-                  wide={link.label === "Services"}
-                />
-              )}
+            <div key={link.label} className={styles.linkGroup}>
+              <Link
+                href={link.href}
+                className={`${styles.link} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
+              >
+                {link.label}
+              </Link>
             </div>
           ))}
         </nav>

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, ChevronRight, RefreshCw, Plus, X, AlertCircle, Wand2 } from "lucide-react";
 import styles from "./form.module.css";
+import ImageUpload from "@/components/ui/ImageUpload";
+
 
 /* ── Types ───────────────────────────────────────────────────────────── */
 
@@ -289,9 +291,12 @@ export default function ProductForm({ mode, form, saving, error, onChange, onSav
               </header>
               <div className={styles.fields}>
                 <div className={styles.field}>
-                  <label className={styles.label}>Image URL</label>
-                  <input className={styles.input} value={form.imageUrl}
-                    onChange={str("imageUrl")} placeholder="https://… or /images/…" />
+                  <label className={styles.label}>Product Image</label>
+                  <ImageUpload
+                    value={form.imageUrl}
+                    onChange={(url) => onChange("imageUrl", url)}
+                    label="Upload Product Image"
+                  />
                   <span className={styles.hint}>
                     Leave blank to use the gradient background instead
                   </span>

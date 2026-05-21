@@ -22,8 +22,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No file provided." }, { status: 400 });
   }
 
-  if (file.type !== "application/pdf") {
-    return NextResponse.json({ error: "Only PDF files are accepted." }, { status: 400 });
+  const isPdf = file.type === "application/pdf";
+  const isImage = file.type.startsWith("image/");
+
+  if (!isPdf && !isImage) {
+    return NextResponse.json({ error: "Only image and PDF files are accepted." }, { status: 400 });
   }
 
   if (file.size > MAX_MB * 1024 * 1024) {
@@ -32,10 +35,12 @@ export async function POST(req: Request) {
 
   const safeName = file.name.replace(/[^a-z0-9._-]/gi, "_").toLowerCase();
   const filename = `${Date.now()}-${safeName}`;
-  const uploadDir = path.join(process.cwd(), "public", "papers");
+  const subDir = isPdf ? "papers" : "uploads";
+  const uploadDir = path.join(process.cwd(), "public", subDir);
 
   await mkdir(uploadDir, { recursive: true });
   await writeFile(path.join(uploadDir, filename), Buffer.from(await file.arrayBuffer()));
 
-  return NextResponse.json({ url: `/papers/${filename}` });
+  return NextResponse.json({ url: `/${subDir}/${filename}` });
 }
+

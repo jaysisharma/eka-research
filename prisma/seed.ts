@@ -424,6 +424,68 @@ async function main() {
   } else {
     console.log(`  MentoringProgram already has ${mentoringProgramCount} records — skipping.`);
   }
+
+  // ── Seed TeamMembers ────────────────────────────────────────────────
+  const teamMemberCount = await db.teamMember.count();
+  if (teamMemberCount === 0) {
+    const teamMembers = [
+      {
+        name: "Dr. Abhas Sharma",
+        role: "Founder & Director",
+        bio: "Astrophysicist. Founded Eka Research in 2020 with the goal of building Nepal's first independent space science institution. Previously researcher at Tribhuvan University.",
+        imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+        featured: true,
+        order: 1,
+      },
+      {
+        name: "Dr. Prabha Thapa",
+        role: "Head of Research",
+        bio: "Atmospheric physicist focused on high-altitude balloon payloads and cosmic ray detection above the Himalayas.",
+        imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+        featured: false,
+        order: 2,
+      },
+      {
+        name: "Anisha Bajracharya",
+        role: "Outreach Coordinator",
+        bio: "Science communicator and educator designing all public programmes and community partnerships.",
+        imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+        featured: false,
+        order: 3,
+      },
+      {
+        name: "Rajan Adhikari, M.Sc.",
+        role: "Instrumentation Lead",
+        bio: "Electronics engineer responsible for the All Sky Camera network and all on-site instrumentation across Nepal.",
+        imageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80",
+        featured: false,
+        order: 4,
+      },
+      {
+        name: "Jaysi Sharma",
+        role: "Data Scientist",
+        bio: "Processes and archives meteor, space weather, and atmospheric datasets. Builds the tools members use to access research data.",
+        imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80",
+        featured: false,
+        order: 5,
+      },
+      {
+        name: "Sunita Gurung",
+        role: "Education Research Lead",
+        bio: "Develops evidence-based science communication methods tailored to the Nepali curriculum and classroom context.",
+        imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
+        featured: false,
+        order: 6,
+      },
+    ];
+
+    for (const m of teamMembers) {
+      await db.teamMember.create({ data: m });
+    }
+    console.log(`✓ Seeded ${teamMembers.length} team members`);
+  } else {
+    console.log(`  Team already has ${teamMemberCount} members — skipping.`);
+  }
 }
 
 main()

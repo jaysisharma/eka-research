@@ -7,6 +7,8 @@ import {
   X, Plus, AlertCircle,
 } from "lucide-react";
 import styles from "./form.module.css";
+import ImageUpload from "@/components/ui/ImageUpload";
+
 
 /* ── Types ───────────────────────────────────────────────────────────── */
 
@@ -272,9 +274,12 @@ export default function ProjectForm({
                   <span className={styles.hint}>Canonical link on the public site</span>
                 </div>
                 <div className={styles.field}>
-                  <label className={styles.label}>Cover Image URL</label>
-                  <input className={styles.input} value={form.imageUrl}
-                    onChange={str("imageUrl")} placeholder="https://… or /images/projects/…" />
+                  <label className={styles.label}>Cover Image</label>
+                  <ImageUpload
+                    value={form.imageUrl}
+                    onChange={(url) => onChange("imageUrl", url)}
+                    label="Upload Cover Image"
+                  />
                 </div>
               </div>
             </section>

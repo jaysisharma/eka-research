@@ -35,32 +35,10 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
-  {
-    label: "Research",
-    href: "/research",
-    children: [
-      { label: "Research Overview", href: "/research" },
-      { label: "Articles", href: "/articles" },
-      { label: "News", href: "/news" },
-    ],
-  },
-  {
-    label: "Projects",
-    href: "/projects",
-    children: [
-      { label: "Upcoming Projects", href: "/projects/upcoming" },
-      { label: "Past Projects", href: "/projects/past" },
-    ],
-  },
-  {
-    label: "Opportunities",
-    href: "/opportunities",
-    children: [
-      { label: "Join Us", href: "/auth/signup" },
-      { label: "Mentoring Program", href: "/opportunities/mentoring" },
-      { label: "Vacancies", href: "/opportunities/vacancy" },
-    ],
-  },
+  { label: "Research", href: "/research" },
+  { label: "Projects", href: "/projects" },
+  { label: "News", href: "/news" },
+  { label: "Opportunities", href: "/opportunities/vacancy" },
   { label: "Store", href: "/store" },
   { label: "Member Benefits", href: "/member-benefits", highlight: true },
 ];

@@ -4,9 +4,6 @@ services:
     container_name: eka_migrate
     env_file:
       - .env
-    depends_on:
-      db:
-        condition: service_healthy
     networks:
       - shared_network
     restart: "no"
@@ -16,38 +13,15 @@ services:
     container_name: eka_app
     restart: always
     env_file:
-     - .env
+      - .env
     environment:
       - NODE_ENV=production
       - PORT=3000
     depends_on:
-      db:
-        condition: service_healthy
       migrate:
         condition: service_completed_successfully
     networks:
       - shared_network
-
-  db:
-    image: postgres:16-alpine
-    container_name: eka_db
-    restart: always
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-eka_user}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB:-eka_research}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - shared_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eka_user} -d ${POSTGRES_DB:-eka_research}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-volumes:
-  postgres_data:
 
 networks:
   shared_network:

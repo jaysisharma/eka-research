@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { X, ChevronDown } from "lucide-react";
+import { X } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
 import styles from "./Nav.module.css";
@@ -23,7 +23,6 @@ interface NavMobileProps {
 export default function NavMobile({ open, onClose }: NavMobileProps) {
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  const [expanded, setExpanded] = useState<string | null>(null);
 
   /* Lock body scroll when open */
   useEffect(() => {
@@ -38,10 +37,6 @@ export default function NavMobile({ open, onClose }: NavMobileProps) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
-
-  function toggleExpand(label: string) {
-    setExpanded((prev) => (prev === label ? null : label));
-  }
 
   return (
     <div
@@ -61,46 +56,16 @@ export default function NavMobile({ open, onClose }: NavMobileProps) {
 
       {/* Links */}
       <nav className={styles.mobileLinks}>
-        {NAV_LINKS.map((link) =>
-          link.children ? (
-            <div key={link.label} className={styles.mobileGroup}>
-              <button
-                className={styles.mobileGroupBtn}
-                onClick={() => toggleExpand(link.label)}
-                aria-expanded={expanded === link.label}
-              >
-                <span className={link.highlight ? styles.highlight : ""}>
-                  {link.label}
-                </span>
-                <ChevronDown
-                  size={16}
-                  className={`${styles.chevron} ${expanded === link.label ? styles.chevronOpen : ""}`}
-                />
-              </button>
-              <div className={`${styles.mobileChildren} ${expanded === link.label ? styles.mobileChildrenOpen : ""}`}>
-                {link.children.map((child) => (
-                  <Link
-                    key={child.href}
-                    href={child.href}
-                    onClick={onClose}
-                    className={styles.mobileChild}
-                  >
-                    {child.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={onClose}
-              className={`${styles.mobileLink} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
-            >
-              {link.label}
-            </Link>
-          )
-        )}
+        {NAV_LINKS.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            onClick={onClose}
+            className={`${styles.mobileLink} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
+          >
+            {link.label}
+          </Link>
+        ))}
       </nav>
 
       {/* Footer actions */}
