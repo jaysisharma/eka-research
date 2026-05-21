@@ -27,6 +27,8 @@ const INSTRUMENTS = [
       "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=900&q=80",
     stat: "5 stations",
     statLabel: "nationwide",
+    statusText: "Active Network",
+    statusClass: "statusGold",
   },
   {
     title: "Weather Station Array",
@@ -36,6 +38,8 @@ const INSTRUMENTS = [
       "https://images.unsplash.com/photo-1504608524841-42584120d693?auto=format&fit=crop&w=900&q=80",
     stat: "Real-time",
     statLabel: "data feed",
+    statusText: "Live Feed",
+    statusClass: "statusGreen",
   },
   {
     title: "Stratospheric Balloons",
@@ -45,6 +49,8 @@ const INSTRUMENTS = [
       "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80",
     stat: "28 km",
     statLabel: "max altitude",
+    statusText: "Payload Active",
+    statusClass: "statusBlue",
   },
 ];
 
@@ -53,8 +59,9 @@ export const dynamic = "force-dynamic";
 export default async function ResearchPage() {
   const allArticles = await getPublishedArticles();
   const recentArticles = allArticles.slice(0, 3);
+
   return (
-    <main>
+    <main style={{ minHeight: "100vh", background: "var(--bg-base)" }}>
 
       {/* ── 1. Hero ── */}
       <PageHero
@@ -64,11 +71,11 @@ export default async function ResearchPage() {
         description="Six active research disciplines. Original data. Open publication. Eka Research conducts real science from the heart of the Himalayas."
         align="left"
         variant="dark"
-        cta={{ label: "Read our publications", href: "/articles" }}
+        cta={{ label: "Read publications", href: "/articles" }}
         ctaSecondary={{ label: "View projects", href: "/projects" }}
       />
 
-      {/* ── 2. Research areas grid ── */}
+      {/* ── 2. Research Areas Grid ── */}
       <section className={styles.areasSection} id="research-areas">
         <div className={styles.sectionInner}>
           <div className={styles.sectionHeader}>
@@ -100,14 +107,14 @@ export default async function ResearchPage() {
                   </div>
                   <div className={styles.areaBody}>
                     <div className={styles.areaIconWrap}>
-                      <Icon size={20} strokeWidth={1.75} />
+                      <Icon size={18} strokeWidth={2} />
                     </div>
                     <div className={styles.areaText}>
                       <h3 className={styles.areaTitle}>{area.title}</h3>
                       <p className={styles.areaDesc}>{area.description}</p>
                     </div>
                     <span className={styles.areaArrow}>
-                      <ArrowRight size={16} />
+                      <ArrowRight size={15} />
                     </span>
                   </div>
                 </Link>
@@ -117,7 +124,7 @@ export default async function ResearchPage() {
         </div>
       </section>
 
-      {/* ── 3. Featured research highlight ── */}
+      {/* ── 3. Featured Research Split Highlights ── */}
       <section className={`${styles.section} ${styles.sectionSurface}`}>
         <div className={styles.highlightInner}>
           <div className={styles.highlightText}>
@@ -142,18 +149,20 @@ export default async function ResearchPage() {
               Astronomical Society</em> in 2024 — Eka&rsquo;s first peer-reviewed
               publication in a high-impact journal.
             </p>
+            
             <div className={styles.highlightStats}>
               {[
                 { v: "3,847", l: "Meteors detected" },
                 { v: "89",    l: "Orbital solutions" },
                 { v: "5",     l: "Camera stations" },
               ].map(({ v, l }) => (
-                <div key={l} className={styles.hStat}>
+                <div key={l} className={styles.hStatCard}>
                   <span className={styles.hStatVal}>{v}</span>
                   <span className={styles.hStatLbl}>{l}</span>
                 </div>
               ))}
             </div>
+            
             <div className={styles.highlightActions}>
               <Link href="/articles/meteor-network-nepal-2024" className={styles.btnPrimary}>
                 Read the paper <ExternalLink size={14} />
@@ -183,7 +192,7 @@ export default async function ResearchPage() {
         </div>
       </section>
 
-      {/* ── 4. Instruments ── */}
+      {/* ── 4. Infrastructure & Instruments Array ── */}
       <section className={styles.section} id="instruments">
         <div className={styles.sectionInner}>
           <div className={styles.sectionHeader}>
@@ -209,6 +218,13 @@ export default async function ResearchPage() {
                     className={styles.instrumentImg}
                   />
                   <div className={styles.instrumentImgOverlay} />
+                  
+                  {/* Blinking Live Hardware LED indicator badge */}
+                  <div className={`${styles.hardwareStatus} ${styles[inst.statusClass]}`}>
+                    <span className={styles.ledDot} />
+                    <span className={styles.statusLabel}>{inst.statusText}</span>
+                  </div>
+
                   <div className={styles.instrumentBadge}>
                     <span className={styles.instrumentBadgeVal}>{inst.stat}</span>
                     <span className={styles.instrumentBadgeLbl}>{inst.statLabel}</span>
@@ -224,7 +240,7 @@ export default async function ResearchPage() {
         </div>
       </section>
 
-      {/* ── 5. Recent publications ── */}
+      {/* ── 5. Recent Publications citation grid ── */}
       <section className={`${styles.section} ${styles.sectionSurface}`} id="publications">
         <div className={styles.sectionInner}>
           <div className={styles.pubHeader}>
@@ -301,13 +317,12 @@ export default async function ResearchPage() {
         </div>
       </section>
 
-      {/* ── 6. CTA ── */}
+      {/* ── 6. Collaborate CTA star section ── */}
       <section className={styles.ctaSection}>
         <div className={styles.ctaInner}>
           <div className={styles.ctaGlow} aria-hidden="true" />
           <h2 className={styles.ctaHeading}>
-            Collaborate with{" "}
-            <span className={styles.ctaAccent}>Eka Research</span>
+            Collaborate with <span className={styles.ctaAccent}>Eka Research</span>
           </h2>
           <p className={styles.ctaSub}>
             We welcome partnerships with universities, research institutes, and individual scientists. Open science is not just a principle — it&apos;s our practice.

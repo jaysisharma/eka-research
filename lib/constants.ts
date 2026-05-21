@@ -38,7 +38,14 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Research", href: "/research" },
   { label: "Projects", href: "/projects" },
   { label: "News", href: "/news" },
-  { label: "Opportunities", href: "/opportunities/vacancy" },
+  {
+    label: "Opportunities",
+    href: "/opportunities/vacancy",
+    children: [
+      { label: "Vacancies", href: "/opportunities/vacancy", description: "Join our scientific team" },
+      { label: "Mentoring Program", href: "/opportunities/mentoring", description: "1-on-1 research guidance" },
+    ]
+  },
   { label: "Store", href: "/store" },
   { label: "Member Benefits", href: "/member-benefits", highlight: true },
 ];
@@ -201,6 +208,7 @@ export type EkaEvent = {
   seatsLeft?: number;
   href: string;
   registrationHref?: string;
+  featured?: boolean;
 };
 
 export const EVENTS: EkaEvent[] = [

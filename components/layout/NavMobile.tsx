@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { X } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
 import styles from "./Nav.module.css";
@@ -23,6 +23,7 @@ interface NavMobileProps {
 export default function NavMobile({ open, onClose }: NavMobileProps) {
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  const [openSection, setOpenSection] = useState<string | null>(null);
 
   /* Lock body scroll when open */
   useEffect(() => {
@@ -37,6 +38,15 @@ export default function NavMobile({ open, onClose }: NavMobileProps) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
+
+  // Reset section collapses when page changes
+  useEffect(() => {
+    setOpenSection(null);
+  }, [pathname]);
+
+  const toggleSection = (label: string) => {
+    setOpenSection(openSection === label ? null : label);
+  };
 
   return (
     <div
@@ -56,16 +66,52 @@ export default function NavMobile({ open, onClose }: NavMobileProps) {
 
       {/* Links */}
       <nav className={styles.mobileLinks}>
-        {NAV_LINKS.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            onClick={onClose}
-            className={`${styles.mobileLink} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
-          >
-            {link.label}
-          </Link>
-        ))}
+        {NAV_LINKS.map((link) => {
+          if (link.children) {
+            const isOpen = openSection === link.label;
+            return (
+              <div key={link.label} className={styles.mobileGroup}>
+                <button
+                  onClick={() => toggleSection(link.label)}
+                  className={styles.mobileGroupBtn}
+                >
+                  <span className={link.highlight ? styles.highlight : ""}>
+                    {link.label}
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ""}`}
+                  />
+                </button>
+                <div
+                  className={`${styles.mobileChildren} ${isOpen ? styles.mobileChildrenOpen : ""}`}
+                >
+                  {link.children.map((child) => (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      onClick={onClose}
+                      className={`${styles.mobileChild} ${isActive(child.href, pathname) ? styles.active : ""}`}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={onClose}
+              className={`${styles.mobileLink} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Footer actions */}

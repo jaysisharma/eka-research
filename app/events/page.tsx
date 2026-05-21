@@ -5,6 +5,7 @@ import { ArrowRight, MapPin, Clock, Users, CalendarDays } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
 import { EVENTS, type EventType } from "@/lib/constants";
+import { getAllEvents } from "@/lib/events";
 import styles from "./page.module.css";
 
 export const metadata = buildMetadata({
@@ -70,9 +71,12 @@ const PAST_EVENTS = [
   },
 ];
 
-export default function EventsPage() {
-  const featured = EVENTS[0];
-  const rest = EVENTS.slice(1);
+export default async function EventsPage() {
+  const dbEvents = await getAllEvents();
+  const displayEvents = dbEvents.length > 0 ? dbEvents : EVENTS;
+
+  const featured = displayEvents.find((e) => e.featured) || displayEvents[0];
+  const rest = displayEvents.filter((e) => e.id !== featured?.id);
 
   return (
     <main>
@@ -157,7 +161,7 @@ export default function EventsPage() {
                     {featured.locationDetail && ` — ${featured.locationDetail}`}
                   </span>
                 </div>
-                {featured.seats && featured.seatsLeft !== undefined && (
+                {featured.seats && featured.seatsLeft != null && (
                   <div className={styles.seatsWrap}>
                     <div className={styles.seatsBar}>
                       <div
@@ -217,7 +221,7 @@ export default function EventsPage() {
                           {ev.location}
                           {ev.locationDetail && ` — ${ev.locationDetail}`}
                         </span>
-                        {ev.seats && ev.seatsLeft !== undefined && (
+                        {ev.seats && ev.seatsLeft != null && (
                           <span className={`${styles.eventMetaItem} ${ev.seatsLeft <= 10 ? styles.urgentSeats : ""}`}>
                             <Users size={12} /> {ev.seatsLeft} seats left
                           </span>

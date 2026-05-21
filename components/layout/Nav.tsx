@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Menu } from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import ThemeToggle from "./ThemeToggle";
 import NavMobile from "./NavMobile";
@@ -21,12 +21,18 @@ export default function Nav() {
   const { data: session, status } = useSession();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Close dropdown on route change
+  useEffect(() => {
+    setOpenDropdown(null);
+  }, [pathname]);
 
   return (
     <header className={`${styles.nav} ${scrolled ? styles.scrolled : ""}`}>
@@ -48,13 +54,54 @@ export default function Nav() {
         {/* Desktop nav links */}
         <nav className={styles.links} aria-label="Main navigation">
           {NAV_LINKS.map((link) => (
-            <div key={link.label} className={styles.linkGroup}>
-              <Link
-                href={link.href}
-                className={`${styles.link} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
-              >
-                {link.label}
-              </Link>
+            <div
+              key={link.label}
+              className={styles.linkGroup}
+              onMouseEnter={() => link.children && setOpenDropdown(link.label)}
+              onMouseLeave={() => setOpenDropdown(null)}
+            >
+              {link.children ? (
+                <>
+                  <button
+                    className={`${styles.link} ${styles.linkBtn} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
+                    aria-expanded={openDropdown === link.label}
+                    aria-haspopup="true"
+                  >
+                    <span>{link.label}</span>
+                    <ChevronDown
+                      size={12}
+                      className={`${styles.chevron} ${openDropdown === link.label ? styles.chevronOpen : ""}`}
+                    />
+                  </button>
+                  {openDropdown === link.label && (
+                    <div className={styles.dropdown}>
+                      <ul className={styles.dropdownList}>
+                        {link.children.map((child) => (
+                          <li key={child.label}>
+                            <Link
+                              href={child.href}
+                              className={styles.dropdownItem}
+                              onClick={() => setOpenDropdown(null)}
+                            >
+                              <span className={styles.dropdownLabel}>{child.label}</span>
+                              {child.description && (
+                                <span className={styles.dropdownDesc}>{child.description}</span>
+                              )}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link
+                  href={link.href}
+                  className={`${styles.link} ${link.highlight ? styles.highlight : ""} ${isActive(link.href, pathname) ? styles.active : ""}`}
+                >
+                  {link.label}
+                </Link>
+              )}
             </div>
           ))}
         </nav>

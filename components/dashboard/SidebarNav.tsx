@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, BookOpen, MessageSquare,
   FolderKanban, ShoppingBag, Receipt,
-  Briefcase, GraduationCap, Inbox, Newspaper, Contact
+  Briefcase, GraduationCap, Inbox, Newspaper, Contact,
+  Calendar
 } from "lucide-react";
 import styles from "@/app/dashboard/layout.module.css";
 
@@ -104,6 +105,15 @@ export function SidebarNav({ adminMode = false }: SidebarNavProps) {
           >
             <Newspaper size={18} />
             <span>News</span>
+          </Link>
+
+          <Link
+            href="/admin/events"
+            className={styles.navLink}
+            data-active={isActive("/admin/events")}
+          >
+            <Calendar size={18} />
+            <span>Events</span>
           </Link>
 
           <Link
