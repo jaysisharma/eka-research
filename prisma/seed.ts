@@ -1,6 +1,9 @@
 /**
- * Run: npx tsx prisma/seed.ts
- * Creates a default admin account and seeds store products for development.
+ * Run: npx tsx prisma/seed.ts              ← full seed (idempotent)
+ *      npx tsx prisma/seed.ts --admin-only  ← create admin once, then exit
+ *
+ * Admin is always idempotent: if admin@ekaresearch.org already exists the
+ * script skips creation and never overwrites the existing account.
  */
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
@@ -17,7 +20,8 @@ const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool as any);
 const db = new PrismaClient({ adapter });
 
-async function main() {
+// ── Helper: seed admin (idempotent) ─────────────────────────────────────────
+async function seedAdmin() {
   const existing = await db.user.findUnique({ where: { email: "admin@ekaresearch.org" } });
 
   if (!existing) {
@@ -34,8 +38,18 @@ async function main() {
     console.log(`✓ Admin created: ${admin.email}`);
     console.log("  Password: admin1234  ← change this before going live");
   } else {
-    console.log("Admin already exists — skipping admin seed.");
+    console.log("ℹ Admin already exists — skipping.");
   }
+}
+
+async function main() {
+  // --admin-only flag: seed admin and exit immediately
+  if (process.argv.includes("--admin-only")) {
+    await seedAdmin();
+    return;
+  }
+
+  await seedAdmin();
 
   // Seed default store products if none exist
   const productCount = await db.storeProduct.count();
@@ -167,10 +181,11 @@ async function main() {
     console.log(`  News already has ${newsCount} posts — skipping.`);
   }
 
-  // Seed research articles — always wipe & reseed so new fields are populated
-  await db.researchArticle.deleteMany();
-  console.log("  Cleared existing research articles.");
-
+  // Seed research articles — idempotent: only seed if none exist
+  const articleCount = await db.researchArticle.count();
+  if (articleCount > 0) {
+    console.log(`  Research articles already seeded (${articleCount}) — skipping.`);
+  } else {
   const articles = [
     /* ── 1 · Featured journal paper ─────────────────────────────────── */
     {
@@ -781,6 +796,7 @@ The ASC-EKA1 provides a viable, sub-USD-350 path to professional-grade meteor de
     await db.researchArticle.create({ data: a });
   }
   console.log(`✓ Seeded ${articles.length} research articles (with full paper content)`);
+  } // end article else
 
   // Seed dev user (you)
   let devUser = await db.user.findUnique({ where: { email: "jaysi@ekaresearch.org" } });
@@ -802,11 +818,11 @@ The ASC-EKA1 provides a viable, sub-USD-350 path to professional-grade meteor de
     console.log("  Dev user already exists — skipping.");
   }
 
-  // Seed events (always wipe & re-seed so slugs are current)
-  await db.eventRegistration.deleteMany();
-  await db.event.deleteMany();
-  const eventCount = 0;
-  if (eventCount === 0) {
+  // Seed events — idempotent: only seed if none exist
+  const eventCount = await db.event.count();
+  if (eventCount > 0) {
+    console.log(`  Events already seeded (${eventCount}) — skipping.`);
+  } else {
     const eventDefs = [
       {
         slug: "lyrid-meteor-watch-2026",
@@ -930,9 +946,7 @@ The ASC-EKA1 provides a viable, sub-USD-350 path to professional-grade meteor de
       });
       console.log("✓ Seeded 2 registrations for Symposium");
     }
-  } else {
-    console.log(`  Events already has ${eventCount} records — skipping.`);
-  }
+  } // end events else
 
   // ── Seed Vacancies ──────────────────────────────────────────────────
   const vacancyCount = await db.vacancy.count();
