@@ -344,3 +344,21 @@
   .table th:nth-child(5),
   .table td:nth-child(5) { display: none; }
 }
+
+/* ── PREMIUM BADGE (admin table) ── */
+.premiumBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 8px;
+  padding: 2px 7px;
+  background: rgba(254, 199, 62, 0.1);
+  border: 1px solid rgba(254, 199, 62, 0.35);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fec73e;
+  vertical-align: middle;
+  text-transform: uppercase;
+}

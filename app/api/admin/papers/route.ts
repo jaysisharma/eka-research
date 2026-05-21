@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     journal, publicationDate, doi, arxiv,
     disciplines,
     pdfUrl, externalUrl, githubUrl, datasetUrl,
-    featured, published,
+    featured, published, isPremium, content,
   } = body;
 
   if (!title || !abstract || !authors || !publicationDate || !type) {
@@ -67,6 +67,8 @@ export async function POST(req: Request) {
       datasetUrl:  datasetUrl  || null,
       featured:    featured    ?? false,
       published:   published   ?? true,
+      isPremium:   isPremium   ?? false,
+      content:     content     ?? null,
       submittedBy:      session.user.id,
       submissionStatus: "approved",
     },

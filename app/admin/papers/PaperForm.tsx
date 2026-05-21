@@ -7,6 +7,7 @@ import {
   Upload, X, ExternalLink, Github, Database, AlertCircle,
 } from "lucide-react";
 import styles from "./form.module.css";
+import MarkdownEditor from "./MarkdownEditor";
 
 /* ── Types & constants ───────────────────────────────────────────────── */
 
@@ -41,6 +42,8 @@ export type PaperFormData = {
   datasetUrl:           string;
   featured:             boolean;
   published:            boolean;
+  isPremium:            boolean;
+  content:              string;
 };
 
 export const BLANK_FORM: PaperFormData = {
@@ -50,7 +53,7 @@ export const BLANK_FORM: PaperFormData = {
   publicationDate: "", doi: "", arxiv: "",
   disciplines: [], pdfUrl: "", externalUrl: "",
   githubUrl: "", datasetUrl: "",
-  featured: false, published: true,
+  featured: false, published: true, isPremium: false, content: "",
 };
 
 /* ── Toggle switch ───────────────────────────────────────────────────── */
@@ -218,7 +221,7 @@ export default function PaperForm({ mode, form, saving, error, users, onChange, 
   const str  = (key: keyof PaperFormData) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
       onChange(key, e.target.value);
-  const bool = (key: "featured" | "published") => () => onChange(key, !form[key]);
+  const bool = (key: "featured" | "published" | "isPremium") => () => onChange(key, !form[key]);
 
   return (
     <div className={styles.shell}>
@@ -384,6 +387,28 @@ export default function PaperForm({ mode, form, saving, error, users, onChange, 
               </div>
             </section>
 
+            {/* 05 · Full Paper Content */}
+            <section className={styles.section}>
+              <header className={styles.sectionHead}>
+                <span className={styles.sectionNum}>05</span>
+                <span className={styles.sectionName}>Full Paper</span>
+              </header>
+              <div className={styles.fields}>
+                <div className={styles.field}>
+                  <label className={styles.label}>Paper Body</label>
+                  <span className={styles.hint} style={{ marginBottom: 10 }}>
+                    Write the complete paper using Markdown. Supports headings, lists, blockquotes, code, and links.
+                    Use <strong>Ctrl+B</strong> / <strong>Ctrl+I</strong> for bold/italic.
+                  </span>
+                  <MarkdownEditor
+                    value={form.content}
+                    onChange={(v) => onChange("content", v)}
+                    placeholder={"# Introduction\n\nWrite your introduction here...\n\n## Methodology\n\n## Results\n\n## Discussion\n\n## Conclusion\n\n## References\n\n1. Author, A. (Year). Title. *Journal*, vol(issue), pp."}
+                  />
+                </div>
+              </div>
+            </section>
+
           </div>
         </div>
 
@@ -407,6 +432,16 @@ export default function PaperForm({ mode, form, saving, error, users, onChange, 
                 <div className={styles.toggleSub}>Highlight on research page</div>
               </div>
               <Toggle on={form.featured} onChange={bool("featured")} />
+            </div>
+            <div className={styles.toggleDivider} />
+            <div className={styles.toggleItem}>
+              <div>
+                <div className={styles.toggleLabel} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: 13 }}>👑</span> Premium Only
+                </div>
+                <div className={styles.toggleSub}>Restrict full access to paid members</div>
+              </div>
+              <Toggle on={form.isPremium} onChange={bool("isPremium")} />
             </div>
           </div>
 

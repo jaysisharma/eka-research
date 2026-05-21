@@ -63,6 +63,8 @@ export default function NewPaperPage() {
           datasetUrl:           form.datasetUrl  || null,
           featured:             form.featured,
           published:            form.published,
+          isPremium:            form.isPremium,
+          content:              form.content || null,
         }),
       });
 

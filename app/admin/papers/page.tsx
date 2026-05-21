@@ -28,6 +28,7 @@ interface Paper {
   submissionStatus: Status;
   submitter:        Submitter | null;
   createdAt:        string;
+  isPremium:        boolean;
 }
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
@@ -227,7 +228,14 @@ export default function AdminPapersPage() {
                 <tr key={paper.id}>
                   {/* PAPER */}
                   <td className={styles.titleCell}>
-                    <div className={styles.paperTitle}>{paper.title}</div>
+                    <div className={styles.paperTitle}>
+                      {paper.title}
+                      {paper.isPremium && (
+                        <span className={styles.premiumBadge} title="Premium — paid members only">
+                          👑 Premium
+                        </span>
+                      )}
+                    </div>
                     <div className={styles.paperJournal}>
                       {paper.journal}
                       {authors.length > 0 && (

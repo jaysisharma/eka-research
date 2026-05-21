@@ -56,6 +56,8 @@ export default function EditPaperPage() {
           datasetUrl:           paper.datasetUrl     ?? "",
           featured:             paper.featured       ?? false,
           published:            paper.published      ?? true,
+          isPremium:            paper.isPremium      ?? false,
+          content:              paper.content        ?? "",
         });
       })
       .catch(() => setError("Failed to load paper."))
@@ -96,6 +98,8 @@ export default function EditPaperPage() {
           datasetUrl:           form.datasetUrl  || null,
           featured:             form.featured,
           published:            form.published,
+          isPremium:            form.isPremium,
+          content:              form.content || null,
         }),
       });
 

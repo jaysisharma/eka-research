@@ -9,14 +9,22 @@ export type ResearchArticle = {
   journal: string;
   year: number;
   date: string;
+  publicationDate: string;
+  publicationStatus: string;
   type: ArticleType;
   disciplines: string[];
   abstract: string;
   imageUrl: string | null;
   doi: string | null;
   arxiv: string | null;
+  pdfUrl: string | null;
+  externalUrl: string | null;
+  githubUrl: string | null;
+  datasetUrl: string | null;
   featured: boolean;
   published: boolean;
+  isPremium: boolean;
+  content: string | null;
 };
 
 type DbArticle = {
@@ -27,14 +35,22 @@ type DbArticle = {
   journal: string;
   year: number;
   date: string;
+  publicationDate: string;
+  publicationStatus: string;
   type: string;
   disciplines: string;
   abstract: string;
   imageUrl: string | null;
   doi: string | null;
   arxiv: string | null;
+  pdfUrl: string | null;
+  externalUrl: string | null;
+  githubUrl: string | null;
+  datasetUrl: string | null;
   featured: boolean;
   published: boolean;
+  isPremium: boolean;
+  content: string | null;
 };
 
 function toArticle(a: DbArticle): ResearchArticle {

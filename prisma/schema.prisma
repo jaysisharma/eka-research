@@ -107,9 +107,13 @@ model ResearchArticle {
   imageUrl             String?
   date                 String   @default("")
 
+  // Full paper content (markdown)
+  content              String?  // full body written in admin editor
+
   // Visibility
   featured             Boolean  @default(false)
   published            Boolean  @default(true)
+  isPremium            Boolean  @default(false)
 
   // Admin workflow
   submittedBy          String?

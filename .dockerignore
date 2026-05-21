@@ -1,11 +1,41 @@
+# ── Build outputs ────────────────────────────────────────────
+.next
+out
+
+# ── Dependencies (copied via npm ci in the deps stage) ───────
+node_modules
+
+# ── Environment / secrets (never bake into image layers) ─────
+.env
+.env.*
+!.env.example
+
+# ── Dev DB ───────────────────────────────────────────────────
+prisma/dev.db
+prisma/dev.db-journal
+
+# ── Git / CI ─────────────────────────────────────────────────
+.git
+.github
+.claude
+
+# ── Logs ─────────────────────────────────────────────────────
+npm-debug.log*
+*.log
+grep_results.txt
+
+# ── TypeScript caches ────────────────────────────────────────
+*.tsbuildinfo
+
+# ── Docs / tooling not needed at runtime ─────────────────────
+README.md
+CLAUDE.md
+AGENTS.md
+AUDIT.md
+GUIDE.md
+scripts
+nginx
+
+# ── Docker meta ──────────────────────────────────────────────
 Dockerfile
 .dockerignore
-node_modules
-npm-debug.log
-README.md
-.next
-.git
-.env*.local
-.claude
-nginx
-scripts

@@ -23,10 +23,15 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Generate Prisma Client
+# Prisma generate only reads the schema — no DB connection needed.
 RUN npx prisma generate
 
-# Build Next.js app
+# Provide a dummy DATABASE_URL so the Prisma lazy-proxy doesn't throw at
+# module-import time. generateStaticParams() wraps its DB call in try/catch,
+# so no real connection is attempted during the build.
+ARG DATABASE_URL=postgresql://build:build@localhost:5432/build
+ENV DATABASE_URL=$DATABASE_URL
+
 RUN npm run build
 
 # ── Stage 3: migration runner ────────────────────────────────
@@ -36,7 +41,7 @@ WORKDIR /app
 
 RUN apk add --no-cache libc6-compat
 
-# Full dependencies
+# Full dev+prod dependencies (needed for tsx, prisma CLI, bcryptjs, etc.)
 COPY --from=deps /app/node_modules ./node_modules
 
 # Prisma files
@@ -47,11 +52,12 @@ COPY prisma.config.ts ./prisma.config.ts
 COPY package.json ./
 COPY package-lock.json ./
 
-# Generate Prisma client INSIDE migrator image
+# Generate Prisma client inside the migrator image
 RUN npx prisma generate
 
-# Run migrations + seed
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed"]
+# Only run schema migrations — do NOT seed in production.
+# Seed via: docker compose run --rm migrator npx tsx prisma/seed.ts
+CMD ["npx", "prisma", "migrate", "deploy"]
 
 # ── Stage 4: production runner ───────────────────────────────
 FROM node:20-alpine AS runner
@@ -80,12 +86,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modul
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 
 # PG runtime deps
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/pg ./node_modules/pg
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/pg-pool ./node_modules/pg-pool
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/pgpass ./node_modules/pgpass
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres-array ./node_modules/postgres-array
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres-bytea ./node_modules/postgres-bytea
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres-date ./node_modules/postgres-date
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/pg            ./node_modules/pg
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/pg-pool       ./node_modules/pg-pool
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/pgpass        ./node_modules/pgpass
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres-array    ./node_modules/postgres-array
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres-bytea    ./node_modules/postgres-bytea
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres-date     ./node_modules/postgres-date
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres-interval ./node_modules/postgres-interval
 
 RUN mkdir -p .next && chown nextjs:nodejs .next
@@ -94,7 +100,7 @@ USER nextjs
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1
 
 CMD ["node", "server.js"]

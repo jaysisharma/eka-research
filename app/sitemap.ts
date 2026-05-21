@@ -1,13 +1,23 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/constants";
+import { getPublishedArticles } from "@/lib/research";
 
 /**
  * Automatically served at /sitemap.xml
  * Add new static routes here as you build pages.
  * Dynamic routes (publications, events) should fetch slugs and append below.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+
+  /* Dynamic: published article detail pages */
+  const articles = await getPublishedArticles().catch(() => []);
+  const articleRoutes: MetadataRoute.Sitemap = articles.map((a) => ({
+    url: `${SITE_URL}/articles/${a.id}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
@@ -108,5 +118,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  return staticRoutes;
+  return [...staticRoutes, ...articleRoutes];
 }

@@ -39,7 +39,7 @@ export async function PATCH(req: Request, { params }: Params) {
     journal, publicationDate, doi, arxiv,
     disciplines,
     pdfUrl, externalUrl, githubUrl, datasetUrl,
-    featured, published,
+    featured, published, isPremium, content,
   } = body;
 
   const paper = await db.researchArticle.update({
@@ -66,6 +66,8 @@ export async function PATCH(req: Request, { params }: Params) {
       ...(datasetUrl        !== undefined && { datasetUrl:  datasetUrl  || null }),
       ...(featured          !== undefined && { featured }),
       ...(published         !== undefined && { published }),
+      ...(isPremium         !== undefined && { isPremium }),
+      ...(content           !== undefined && { content: content || null }),
     },
   });
 

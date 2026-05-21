@@ -1,0 +1,288 @@
+/* ============================================================
+   MARKDOWN EDITOR — admin papers
+   ============================================================ */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--bg-surface);
+  transition: border-color var(--transition-fast);
+}
+
+.editor:focus-within {
+  border-color: var(--border-strong);
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 6px 10px;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-default);
+  flex-wrap: wrap;
+}
+
+.toolGroup {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.toolDivider {
+  width: 1px;
+  height: 18px;
+  background: var(--border-default);
+  margin: 0 var(--space-1);
+  flex-shrink: 0;
+}
+
+.toolSpacer { flex: 1; }
+
+.toolBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.toolBtn:hover {
+  background: var(--bg-inset);
+  color: var(--text-primary);
+}
+
+.toolBtnActive {
+  background: rgba(254,199,62,0.1);
+  color: var(--color-brand-gold);
+}
+
+/* Preview button */
+.previewBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.previewBtn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.previewBtnActive {
+  border-color: var(--color-brand-gold);
+  color: var(--color-brand-gold);
+  background: rgba(254,199,62,0.06);
+}
+
+/* ── Textarea ── */
+.textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 520px;
+  padding: var(--space-6) var(--space-8);
+  background: var(--bg-surface);
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  tab-size: 2;
+}
+
+.textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* ── Preview pane ── */
+.preview {
+  flex: 1;
+  min-height: 520px;
+  padding: var(--space-8) var(--space-10);
+  background: var(--bg-surface);
+  overflow-y: auto;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--text-secondary);
+}
+
+/* Preview typography */
+.preview :global(h1) {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 2.5vw, 1.75rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin: var(--space-8) 0 var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-default);
+  line-height: 1.3;
+}
+
+.preview :global(h1:first-child) { margin-top: 0; }
+
+.preview :global(h2) {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: var(--space-8) 0 var(--space-3);
+  line-height: 1.35;
+}
+
+.preview :global(h3) {
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: var(--space-6) 0 var(--space-2);
+}
+
+.preview :global(p) {
+  margin: 0 0 var(--space-5);
+  color: var(--text-secondary);
+}
+
+.preview :global(strong) {
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.preview :global(em) {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.preview :global(code) {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.875em;
+  background: var(--bg-inset);
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--color-brand-gold);
+}
+
+.preview :global(pre) {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  overflow-x: auto;
+  margin: var(--space-5) 0;
+}
+
+.preview :global(pre code) {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.preview :global(blockquote) {
+  border-left: 3px solid var(--color-brand-gold);
+  background: rgba(254,199,62,0.04);
+  margin: var(--space-5) 0;
+  padding: var(--space-4) var(--space-5);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.preview :global(ul),
+.preview :global(ol) {
+  padding-left: var(--space-6);
+  margin: var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.preview :global(li) {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.preview :global(ul li) { list-style: disc; }
+.preview :global(ol li) { list-style: decimal; }
+
+.preview :global(hr) {
+  border: none;
+  border-top: 1px solid var(--border-default);
+  margin: var(--space-8) 0;
+}
+
+.preview :global(a) {
+  color: var(--color-brand-gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.preview :global(.placeholder) {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Status bar ── */
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 14px;
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-subtle);
+}
+
+.statusItem {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: var(--weight-medium);
+}
+
+.statusDot {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+.statusSaved {
+  font-size: 11px;
+  color: var(--color-brand-gold);
+  opacity: 0.7;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .textarea,
+  .preview {
+    min-height: 360px;
+    padding: var(--space-5) var(--space-5);
+  }
+
+  .toolDivider { display: none; }
+}
