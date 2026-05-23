@@ -32,6 +32,14 @@ export default function ImageUpload({
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      
+      const contentType = res.headers.get("content-type");
+      if (!res.ok && (!contentType || !contentType.includes("application/json"))) {
+        setUploadErr(res.status === 413 ? "File too large. Please compress the image." : `Server error (${res.status}).`);
+        setUploading(false);
+        return;
+      }
+      
       const data = (await res.json()) as { url?: string; error?: string };
       if (!res.ok) {
         setUploadErr(data.error ?? "Upload failed.");

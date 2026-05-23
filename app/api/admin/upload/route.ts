@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const MAX_MB = 20;
 
 /** POST /api/admin/upload
  *  Body: multipart/form-data  { file: File }
- *  Returns: { url: "/papers/<filename>" }
+ *  Returns: { url: "https://res.cloudinary.com/..." }
  */
 export async function POST(req: Request) {
   const session = await auth();
@@ -33,14 +38,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `File must be under ${MAX_MB} MB.` }, { status: 400 });
   }
 
-  const safeName = file.name.replace(/[^a-z0-9._-]/gi, "_").toLowerCase();
-  const filename = `${Date.now()}-${safeName}`;
   const subDir = isPdf ? "papers" : "uploads";
-  const uploadDir = path.join(process.cwd(), "public", subDir);
+  const buffer = Buffer.from(await file.arrayBuffer());
 
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(path.join(uploadDir, filename), Buffer.from(await file.arrayBuffer()));
+  try {
+    const uploadResult = await new Promise<any>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: `eka_research/${subDir}`,
+          resource_type: "auto", // Automatically detects image vs raw (PDF)
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      uploadStream.end(buffer);
+    });
 
-  return NextResponse.json({ url: `/${subDir}/${filename}` });
+    return NextResponse.json({ url: uploadResult.secure_url });
+  } catch (error) {
+    console.error("Cloudinary upload failed:", error);
+    return NextResponse.json({ error: "Failed to upload file to Cloudinary." }, { status: 500 });
+  }
 }
 
