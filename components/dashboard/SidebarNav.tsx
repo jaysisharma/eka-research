@@ -83,7 +83,7 @@ export function SidebarNav({ role, adminMode = false }: SidebarNavProps) {
           {researchOpen && (
             <div className={styles.submenu}>
               <Link href="/admin/papers" className={styles.subLink} data-active={isActive("/admin/papers")}>
-                <span>Papers</span>
+                <span>Research Papers</span>
               </Link>
               <Link href="/admin/projects" className={styles.subLink} data-active={isActive("/admin/projects")}>
                 <span>Projects</span>

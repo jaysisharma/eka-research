@@ -1,13 +1,4 @@
 services:
-  migrate:
-    image: ghcr.io/jaysisharma/eka-research/eka-research-app:migrate
-    container_name: eka_migrate
-    env_file:
-      - .env
-    networks:
-      - shared_network
-    restart: "no"
-
   app:
     image: ghcr.io/jaysisharma/eka-research/eka-research-app:latest
     container_name: eka_app
@@ -17,9 +8,6 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
     networks:
       - shared_network
 

@@ -198,248 +198,172 @@ export default function ProjectForm({
       </header>
 
       {/* ── UNIFIED BODY ── */}
-      <div className={styles.body} style={{ display: "block", maxWidth: "800px" }}>
+      <div className={styles.body}>
         
-        {error && (
-          <div className={styles.errorBanner} style={{ marginBottom: "20px" }}>
-            <AlertCircle size={14} /> {error}
-          </div>
-        )}
-
-        <div className={styles.mainCard} style={{ border: "1px solid var(--border-default)" }}>
-          
-          {/* 1. cover image banner at top */}
-          <div className={styles.section} style={{ padding: "24px 32px" }}>
-            <div className={styles.field}>
-              <label className={styles.label}>Cover Image</label>
-              <ImageUpload
-                value={form.imageUrl || ""}
-                onChange={(url) => onChange("imageUrl", url)}
-                label="Upload Cover Image"
-              />
+        {/* LEFT COLUMN: Main Form Details */}
+        <div className={styles.main}>
+          {error && (
+            <div className={styles.errorBanner} style={{ marginBottom: "20px" }}>
+              <AlertCircle size={14} /> {error}
             </div>
-          </div>
+          )}
 
-          {/* 2. Core Metadata Details */}
-          <section className={styles.section}>
-            <header className={styles.sectionHead}>
-              <span className={styles.sectionNum}>01</span>
-              <span className={styles.sectionName}>Core Information</span>
-            </header>
-            
-            <div className={styles.row}>
-              {/* Left column */}
+          <div className={styles.mainCard}>
+            {/* 1. Cover Image Banner */}
+            <div className={styles.section} style={{ padding: "24px 32px" }}>
+              <div className={styles.field}>
+                <label className={styles.label}>Cover Image</label>
+                <ImageUpload
+                  value={form.imageUrl || ""}
+                  onChange={(url) => onChange("imageUrl", url)}
+                  label="Upload Cover Image"
+                />
+              </div>
+            </div>
+
+            {/* 2. Core Information */}
+            <div className={styles.section}>
               <div className={styles.fields}>
                 <div className={styles.field}>
                   <label className={styles.label}>
-                    Title <span className={styles.req}>*</span>
+                    Project Title <span className={styles.req}>*</span>
                   </label>
                   <input
                     className={styles.input}
                     value={form.title || ""}
                     onChange={handleTitleChange}
                     placeholder="e.g. Himalayan Weather Station Network"
+                    style={{ fontSize: "16px", fontWeight: "600", padding: "12px 16px" }}
                   />
                 </div>
 
-                <div className={styles.field}>
+                <div className={styles.field} style={{ marginTop: "14px" }}>
                   <label className={styles.label}>
-                    Category <span className={styles.req}>*</span>
+                    Description <span className={styles.req}>*</span>
                   </label>
-                  {categories.length === 0 ? (
-                    <p className={styles.hint}>No categories yet — create one below.</p>
-                  ) : (
-                    <select
-                      className={styles.select}
-                      value={form.categoryId || ""}
-                      onChange={(e) => onChange("categoryId", e.target.value)}
-                    >
-                      <option value="">— Select —</option>
-                      {categories.map((c) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
-                      ))}
-                    </select>
-                  )}
-                  <NewCategoryInline onCreated={(cat) => {
-                    onCategoryCreated(cat);
-                    onChange("categoryId", cat.id);
-                  }} />
+                  <textarea
+                    className={styles.textarea}
+                    value={form.description || ""}
+                    onChange={str("description")}
+                    placeholder="Detail the atmospheric studies, cosmic ray flux detection, hardware assemblies, or educational outreach objectives..."
+                    style={{ minHeight: "360px", resize: "none", fontSize: "14px", lineHeight: "1.7" }}
+                  />
                 </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label}>
-                    Project Status <span className={styles.req}>*</span>
-                  </label>
-                  <select
-                    className={styles.select}
-                    value={form.status || "planned"}
-                    onChange={(e) => onChange("status", e.target.value as ProjectStatus)}
-                  >
-                    <option value="planned">Planned / Upcoming</option>
-                    <option value="active">Active / Ongoing</option>
-                    <option value="completed">Completed / Archival</option>
-                    <option value="on_hold">On Hold</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Right column: Description */}
-              <div className={styles.field}>
-                <label className={styles.label}>
-                  Description <span className={styles.req}>*</span>
-                </label>
-                <textarea
-                  className={styles.textarea}
-                  value={form.description || ""}
-                  onChange={str("description")}
-                  placeholder="Detail the atmospheric studies, cosmic ray flux detection, hardware assemblies, or educational outreach objectives..."
-                  style={{ height: "100%", minHeight: "186px", resize: "none" }}
-                />
               </div>
             </div>
+          </div>
+        </div>
 
-          </section>
+        {/* RIGHT COLUMN: Sidebar Metadata */}
+        <aside className={styles.sidebar}>
+          
+          {/* Card 1: Project Details */}
+          <div className={styles.card}>
+            <div className={styles.cardTitle}>
+              <Settings size={13} style={{ color: "var(--color-brand-gold)" }} />
+              <span>Project Settings</span>
+            </div>
 
-          {/* 3. Progressive Disclosure Collapsible Section */}
-          <section className={styles.section} style={{ background: "rgba(255, 255, 255, 0.015)" }}>
-            <button
-              type="button"
-              onClick={() => setAdvancedOpen(!advancedOpen)}
-              style={{
-                display: "flex",
-                width: "100%",
-                alignItems: "center",
-                justifyContent: "space-between",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: "4px 0",
-                color: "var(--text-primary)",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <Settings size={16} style={{ color: "var(--color-brand-gold)" }} />
-                <span className={styles.sectionName} style={{ margin: 0, textTransform: "none", letterSpacing: "0", fontSize: "14px", fontWeight: "700" }}>
-                  Advanced Settings &amp; Extra Details
-                </span>
-              </div>
-              <ChevronDown
-                size={16}
-                style={{
-                  transition: "transform 0.25s ease",
-                  transform: advancedOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  color: "var(--text-muted)"
-                }}
-              />
-            </button>
+            <div className={styles.field}>
+              <label className={styles.label}>Category <span className={styles.req}>*</span></label>
+              {categories.length === 0 ? (
+                <p className={styles.hint}>No categories yet — create one below.</p>
+              ) : (
+                <select
+                  className={styles.select}
+                  value={form.categoryId || ""}
+                  onChange={(e) => onChange("categoryId", e.target.value)}
+                >
+                  <option value="">— Select —</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              )}
+              <NewCategoryInline onCreated={(cat) => {
+                onCategoryCreated(cat);
+                onChange("categoryId", cat.id);
+              }} />
+            </div>
 
-            {advancedOpen && (
-              <div style={{ marginTop: "24px", animation: "fadeIn 0.2s ease-out" }}>
-                <div className={styles.row}>
-                  {/* Left: Timeline, URL, Phase, Target & Tags */}
-                  <div className={styles.fields}>
-                    <div className={styles.row}>
-                      <div className={styles.field}>
-                        <label className={styles.label}>
-                          Timeline Period <span className={styles.req}>*</span>
-                        </label>
-                        <input
-                          className={styles.input}
-                          value={form.period || ""}
-                          onChange={str("period")}
-                          placeholder="e.g. 2023 – present"
-                        />
-                      </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Project Status <span className={styles.req}>*</span></label>
+              <select
+                className={styles.select}
+                value={form.status || "planned"}
+                onChange={(e) => onChange("status", e.target.value as ProjectStatus)}
+              >
+                <option value="planned">Planned / Upcoming</option>
+                <option value="active">Active / Ongoing</option>
+                <option value="completed">Completed / Archival</option>
+                <option value="on_hold">On Hold</option>
+              </select>
+            </div>
 
-                      <div className={styles.field}>
-                        <label className={styles.label}>
-                          Canonical URL Path <span className={styles.req}>*</span>
-                        </label>
-                        <input
-                          className={styles.input}
-                          value={form.href || ""}
-                          onChange={(e) => {
-                            setHrefEdited(true);
-                            onChange("href", e.target.value);
-                          }}
-                          placeholder="e.g. /projects/himalayan-weather-network"
-                        />
-                      </div>
-                    </div>
-
-                    <div className={styles.row}>
-                      <div className={styles.field}>
-                        <label className={styles.label}>Development Phase</label>
-                        <input
-                          className={styles.input}
-                          value={form.phase || ""}
-                          onChange={str("phase")}
-                          placeholder="e.g. Field Survey, Instrument Design"
-                        />
-                      </div>
-
-                      <div className={styles.field}>
-                        <label className={styles.label}>Launch Target Window</label>
-                        <input
-                          className={styles.input}
-                          value={form.launchTarget || ""}
-                          onChange={str("launchTarget")}
-                          placeholder="e.g. Mid 2026, Q1 2027"
-                        />
-                      </div>
-                    </div>
-
-                    <div className={styles.field}>
-                      <label className={styles.label}>Classification Tags</label>
-                      <TagInput tags={form.tags || []} onChange={(v) => onChange("tags", v)} />
-                      <span className={styles.hint}>Press Enter or comma to register tags</span>
-                    </div>
-                  </div>
-
-                  {/* Right: Outcome */}
-                  <div className={styles.field}>
-                    <label className={styles.label}>Project Outcomes / Impact</label>
-                    <textarea
-                      className={styles.textarea}
-                      value={form.outcome || ""}
-                      onChange={str("outcome")}
-                      placeholder="Summarize flights reached, datasets open-published, or student counts reached..."
-                      style={{ height: "100%", minHeight: "186px", resize: "none" }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </section>
-
-          {/* 4. Toggles Footer */}
-          <div style={{ display: "flex", gap: "28px", padding: "24px 32px", borderTop: "1px dashed var(--border-default)", background: "rgba(255, 255, 255, 0.01)" }}>
-            <label className={styles.toggleLabel} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", userSelect: "none" }}>
+            <div className={styles.field}>
+              <label className={styles.label}>Timeline Period <span className={styles.req}>*</span></label>
               <input
-                type="checkbox"
-                checked={form.published}
-                onChange={toggle("published")}
-                style={{ width: "18px", height: "18px", accentColor: "var(--color-brand-gold)" }}
+                className={styles.input}
+                value={form.period || new Date().getFullYear().toString()}
+                onChange={str("period")}
+                placeholder="e.g. 2026 – present"
               />
-              <span className={styles.toggleText}>
-                <strong>Visible on live site</strong>
-              </span>
-            </label>
-
-            <label className={styles.toggleLabel} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", userSelect: "none" }}>
-              <input
-                type="checkbox"
-                checked={form.featured}
-                onChange={toggle("featured")}
-                style={{ width: "18px", height: "18px", accentColor: "var(--color-brand-gold)" }}
-              />
-              <span className={styles.toggleText}>
-                <strong>Featured Highlight</strong>
-              </span>
-            </label>
+            </div>
           </div>
 
-        </div>
+          {/* Card 2: Classification Tags */}
+          <div className={styles.card}>
+            <div className={styles.cardTitle}>
+              <span>Classification Tags</span>
+            </div>
+            <div className={styles.field}>
+              <TagInput tags={form.tags || []} onChange={(v) => onChange("tags", v)} />
+              <p className={styles.hint} style={{ margin: 0 }}>Press Enter or comma to add tags.</p>
+            </div>
+          </div>
+
+          {/* Card 3: Visibility & Status */}
+          <div className={styles.card}>
+            <div className={styles.cardTitle}>
+              <span>Visibility &amp; Promotion</span>
+            </div>
+
+            <div className={styles.toggleItem}>
+              <div>
+                <div className={styles.toggleLabel}>Visible on live site</div>
+                <div className={styles.toggleSub}>Publish directly on feed</div>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={form.published}
+                className={`${styles.switchTrack} ${form.published ? styles.switchOn : ""}`}
+                onClick={toggle("published")}
+              >
+                <span className={styles.switchKnob} />
+              </button>
+            </div>
+
+            <div className={styles.toggleDivider} />
+
+            <div className={styles.toggleItem}>
+              <div>
+                <div className={styles.toggleLabel}>Featured Highlight</div>
+                <div className={styles.toggleSub}>Promote to marquee grid</div>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={form.featured}
+                className={`${styles.switchTrack} ${form.featured ? styles.switchOn : ""}`}
+                onClick={toggle("featured")}
+              >
+                <span className={styles.switchKnob} />
+              </button>
+            </div>
+          </div>
+
+        </aside>
       </div>
     </div>
   );

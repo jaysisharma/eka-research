@@ -126,7 +126,7 @@ export default function AdminPapersPage() {
   };
 
   const deletePaper = async (id: string) => {
-    if (!confirm("Delete this paper? This cannot be undone.")) return;
+    if (!confirm("Delete this research paper? This cannot be undone.")) return;
     setBusy((b) => ({ ...b, [id]: true }));
     try {
       const res = await fetch(`/api/admin/papers/${id}`, { method: "DELETE" });
@@ -141,7 +141,7 @@ export default function AdminPapersPage() {
     return (
       <div className={styles.loadingScreen}>
         <RefreshCw className={styles.spinner} size={28} />
-        <p>Loading papers…</p>
+        <p>Loading research papers…</p>
       </div>
     );
   }
@@ -153,11 +153,11 @@ export default function AdminPapersPage() {
         <div>
           <h1 className={styles.pageTitle}>Research Papers</h1>
           <p className={styles.pageSubtitle}>
-            Manage all papers, verify researcher submissions, and publish approved work.
+            Manage all research papers, verify researcher submissions, and publish approved work.
           </p>
         </div>
         <Link href="/admin/papers/new" className={styles.addBtn}>
-          <Plus size={15} /> Add Paper
+          <Plus size={15} /> Add Research Paper
         </Link>
       </header>
 
@@ -202,7 +202,7 @@ export default function AdminPapersPage() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Paper</th>
+              <th>Research Paper</th>
               <th>Type</th>
               <th>Submitted by</th>
               <th>Year</th>
@@ -216,7 +216,7 @@ export default function AdminPapersPage() {
                 <td colSpan={6}>
                   <div className={styles.empty}>
                     <FileText size={32} style={{ marginBottom: 12, opacity: 0.3 }} />
-                    <p>No papers match your filter.</p>
+                    <p>No research papers match your filter.</p>
                   </div>
                 </td>
               </tr>
