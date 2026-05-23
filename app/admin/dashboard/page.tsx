@@ -198,7 +198,7 @@ export default async function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentUsers.map((u) => (
+                  {recentUsers.map((u: any) => (
                     <tr key={u.id}>
                       <td className={styles.tdName}>{u.name}</td>
                       <td className={styles.tdMuted}>{u.email}</td>
@@ -240,7 +240,7 @@ export default async function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentOrders.map((o) => (
+                  {recentOrders.map((o: any) => (
                     <tr key={o.id}>
                       <td className={styles.tdMono}>#{o.id.slice(-7).toUpperCase()}</td>
                       <td className={styles.tdName}>{o.name}</td>

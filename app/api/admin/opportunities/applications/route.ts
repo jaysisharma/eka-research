@@ -31,9 +31,9 @@ export async function GET(req: NextRequest) {
   ]);
 
   const combined = [
-    ...vacancyApps.map((a) => ({ ...a, kind: "vacancy"  as const })),
-    ...mentoringApps.map((a) => ({ ...a, kind: "mentoring" as const })),
-  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    ...vacancyApps.map((a: any) => ({ ...a, kind: "vacancy"  as const })),
+    ...mentoringApps.map((a: any) => ({ ...a, kind: "mentoring" as const })),
+  ].sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return NextResponse.json(combined);
 }

@@ -52,7 +52,7 @@ function getLocalTodayString(): string {
 
 export async function getUpcomingEvents(limit = 3): Promise<SiteEvent[]> {
   const today = getLocalTodayString();
-  
+
   // 1. Fetch upcoming, published featured events
   const featured = await db.event.findMany({
     where: { published: true, featured: true, date: { gte: today } } as any,

@@ -62,8 +62,8 @@ export default async function AboutPage() {
     ],
   });
 
-  const featured = TEAM.find((m) => m.featured) || TEAM[0];
-  const restTeam  = featured ? TEAM.filter((m) => m.id !== featured.id) : TEAM;
+  const featured = TEAM.find((m: { featured: boolean }) => m.featured) || TEAM[0];
+  const restTeam  = featured ? TEAM.filter((m: { id: string }) => m.id !== featured.id) : TEAM;
 
   return (
     <main>
@@ -211,7 +211,7 @@ export default async function AboutPage() {
 
           {/* Rest of team */}
           <div className={styles.teamGrid}>
-            {restTeam.map((m) => (
+            {restTeam.map((m: any) => (
               <div key={m.id} className={styles.teamCard}>
                 <div className={styles.teamImgWrap}>
                   <Image

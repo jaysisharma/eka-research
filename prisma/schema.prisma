@@ -321,3 +321,16 @@ model TeamMember {
   updatedAt DateTime @updatedAt
 }
 
+model GalleryImage {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  imageUrl    String
+  category    String   @default("astrophotography") // astrophotography | research | facilities | community
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
