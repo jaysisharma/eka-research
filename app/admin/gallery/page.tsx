@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Plus, Search, RefreshCw, Pencil, Trash2,
-  Image as ImageIcon, Star, Sparkles, X, Eye, EyeOff
+  Image as ImageIcon, Star, Sparkles, X, Eye, EyeOff,
+  ChevronDown, Settings
 } from "lucide-react";
 import styles from "./page.module.css";
 import ImageUpload from "@/components/ui/ImageUpload";
@@ -57,6 +58,7 @@ export default function AdminGalleryPage() {
   const [editingImage, setEditingImage] = useState<GalleryImage | null>(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [advancedOpen, setAdvancedOpen] = useState(false);
 
   // Form State
   const [formTitle, setFormTitle] = useState("");
@@ -486,30 +488,30 @@ export default function AdminGalleryPage() {
             <form onSubmit={handleFormSubmit} className={styles.form}>
               {formError && <div className={styles.formError}>{formError}</div>}
 
+              {/* 1. Large focal upload zone at the top */}
               <div className={styles.inputGroup}>
-                <label htmlFor="title">Image Title *</label>
-                <input
-                  id="title"
-                  type="text"
-                  required
-                  value={formTitle}
-                  onChange={(e) => setFormTitle(e.target.value)}
-                  placeholder="e.g. Geminids meteor shower over Langtang Valley"
+                <label>Media File *</label>
+                <ImageUpload
+                  value={formImageUrl}
+                  onChange={setFormImageUrl}
+                  label="Upload Image File"
                 />
               </div>
 
-              <div className={styles.inputGroup}>
-                <label htmlFor="description">Scientific Context / Story</label>
-                <textarea
-                  id="description"
-                  rows={3}
-                  value={formDescription}
-                  onChange={(e) => setFormDescription(e.target.value)}
-                  placeholder="Provide background info, technical details (e.g. camera, exposure, altitude) or outreach event impact..."
-                />
-              </div>
-
+              {/* 2. Symmetric two-column metadata inputs */}
               <div className={styles.formGrid}>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="title">Image Title *</label>
+                  <input
+                    id="title"
+                    type="text"
+                    required
+                    value={formTitle}
+                    onChange={(e) => setFormTitle(e.target.value)}
+                    placeholder="e.g. Geminids meteor shower over Langtang"
+                  />
+                </div>
+
                 <div className={styles.inputGroup}>
                   <label htmlFor="category">Gallery Category *</label>
                   <select
@@ -524,41 +526,67 @@ export default function AdminGalleryPage() {
                     ))}
                   </select>
                 </div>
-
-                <div className={styles.inputGroup}>
-                  <label>Upload Media File *</label>
-                  <ImageUpload
-                    value={formImageUrl}
-                    onChange={setFormImageUrl}
-                    label="Upload Image File"
-                  />
-                </div>
               </div>
 
-              <div className={styles.toggleRow}>
-                <label className={styles.toggleLabel}>
-                  <input
-                    type="checkbox"
-                    checked={formFeatured}
-                    onChange={(e) => setFormFeatured(e.target.checked)}
+              {/* 3. Collapsible Advanced Settings */}
+              <div className={styles.advancedSection}>
+                <button
+                  type="button"
+                  onClick={() => setAdvancedOpen(!advancedOpen)}
+                  className={styles.advancedToggle}
+                >
+                  <div className={styles.advancedToggleLeft}>
+                    <Settings size={14} className={styles.advancedIcon} />
+                    <span>Advanced Details &amp; Visibility</span>
+                  </div>
+                  <ChevronDown
+                    size={14}
+                    style={{
+                      transform: advancedOpen ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 0.2s ease",
+                    }}
                   />
-                  <span className={styles.toggleText}>
-                    <strong>Featured Image</strong> (Promote to highlight reels or top spot in the public visitor gallery)
-                  </span>
-                </label>
-              </div>
+                </button>
 
-              <div className={styles.toggleRow}>
-                <label className={styles.toggleLabel}>
-                  <input
-                    type="checkbox"
-                    checked={formPublished}
-                    onChange={(e) => setFormPublished(e.target.checked)}
-                  />
-                  <span className={styles.toggleText}>
-                    <strong>Publicly Visible</strong> (Publish immediately to Eka's client gallery feed)
-                  </span>
-                </label>
+                {advancedOpen && (
+                  <div className={styles.advancedContent}>
+                    <div className={styles.inputGroup}>
+                      <label htmlFor="description">Context Backstory (Optional)</label>
+                      <textarea
+                        id="description"
+                        rows={3.5}
+                        value={formDescription}
+                        onChange={(e) => setFormDescription(e.target.value)}
+                        placeholder="Provide technical context (e.g. camera, exposure) or scientific details..."
+                        style={{ resize: "none" }}
+                      />
+                    </div>
+
+                    <div style={{ display: "flex", gap: "24px", padding: "12px 0 4px 0", borderTop: "1px dashed var(--border-default)" }}>
+                      <label className={styles.toggleLabel}>
+                        <input
+                          type="checkbox"
+                          checked={formPublished}
+                          onChange={(e) => setFormPublished(e.target.checked)}
+                        />
+                        <span className={styles.toggleText}>
+                          <strong>Visible on live feed</strong>
+                        </span>
+                      </label>
+
+                      <label className={styles.toggleLabel}>
+                        <input
+                          type="checkbox"
+                          checked={formFeatured}
+                          onChange={(e) => setFormFeatured(e.target.checked)}
+                        />
+                        <span className={styles.toggleText}>
+                          <strong>Featured highlight</strong>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <footer className={styles.modalFooter}>

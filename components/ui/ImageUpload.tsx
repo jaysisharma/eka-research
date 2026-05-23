@@ -109,7 +109,7 @@ export default function ImageUpload({
               <input
                 className={styles.input}
                 placeholder={placeholder}
-                value={value}
+                value={value || ""}
                 onChange={(e) => onChange(e.target.value)}
               />
               <button

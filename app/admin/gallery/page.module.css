@@ -606,6 +606,45 @@
   cursor: not-allowed;
 }
 
+.advancedSection {
+  border-top: 1px dashed var(--border-default);
+  padding-top: 16px;
+  margin-top: 4px;
+}
+
+.advancedToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 0;
+  outline: none;
+}
+
+.advancedToggleLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advancedIcon {
+  color: var(--color-brand-gold);
+}
+
+.advancedContent {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
 /* ── ANIMATIONS ── */
 @keyframes fadeIn {
   from { opacity: 0; }
