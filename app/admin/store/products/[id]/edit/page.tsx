@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import { RefreshCw } from "lucide-react";
-import ProductForm, { ProductFormData, ProductCategory, VariantGroup } from "@/app/admin/store/products/ProductForm";
+import ProductForm, { ProductFormData, VariantGroup } from "@/app/admin/store/products/ProductForm";
 import formStyles from "@/app/admin/store/products/form.module.css";
 
 const parseArr = <T,>(raw: string | null | undefined, fallback: T[]): T[] => {
@@ -37,7 +37,7 @@ export default function EditProductPage() {
           name:        p.name        ?? "",
           slug:        p.slug        ?? "",
           tagline:     p.tagline     ?? "",
-          category:    (p.category as ProductCategory) ?? "apparel",
+          category:    p.category ?? "apparel",
           priceNpr:    String(p.priceNpr ?? ""),
           description: p.description ?? "",
           includes:    parseArr<string>(p.includes, []).join("\n"),
@@ -49,7 +49,6 @@ export default function EditProductPage() {
           inStock:   p.inStock   ?? true,
           digital:   p.digital   ?? false,
           imageUrl:  p.imageUrl  ?? "",
-          gradient:  p.gradient  ?? "linear-gradient(135deg, #1a2060 0%, #0a0d22 100%)",
         });
       })
       .catch(() => setError("Failed to load product."))
@@ -89,7 +88,6 @@ export default function EditProductPage() {
           inStock:   form.inStock,
           digital:   form.digital,
           imageUrl:  form.imageUrl || null,
-          gradient:  form.gradient,
         }),
       });
       if (!res.ok) {

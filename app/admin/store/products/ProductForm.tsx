@@ -9,7 +9,7 @@ import ImageUpload from "@/components/ui/ImageUpload";
 
 /* ── Types ───────────────────────────────────────────────────────────── */
 
-export type ProductCategory = "apparel" | "educational" | "kits" | "digital";
+export type ProductCategory = string;
 
 export type VariantGroup = {
   name:    string;
@@ -29,7 +29,6 @@ export type ProductFormData = {
   inStock:     boolean;
   digital:     boolean;
   imageUrl:    string;
-  gradient:    string;
 };
 
 export const BLANK_FORM: ProductFormData = {
@@ -37,7 +36,6 @@ export const BLANK_FORM: ProductFormData = {
   priceNpr: "", description: "", includes: "",
   variants: [], badge: "", inStock: true, digital: false,
   imageUrl: "",
-  gradient: "linear-gradient(135deg, #1a2060 0%, #0a0d22 100%)",
 };
 
 export const CATEGORIES: { value: ProductCategory; label: string }[] = [
@@ -129,12 +127,13 @@ interface Props {
 }
 
 export default function ProductForm({ mode, form, saving, error, onChange, onSave }: Props) {
-  const [slugEdited, setSlugEdited] = useState(mode === "edit");
 
-  /* Auto-generate slug from name until the user manually edits it */
+  /* Auto-generate slug from name silently for new products */
   useEffect(() => {
-    if (!slugEdited && form.name) onChange("slug", slugify(form.name));
-  }, [form.name, slugEdited]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (mode === "new" && form.name) {
+      onChange("slug", slugify(form.name));
+    }
+  }, [form.name, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const str  = (key: keyof ProductFormData) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -165,229 +164,188 @@ export default function ProductForm({ mode, form, saving, error, onChange, onSav
         </div>
       </header>
 
-      {/* ── 2-COL BODY ── */}
+      {/* ── UNIFIED BODY ── */}
       <div className={styles.body}>
 
-        {/* LEFT: MAIN */}
+        {/* LEFT COLUMN: Main Form Details */}
         <div className={styles.main}>
           {error && (
-            <div className={styles.errorBanner}>
+            <div className={styles.errorBanner} style={{ marginBottom: "20px" }}>
               <AlertCircle size={14} /> {error}
             </div>
           )}
 
           <div className={styles.mainCard}>
+            {/* 1. Cover/Product Image Banner */}
+            <div className={styles.section} style={{ padding: "24px 32px" }}>
+              <div className={styles.field}>
+                <label className={styles.label}>Product Image</label>
+                <ImageUpload
+                  value={form.imageUrl || ""}
+                  onChange={(url) => onChange("imageUrl", url)}
+                  label="Upload Product Image"
+                />
+                <span className={styles.hint}>
+                  Supports PNG, JPG, WebP. Recommended: 800x800px square frame.
+                </span>
+              </div>
+            </div>
 
-            {/* 01 · Core */}
-            <section className={styles.section}>
-              <header className={styles.sectionHead}>
-                <span className={styles.sectionNum}>01</span>
-                <span className={styles.sectionName}>Core</span>
-              </header>
+            {/* 2. Core Information */}
+            <div className={styles.section}>
               <div className={styles.fields}>
                 <div className={styles.field}>
                   <label className={styles.label}>
-                    Name <span className={styles.req}>*</span>
-                  </label>
-                  <input className={styles.input} value={form.name}
-                    onChange={str("name")} placeholder="Product name" />
-                </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label}>
-                    Slug <span className={styles.req}>*</span>
-                    {!slugEdited && (
-                      <span className={styles.autoSlugNote}>
-                        <Wand2 size={10} /> auto-generated
-                      </span>
-                    )}
+                    Product Name <span className={styles.req}>*</span>
                   </label>
                   <input
                     className={styles.input}
-                    value={form.slug}
-                    onChange={(e) => {
-                      setSlugEdited(true);
-                      onChange("slug", e.target.value);
-                    }}
-                    placeholder="product-url-slug"
+                    value={form.name}
+                    onChange={str("name")}
+                    placeholder="e.g. Eka Observation Hoodie"
+                    style={{ fontSize: "16px", fontWeight: "600", padding: "12px 16px" }}
                   />
-                  {!slugEdited && (
-                    <span className={styles.hint}>
-                      Editing the name will update the slug automatically.{" "}
-                      <button type="button" className={styles.inlineBtn}
-                        onClick={() => setSlugEdited(true)}>
-                        Lock it now
-                      </button>
-                    </span>
-                  )}
                 </div>
 
-                <div className={styles.field}>
+                <div className={styles.field} style={{ marginTop: "14px" }}>
                   <label className={styles.label}>
                     Tagline <span className={styles.req}>*</span>
                   </label>
-                  <input className={styles.input} value={form.tagline}
-                    onChange={str("tagline")} placeholder="One-line product pitch" />
+                  <input
+                    className={styles.input}
+                    value={form.tagline}
+                    onChange={str("tagline")}
+                    placeholder="A catchy, one-line pitch shown on catalog cards..."
+                  />
                 </div>
-              </div>
-            </section>
 
-            {/* 02 · Description */}
-            <section className={styles.section}>
-              <header className={styles.sectionHead}>
-                <span className={styles.sectionNum}>02</span>
-                <span className={styles.sectionName}>Description</span>
-              </header>
-              <div className={styles.fields}>
-                <div className={styles.field}>
+                <div className={styles.field} style={{ marginTop: "14px" }}>
                   <label className={styles.label}>
                     Description <span className={styles.req}>*</span>
                   </label>
-                  <textarea className={`${styles.textarea} ${styles.xl}`}
-                    value={form.description} onChange={str("description")}
-                    placeholder="Full product description shown on the product page…" />
+                  <textarea
+                    className={styles.textarea}
+                    value={form.description}
+                    onChange={str("description")}
+                    placeholder="Provide a comprehensive product description including material quality, fit, educational contents, or digital specifications..."
+                    style={{ minHeight: "260px", resize: "none", fontSize: "14px", lineHeight: "1.7" }}
+                  />
                 </div>
               </div>
-            </section>
+            </div>
 
-            {/* 03 · Pricing */}
-            <section className={styles.section}>
-              <header className={styles.sectionHead}>
-                <span className={styles.sectionNum}>03</span>
-                <span className={styles.sectionName}>Pricing</span>
-              </header>
-              <div className={styles.fields}>
-                <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label className={styles.label}>
-                      Price (NPR) <span className={styles.req}>*</span>
-                    </label>
-                    <div className={styles.priceWrap}>
-                      <span className={styles.pricePre}>NPR</span>
-                      <input
-                        className={`${styles.input} ${styles.priceInput}`}
-                        type="number" min="0" step="1"
-                        value={form.priceNpr}
-                        onChange={str("priceNpr")}
-                        placeholder="0"
-                      />
-                    </div>
-                  </div>
-                  <div className={styles.field}>
-                    <label className={styles.label}>Badge Label</label>
-                    <input className={styles.input} value={form.badge}
-                      onChange={str("badge")} placeholder="New, Sale, Limited…" />
-                    <span className={styles.hint}>Short text shown on the product card (optional)</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* 04 · Media */}
-            <section className={styles.section}>
-              <header className={styles.sectionHead}>
-                <span className={styles.sectionNum}>04</span>
-                <span className={styles.sectionName}>Media</span>
-              </header>
+            {/* 3. Included Items */}
+            <div className={styles.section}>
               <div className={styles.fields}>
                 <div className={styles.field}>
-                  <label className={styles.label}>Product Image</label>
-                  <ImageUpload
-                    value={form.imageUrl}
-                    onChange={(url) => onChange("imageUrl", url)}
-                    label="Upload Product Image"
+                  <label className={styles.label}>Included Items / Package Contents</label>
+                  <textarea
+                    className={styles.textarea}
+                    value={form.includes}
+                    onChange={str("includes")}
+                    placeholder={"e.g.\n1× Nepal Sky Map (A2 Poster)\n1× Red-light Observation Torch\nObserver Guideline Leaflet"}
+                    style={{ minHeight: "120px", resize: "none", fontSize: "14px", lineHeight: "1.6" }}
                   />
                   <span className={styles.hint}>
-                    Leave blank to use the gradient background instead
-                  </span>
-                </div>
-                <div className={styles.field}>
-                  <label className={styles.label}>Gradient Background</label>
-                  <div className={styles.gradientRow}>
-                    <div
-                      className={styles.gradientSwatch}
-                      style={{ background: form.gradient || "var(--bg-inset)" }}
-                    />
-                    <input className={styles.input} value={form.gradient}
-                      onChange={str("gradient")}
-                      placeholder="linear-gradient(135deg, #1a2060 0%, #0a0d22 100%)" />
-                  </div>
-                  <span className={styles.hint}>
-                    Used as the card background when no image is set
+                    Specify items one per line. These will render as a beautiful premium bulleted checklist.
                   </span>
                 </div>
               </div>
-            </section>
+            </div>
 
-            {/* 05 · What's Included */}
-            <section className={styles.section}>
-              <header className={styles.sectionHead}>
-                <span className={styles.sectionNum}>05</span>
-                <span className={styles.sectionName}>What&apos;s Included</span>
-              </header>
+            {/* 4. Product Variants */}
+            <div className={styles.section}>
               <div className={styles.fields}>
                 <div className={styles.field}>
-                  <label className={styles.label}>Included Items</label>
-                  <textarea className={styles.textarea} value={form.includes}
-                    onChange={str("includes")}
-                    placeholder={"1× Star map (A2 poster)\n1× Protective tube\nDigital download code"} />
-                  <span className={styles.hint}>One item per line — shown as a bullet list on the product page</span>
+                  <label className={styles.label} style={{ marginBottom: "10px" }}>Variant Options Matrix</label>
+                  <VariantBuilder
+                    groups={form.variants}
+                    onChange={(v) => onChange("variants", v)}
+                  />
+                  <span className={styles.hint} style={{ marginTop: "6px" }}>
+                    Configure groups like 'Size' (e.g. S, M, L, XL) or 'Colour' (e.g. Navy Blue, Matte Black) to let buyers select their preferences.
+                  </span>
                 </div>
               </div>
-            </section>
-
-            {/* 06 · Variants */}
-            <section className={styles.section}>
-              <header className={styles.sectionHead}>
-                <span className={styles.sectionNum}>06</span>
-                <span className={styles.sectionName}>Variants</span>
-              </header>
-              <div className={styles.fields}>
-                <VariantBuilder
-                  groups={form.variants}
-                  onChange={(v) => onChange("variants", v)}
-                />
-              </div>
-            </section>
+            </div>
 
           </div>
         </div>
 
-        {/* RIGHT: SIDEBAR */}
+        {/* RIGHT COLUMN: Sidebar Settings */}
         <aside className={styles.sidebar}>
-
-          {/* AVAILABILITY */}
+          
+          {/* Card 1: Pricing & Classification */}
           <div className={styles.card}>
-            <p className={styles.cardTitle}>Availability</p>
+            <div className={styles.cardTitle}>Pricing &amp; Details</div>
+
+            <div className={styles.field}>
+              <label className={styles.label}>
+                Price (NPR) <span className={styles.req}>*</span>
+              </label>
+              <div className={styles.priceWrap}>
+                <span className={styles.pricePre}>NPR</span>
+                <input
+                  className={`${styles.input} ${styles.priceInput}`}
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.priceNpr}
+                  onChange={str("priceNpr")}
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div className={styles.field} style={{ marginTop: "8px" }}>
+              <label className={styles.label}>
+                Category <span className={styles.req}>*</span>
+              </label>
+              <input
+                className={styles.input}
+                list="category-suggestions"
+                value={form.category}
+                onChange={(e) => onChange("category", e.target.value)}
+                placeholder="e.g. Apparel, Educational, Kits…"
+              />
+              <datalist id="category-suggestions">
+                {CATEGORIES.map((c) => (
+                  <option key={c.value} value={c.value} />
+                ))}
+              </datalist>
+            </div>
+
+            <div className={styles.field} style={{ marginTop: "8px" }}>
+              <label className={styles.label}>Badge Label</label>
+              <input
+                className={styles.input}
+                value={form.badge}
+                onChange={str("badge")}
+                placeholder="e.g. Popular, Limited, Sale"
+              />
+              <span className={styles.hint}>Optional callout shown on catalog cards</span>
+            </div>
+          </div>
+
+          {/* Card 2: Availability & Switches */}
+          <div className={styles.card}>
+            <div className={styles.cardTitle}>Status &amp; Delivery</div>
+
             <Toggle
               on={form.inStock}
               onChange={bool("inStock")}
               label="In Stock"
-              sub="Product can be added to cart"
+              sub="Available to purchase immediately"
             />
+
             <div className={styles.toggleDivider} />
+
             <Toggle
               on={form.digital}
               onChange={bool("digital")}
               label="Digital Product"
-              sub="No shipping — instant download"
+              sub="Direct download — no physical shipping"
             />
-          </div>
-
-          {/* CATEGORY */}
-          <div className={styles.card}>
-            <p className={styles.cardTitle}>Category</p>
-            <div className={styles.field}>
-              <label className={styles.label}>
-                Category <span className={styles.req}>*</span>
-              </label>
-              <select className={styles.select} value={form.category}
-                onChange={(e) => onChange("category", e.target.value as ProductCategory)}>
-                {CATEGORIES.map((c) => (
-                  <option key={c.value} value={c.value}>{c.label}</option>
-                ))}
-              </select>
-            </div>
           </div>
 
         </aside>

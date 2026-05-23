@@ -74,22 +74,17 @@ interface NewsFormProps {
 }
 
 export default function NewsForm({ mode, form, saving, error, onChange, onSave }: NewsFormProps) {
-  const [slugEdited, setSlugEdited] = useState(false);
+  const [slugEdited] = useState(false);
 
-  // Auto-fill slug if user hasn't touched it yet
-  useEffect(() => {
-    if (mode === "new" && !slugEdited && form.title) {
-      onChange("slug", slugify(form.title));
-    }
-  }, [form.title, slugEdited, mode, onChange]);
+  const slugify = (s: string) =>
+    s.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange("title", e.target.value);
-  };
-
-  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSlugEdited(true);
-    onChange("slug", slugify(e.target.value));
+    const val = e.target.value;
+    onChange("title", val);
+    if (mode === "new" && !slugEdited) {
+      onChange("slug", slugify(val));
+    }
   };
 
   const handleFieldChange = (key: keyof NewsFormData) => (
@@ -142,12 +137,23 @@ export default function NewsForm({ mode, form, saving, error, onChange, onSave }
           )}
 
           <div className={styles.mainCard}>
-            {/* Section 01: Core Content */}
+            {/* 1. Cover Image Banner */}
+            <div className={styles.section} style={{ padding: "24px 32px" }}>
+              <div className={styles.field}>
+                <label className={styles.label}>Featured Banner Image</label>
+                <ImageUpload
+                  value={form.imageUrl}
+                  onChange={(url) => onChange("imageUrl", url)}
+                  label="Upload Featured Banner"
+                />
+                <span className={styles.hint}>
+                  Recommended size: 1200x630px. Supports PNG, JPG, WebP. Max 20MB.
+                </span>
+              </div>
+            </div>
+
+            {/* 2. Core Content */}
             <section className={styles.section}>
-              <header className={styles.sectionHead}>
-                <span className={styles.sectionNum}>01</span>
-                <span className={styles.sectionName}>Core Details</span>
-              </header>
               <div className={styles.fields}>
                 <div className={styles.field}>
                   <label className={styles.label}>
@@ -158,67 +164,23 @@ export default function NewsForm({ mode, form, saving, error, onChange, onSave }
                     value={form.title}
                     onChange={handleTitleChange}
                     placeholder="Enter article title..."
+                    style={{ fontSize: "16px", fontWeight: "600", padding: "12px 16px" }}
                   />
                 </div>
 
-                <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label className={styles.label}>
-                      URL Slug <span className={styles.req}>*</span>
-                    </label>
-                    <input
-                      className={styles.input}
-                      value={form.slug}
-                      onChange={handleSlugChange}
-                      placeholder="auto-generated-url-slug"
-                    />
-                    <span className={styles.hint}>
-                      Public URL: <span className={styles.slugPreview}>/news/{form.slug || "your-slug"}</span>
-                    </span>
-                  </div>
-
-                  <div className={styles.field}>
-                    <label className={styles.label}>
-                      Publish Date <span className={styles.req}>*</span>
-                    </label>
-                    <input
-                      type="date"
-                      className={styles.input}
-                      value={form.date}
-                      onChange={handleFieldChange("date")}
-                    />
-                  </div>
-                </div>
-
-                <div className={styles.field}>
+                <div className={styles.field} style={{ marginTop: "14px" }}>
                   <label className={styles.label}>
                     Excerpt / Summary <span className={styles.req}>*</span>
                   </label>
                   <textarea
-                    className={`${styles.textarea} ${styles.md}`}
+                    className={styles.textarea}
                     value={form.excerpt}
                     onChange={handleFieldChange("excerpt")}
                     placeholder="Provide a brief, compelling summary of the article to entice readers on the home page feed..."
+                    style={{ minHeight: "180px", resize: "none", fontSize: "14px", lineHeight: "1.6" }}
                   />
                   <span className={styles.hint}>
                     Character limit recommended: 150-200 characters.
-                  </span>
-                </div>
-              </div>
-            </section>
-
-            {/* Section 02: Media & Imagery */}
-            <section className={styles.section}>
-              <header className={styles.sectionHead}>
-                <span className={styles.sectionNum}>02</span>
-                <span className={styles.sectionName}>Featured Media</span>
-              </header>
-              <div className={styles.fields}>
-                <div className={styles.field}>
-                  <label className={styles.label}>Featured Banner Image</label>
-                  <ImageUpload value={form.imageUrl} onChange={(url) => onChange("imageUrl", url)} />
-                  <span className={styles.hint}>
-                    Recommended size: 1200x630px. Supports PNG, JPG, WebP. Max 20MB.
                   </span>
                 </div>
               </div>
@@ -251,9 +213,10 @@ export default function NewsForm({ mode, form, saving, error, onChange, onSave }
             </div>
           </div>
 
-          {/* Card: Classification */}
+          {/* Card: Article Settings */}
           <div className={styles.card}>
-            <p className={styles.cardTitle}>Classification</p>
+            <p className={styles.cardTitle}>Article Settings</p>
+            
             <div className={styles.field}>
               <label className={styles.label}>
                 News Category <span className={styles.req}>*</span>
@@ -269,6 +232,18 @@ export default function NewsForm({ mode, form, saving, error, onChange, onSave }
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className={styles.field} style={{ marginTop: "8px" }}>
+              <label className={styles.label}>
+                Publish Date <span className={styles.req}>*</span>
+              </label>
+              <input
+                type="date"
+                className={styles.input}
+                value={form.date}
+                onChange={handleFieldChange("date")}
+              />
             </div>
           </div>
         </aside>

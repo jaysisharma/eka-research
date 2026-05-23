@@ -123,16 +123,14 @@ jobs:
             # ── Pull latest images ────────────────────────────────────────
             docker compose pull
 
-            # ── Remove stale migrate container (if any) ───────────────────
-            # The migrate service has restart:no, so its container stays in
-            # Exited state after each run.  Docker will refuse to create a new
-            # container with the same name unless the old one is removed first.
-            docker compose rm -f migrate 2>/dev/null || true
+            # ── Remove stale containers (if any) ─────────────────────────
+            # docker compose rm only removes containers it knows about.
+            # Force-remove by name so a container started outside compose
+            # (e.g. a previous failed run) never blocks the next deploy.
+            docker rm -f eka_app    2>/dev/null || true
+            docker rm -f eka_migrate 2>/dev/null || true
 
             # ── Deploy ───────────────────────────────────────────────────
-            # --force-recreate ensures the migrate container always reruns
-            # (even if the image digest appears unchanged) so new migrations
-            # are never skipped.
             docker compose up -d --force-recreate --remove-orphans
 
             # ── Health check ─────────────────────────────────────────────

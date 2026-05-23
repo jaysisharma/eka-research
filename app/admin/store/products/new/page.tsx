@@ -52,7 +52,6 @@ export default function NewProductPage() {
           inStock:   form.inStock,
           digital:   form.digital,
           imageUrl:  form.imageUrl || null,
-          gradient:  form.gradient || undefined,
         }),
       });
       if (!res.ok) {

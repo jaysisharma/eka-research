@@ -12,7 +12,7 @@ import styles from "./page.module.css";
 
 /* ── Types ───────────────────────────────────────────────────────────── */
 
-type ProductCategory = "apparel" | "educational" | "kits" | "digital";
+type ProductCategory = string;
 
 interface Product {
   id:          string;
@@ -25,21 +25,21 @@ interface Product {
   inStock:     boolean;
   digital:     boolean;
   imageUrl:    string | null;
-  gradient:    string;
+  gradient?:   string;
   createdAt:   string;
   _count:      { orderItems: number };
 }
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 
-const CATEGORY_LABEL: Record<ProductCategory, string> = {
+const CATEGORY_LABEL: Record<string, string> = {
   apparel:     "Apparel",
   educational: "Educational",
   kits:        "Kits",
   digital:     "Digital",
 };
 
-const CATEGORY_CLS: Record<ProductCategory, string> = {
+const CATEGORY_CLS: Record<string, string> = {
   apparel:     styles.catApparel,
   educational: styles.catEducational,
   kits:        styles.catKits,
@@ -248,8 +248,8 @@ export default function AdminProductsPage() {
 
                   {/* CATEGORY */}
                   <td>
-                    <span className={`${styles.catBadge} ${CATEGORY_CLS[product.category]}`}>
-                      {CATEGORY_LABEL[product.category]}
+                    <span className={`${styles.catBadge} ${CATEGORY_CLS[product.category] ?? ""}`}>
+                      {CATEGORY_LABEL[product.category] ?? product.category}
                     </span>
                   </td>
 
