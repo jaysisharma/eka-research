@@ -6,29 +6,28 @@ import { ArrowLeft, ChevronRight, RefreshCw, Plus, X, AlertCircle, Wand2 } from 
 import styles from "./form.module.css";
 import ImageUpload from "@/components/ui/ImageUpload";
 
-
 /* ── Types ───────────────────────────────────────────────────────────── */
 
 export type ProductCategory = string;
 
 export type VariantGroup = {
-  name:    string;
+  name: string;
   options: string;   // comma-separated; parsed to string[] on save
 };
 
 export type ProductFormData = {
-  name:        string;
-  slug:        string;
-  tagline:     string;
-  category:    ProductCategory;
-  priceNpr:    string;
+  name: string;
+  slug: string;
+  tagline: string;
+  category: ProductCategory;
+  priceNpr: string;
   description: string;
-  includes:    string;   // one item per line
-  variants:    VariantGroup[];
-  badge:       string;
-  inStock:     boolean;
-  digital:     boolean;
-  imageUrl:    string;
+  includes: string;   // one item per line
+  variants: VariantGroup[];
+  badge: string;
+  inStock: boolean;
+  digital: boolean;
+  imageUrl: string;
 };
 
 export const BLANK_FORM: ProductFormData = {
@@ -39,10 +38,10 @@ export const BLANK_FORM: ProductFormData = {
 };
 
 export const CATEGORIES: { value: ProductCategory; label: string }[] = [
-  { value: "apparel",     label: "Apparel"     },
+  { value: "apparel", label: "Apparel" },
   { value: "educational", label: "Educational" },
-  { value: "kits",        label: "Kits"        },
-  { value: "digital",     label: "Digital"     },
+  { value: "kits", label: "Kits" },
+  { value: "digital", label: "Digital" },
 ];
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
@@ -80,9 +79,9 @@ function VariantBuilder({
   groups: VariantGroup[];
   onChange: (next: VariantGroup[]) => void;
 }) {
-  const add    = () => onChange([...groups, { name: "", options: "" }]);
+  const add = () => onChange([...groups, { name: "", options: "" }]);
   const remove = (i: number) => onChange(groups.filter((_, idx) => idx !== i));
-  const set    = (i: number, key: keyof VariantGroup, val: string) =>
+  const set = (i: number, key: keyof VariantGroup, val: string) =>
     onChange(groups.map((g, idx) => idx === i ? { ...g, [key]: val } : g));
 
   return (
@@ -118,12 +117,12 @@ function VariantBuilder({
 /* ── Main form ───────────────────────────────────────────────────────── */
 
 interface Props {
-  mode:     "new" | "edit";
-  form:     ProductFormData;
-  saving:   boolean;
-  error?:   string;
+  mode: "new" | "edit";
+  form: ProductFormData;
+  saving: boolean;
+  error?: string;
   onChange: (key: keyof ProductFormData, value: ProductFormData[keyof ProductFormData]) => void;
-  onSave:   () => void;
+  onSave: () => void;
 }
 
 export default function ProductForm({ mode, form, saving, error, onChange, onSave }: Props) {
@@ -135,7 +134,7 @@ export default function ProductForm({ mode, form, saving, error, onChange, onSav
     }
   }, [form.name, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const str  = (key: keyof ProductFormData) =>
+  const str = (key: keyof ProductFormData) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
       onChange(key, e.target.value);
   const bool = (key: "inStock" | "digital") => () => onChange(key, !form[key]);
@@ -274,7 +273,7 @@ export default function ProductForm({ mode, form, saving, error, onChange, onSav
 
         {/* RIGHT COLUMN: Sidebar Settings */}
         <aside className={styles.sidebar}>
-          
+
           {/* Card 1: Pricing & Classification */}
           <div className={styles.card}>
             <div className={styles.cardTitle}>Pricing &amp; Details</div>
