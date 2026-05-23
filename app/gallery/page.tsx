@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { buildMetadata } from "@/lib/seo";
 import { db } from "@/lib/db";
 import GalleryClient from "./GalleryClient";
