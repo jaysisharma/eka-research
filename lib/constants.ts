@@ -10,10 +10,10 @@ export const SITE = {
   name: "Eka Research",
   tagline: "Expanding the frontiers of space science",
   description:
-    "An interdisciplinary research and outreach organisation based in Kathmandu — advancing physics, astrophysics, mathematics, and space science while making rigorous science accessible to every curious mind across Nepal and beyond.",
+    "An interdisciplinary research and outreach organisation based in Kathmandu, dedicated to advancing physics, astrophysics, mathematics, and space science while making rigorous science accessible to every curious mind across Nepal and beyond.",
   hq: "Nepal",
   presence: "Germany | Thailand",
-  email: "hello@ekaresearch.org",
+  email: "info@ekaresearch.org",
   foundedYear: 2020,
 } as const;
 

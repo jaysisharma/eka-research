@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, MapPin, Youtube, Instagram, Twitter, Github } from "lucide-react";
+import { Mail, MapPin, Youtube, Instagram, Twitter, Github, Globe } from "lucide-react";
 import { SITE } from "@/lib/constants";
 import styles from "./Footer.module.css";
 
@@ -23,16 +23,6 @@ const FOOTER_LINKS = [
       { label: "Mentoring Program",   href: "/opportunities/mentoring" },
       { label: "Member Benefits",     href: "/member-benefits" },
       { label: "Store",               href: "/store" },
-    ],
-  },
-  {
-    heading: "Services",
-    links: [
-      { label: "For Schools",        href: "/services/schools" },
-      { label: "For Researchers",    href: "/services/researchers" },
-      { label: "For the Public",     href: "/services/public" },
-      { label: "All Sky Camera",     href: "/services/allsky" },
-      { label: "Weather Station",    href: "/services/weather" },
     ],
   },
   {
@@ -82,7 +72,11 @@ export default function Footer() {
             <div className={styles.contact}>
               <span className={styles.contactItem}>
                 <MapPin size={13} />
-                {SITE.hq}
+                <span>Headquarters: Nepal</span>
+              </span>
+              <span className={styles.contactItem}>
+                <Globe size={13} />
+                <span>International Presence: Germany | Thailand</span>
               </span>
               <a
                 href={`mailto:${SITE.email}`}
@@ -135,11 +129,6 @@ export default function Footer() {
           <p className={styles.copy}>
             © {year} {SITE.name}. Est. {SITE.foundedYear}, {SITE.hq}.
           </p>
-          <div className={styles.legal}>
-            <Link href="/privacy" className={styles.legalLink}>Privacy Policy</Link>
-            <span className={styles.legalDot} aria-hidden="true" />
-            <Link href="/terms" className={styles.legalLink}>Terms of Use</Link>
-          </div>
         </div>
       </div>
 

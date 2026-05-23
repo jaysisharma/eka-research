@@ -1,22 +1,23 @@
 /* ============================================================
-   FOOTER
+   PREMIUM GLASSMORPHIC FOOTER (SPACE GLOW THEME)
    ============================================================ */
 
 .footer {
-  background: var(--bg-base);
-  border-top: 1px solid var(--border-default);
+  background: radial-gradient(circle at 50% 0px, rgba(254, 199, 62, 0.03), transparent 300px), var(--bg-surface);
+  border-top: 1px solid rgba(254, 199, 62, 0.08);
+  position: relative;
+  overflow: hidden;
 }
 
 .inner {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: var(--space-16) var(--container-pad) var(--space-12);
+  position: relative;
+  z-index: 2;
 }
 
-/* ----------------------------------------------------------
-   MAIN GRID
-   Brand col (wide) + 4 link columns
----------------------------------------------------------- */
+/* ── MAIN GRID: Brand col (wide) + 3 link columns ── */
 .grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -31,18 +32,16 @@
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-    gap: var(--space-8) var(--space-6);
+    grid-template-columns: 2.2fr 1fr 1fr 1fr;
+    gap: var(--space-8) var(--space-10);
   }
 }
 
-/* ----------------------------------------------------------
-   BRAND COLUMN
----------------------------------------------------------- */
+/* ── BRAND COLUMN ── */
 .brand {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 .logoLink {
@@ -54,11 +53,12 @@
 }
 
 .logoImg {
-  width: 32px;
+  width: 36px;
   height: auto;
   object-fit: contain;
   filter: brightness(0) invert(1);
-  opacity: 0.9;
+  opacity: 0.95;
+  transition: transform var(--transition-normal), filter var(--transition-normal);
 }
 
 /* Dark theme: logo is navy, invert to white */
@@ -67,53 +67,89 @@
   opacity: 1;
 }
 
+.logoLink:hover .logoImg {
+  transform: scale(1.06) rotate(3deg);
+  filter: drop-shadow(0 0 10px rgba(254, 199, 62, 0.4)) brightness(0) invert(1);
+}
+
+[data-theme="light"] .logoLink:hover .logoImg {
+  filter: drop-shadow(0 0 10px rgba(254, 199, 62, 0.2));
+}
+
 .logoText {
   font-family: var(--font-heading);
-  font-size: var(--text-md);
+  font-size: var(--text-lg);
   font-weight: var(--weight-bold);
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  transition: color var(--transition-fast);
+}
+
+.logoLink:hover .logoText {
+  color: var(--color-brand-gold);
 }
 
 .tagline {
   font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  color: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  color: var(--color-brand-gold);
+  letter-spacing: 0.02em;
   line-height: var(--leading-snug);
 }
 
 .desc {
   font-size: var(--text-sm);
-  color: var(--text-muted);
-  line-height: var(--leading-relaxed);
-  max-width: 280px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 380px;
+  opacity: 0.85;
 }
 
-/* Contact */
+/* ── CONTACT (Humanized Glassmorphic Cards) ── */
 .contact {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .contactItem {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 12px;
   font-size: var(--text-xs);
   color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 8px 14px;
+  border-radius: 8px;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  width: fit-content;
+  font-weight: var(--weight-medium);
+}
+
+.contactItem svg {
+  color: var(--color-brand-gold);
+  opacity: 0.8;
+  transition: transform var(--transition-fast);
 }
 
 a.contactItem:hover {
-  color: var(--color-brand-gold);
+  color: var(--text-primary);
+  border-color: rgba(254, 199, 62, 0.22);
+  background: rgba(254, 199, 62, 0.03);
+  box-shadow: 0 4px 20px rgba(9, 11, 24, 0.15);
 }
 
-/* Socials */
+a.contactItem:hover svg {
+  transform: scale(1.15);
+}
+
+/* ── SOCIALS (Glowing Circular Handles) ── */
 .socials {
   display: flex;
-  gap: var(--space-2);
+  gap: 10px;
   margin-top: var(--space-2);
 }
 
@@ -121,27 +157,25 @@ a.contactItem:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-default);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   color: var(--text-muted);
   text-decoration: none;
-  transition:
-    color var(--transition-fast),
-    border-color var(--transition-fast),
-    background var(--transition-fast);
+  transition: all var(--transition-normal);
 }
 
 .socialIcon:hover {
-  color: var(--color-brand-gold);
-  border-color: rgba(254, 199, 62, 0.3);
-  background: rgba(254, 199, 62, 0.06);
+  color: var(--color-brand-navy);
+  border-color: var(--color-brand-gold);
+  background: var(--color-brand-gold);
+  box-shadow: 0 0 15px rgba(254, 199, 62, 0.35);
+  transform: translateY(-2px);
 }
 
-/* ----------------------------------------------------------
-   LINK COLUMNS
----------------------------------------------------------- */
+/* ── LINK COLUMNS ── */
 .col {
   display: flex;
   flex-direction: column;
@@ -154,7 +188,11 @@ a.contactItem:hover {
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--color-brand-gold);
+  border-bottom: 2px solid rgba(254, 199, 62, 0.15);
+  padding-bottom: 6px;
+  width: fit-content;
+  margin-bottom: 8px;
 }
 
 .colList {
@@ -168,58 +206,39 @@ a.contactItem:hover {
 
 .colLink {
   font-size: var(--text-sm);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
 }
 
 .colLink:hover {
   color: var(--text-primary);
+  transform: translateX(4px);
 }
 
-/* ----------------------------------------------------------
-   BOTTOM BAR
----------------------------------------------------------- */
+/* ── BOTTOM BAR ── */
 .bottom {
-  border-top: 1px solid var(--border-default);
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  background: rgba(9, 11, 24, 0.2);
+  position: relative;
+  z-index: 2;
 }
 
 .bottomInner {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: var(--space-5) var(--container-pad);
+  padding: var(--space-6) var(--container-pad);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .copy {
   font-size: var(--text-xs);
   color: var(--text-muted);
-}
-
-.legal {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.legalLink {
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-.legalLink:hover {
-  color: var(--text-primary);
-}
-
-.legalDot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--border-strong);
+  text-align: center;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
 }
