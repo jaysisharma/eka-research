@@ -12,15 +12,16 @@ const parseArr = <T,>(raw: string | null | undefined, fallback: T[]): T[] => {
   try { return JSON.parse(raw) as T[]; } catch { return fallback; }
 };
 
+
 export default function EditProductPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
 
-  const [form,    setForm]    = useState<ProductFormData | null>(null);
+  const [form, setForm] = useState<ProductFormData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving,  setSaving]  = useState(false);
-  const [error,   setError]   = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/auth/login");
@@ -34,21 +35,21 @@ export default function EditProductPage() {
       .then((p) => {
         const rawVariants = parseArr<{ name: string; options: string[] }>(p.variants, []);
         setForm({
-          name:        p.name        ?? "",
-          slug:        p.slug        ?? "",
-          tagline:     p.tagline     ?? "",
-          category:    p.category ?? "apparel",
-          priceNpr:    String(p.priceNpr ?? ""),
+          name: p.name ?? "",
+          slug: p.slug ?? "",
+          tagline: p.tagline ?? "",
+          category: p.category ?? "apparel",
+          priceNpr: String(p.priceNpr ?? ""),
           description: p.description ?? "",
-          includes:    parseArr<string>(p.includes, []).join("\n"),
-          variants:    rawVariants.map((g) => ({
-            name:    g.name,
+          includes: parseArr<string>(p.includes, []).join("\n"),
+          variants: rawVariants.map((g) => ({
+            name: g.name,
             options: g.options.join(", "),
           })) as VariantGroup[],
-          badge:     p.badge     ?? "",
-          inStock:   p.inStock   ?? true,
-          digital:   p.digital   ?? false,
-          imageUrl:  p.imageUrl  ?? "",
+          badge: p.badge ?? "",
+          inStock: p.inStock ?? true,
+          digital: p.digital ?? false,
+          imageUrl: p.imageUrl ?? "",
         });
       })
       .catch(() => setError("Failed to load product."))
@@ -61,33 +62,33 @@ export default function EditProductPage() {
   const handleSave = async () => {
     if (!form) return;
     setError("");
-    if (!form.name.trim())        { setError("Name is required.");        return; }
-    if (!form.slug.trim())        { setError("Slug is required.");        return; }
-    if (!form.tagline.trim())     { setError("Tagline is required.");     return; }
+    if (!form.name.trim()) { setError("Name is required."); return; }
+    if (!form.slug.trim()) { setError("Slug is required."); return; }
+    if (!form.tagline.trim()) { setError("Tagline is required."); return; }
     if (!form.description.trim()) { setError("Description is required."); return; }
-    if (!form.priceNpr)           { setError("Price is required.");       return; }
+    if (!form.priceNpr) { setError("Price is required."); return; }
 
     setSaving(true);
     try {
       const res = await fetch(`/api/admin/store/products/${id}`, {
-        method:  "PATCH",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name:        form.name,
-          slug:        form.slug,
-          tagline:     form.tagline,
-          category:    form.category,
-          priceNpr:    Number(form.priceNpr),
+          name: form.name,
+          slug: form.slug,
+          tagline: form.tagline,
+          category: form.category,
+          priceNpr: Number(form.priceNpr),
           description: form.description,
-          includes:    form.includes.split("\n").map((s) => s.trim()).filter(Boolean),
-          variants:    form.variants.map((g) => ({
-            name:    g.name,
+          includes: form.includes.split("\n").map((s) => s.trim()).filter(Boolean),
+          variants: form.variants.map((g) => ({
+            name: g.name,
             options: g.options.split(",").map((s) => s.trim()).filter(Boolean),
           })),
-          badge:     form.badge    || null,
-          inStock:   form.inStock,
-          digital:   form.digital,
-          imageUrl:  form.imageUrl || null,
+          badge: form.badge || null,
+          inStock: form.inStock,
+          digital: form.digital,
+          imageUrl: form.imageUrl || null,
         }),
       });
       if (!res.ok) {
