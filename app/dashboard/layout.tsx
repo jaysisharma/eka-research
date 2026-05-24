@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -35,7 +36,7 @@ export default async function DashboardLayout({
 
         <div className={styles.sidebarTop}>
           <Link href="/" className={styles.logo}>
-            EKA<span>.</span>
+            <Image src="/logo.png" alt="EKA Research Logo" width={140} height={45} style={{ objectFit: "contain", maxWidth: "100%", height: "auto" }} priority />
           </Link>
         </div>
 
