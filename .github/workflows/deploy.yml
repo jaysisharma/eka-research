@@ -19,11 +19,15 @@ jobs:
       packages: write
 
     steps:
-      # Checkout repository
+      # -----------------------------------------------------
+      # Checkout Repository
+      # -----------------------------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # -----------------------------------------------------
       # Login to GitHub Container Registry
+      # -----------------------------------------------------
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -31,11 +35,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # -----------------------------------------------------
       # Setup Docker Buildx
+      # -----------------------------------------------------
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # -----------------------------------------------------
       # Build & Push Main App Image
+      # -----------------------------------------------------
       - name: Build & Push App Image
         uses: docker/build-push-action@v6
         with:
@@ -45,7 +53,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # -----------------------------------------------------
       # Build & Push Migration Image
+      # -----------------------------------------------------
       - name: Build & Push Migration Image
         uses: docker/build-push-action@v6
         with:
@@ -65,21 +75,29 @@ jobs:
     needs: build
 
     steps:
-      # Checkout repository
+      # -----------------------------------------------------
+      # Checkout Repository
+      # -----------------------------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # -----------------------------------------------------
       # Setup Node.js
+      # -----------------------------------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Install dependencies
+      # -----------------------------------------------------
+      # Install Dependencies
+      # -----------------------------------------------------
       - name: Install Dependencies
         run: npm install
 
-      # Run Prisma migrations
+      # -----------------------------------------------------
+      # Run Prisma Migrations
+      # -----------------------------------------------------
       - name: Run Prisma Migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -97,18 +115,25 @@ jobs:
       - migrate
 
     steps:
-      # IMPORTANT: checkout is required
+
+      # -----------------------------------------------------
+      # Checkout Repository
+      # -----------------------------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Debug files
+      # -----------------------------------------------------
+      # Verify Files
+      # -----------------------------------------------------
       - name: Verify Files
         run: |
           pwd
           ls -la
           cat docker-compose.yml
 
-      # Copy docker-compose.yml to server
+      # -----------------------------------------------------
+      # Copy docker-compose.yml to Server
+      # -----------------------------------------------------
       - name: Copy docker-compose.yml
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -118,7 +143,9 @@ jobs:
           source: "docker-compose.yml"
           target: "/opt/app/"
 
-      # Deploy via SSH
+      # -----------------------------------------------------
+      # Deploy Application via SSH
+      # -----------------------------------------------------
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
 
@@ -140,41 +167,47 @@ jobs:
 
             cd /opt/app
 
-            # =====================================================
+            # =================================================
             # CREATE .env FILE
-            # =====================================================
+            # =================================================
 
             echo "DATABASE_URL=$DATABASE_URL" > .env
             echo "DIRECT_URL=$DIRECT_URL" >> .env
 
-            # =====================================================
+            # =================================================
             # LOGIN TO GHCR
-            # =====================================================
+            # =================================================
 
             echo "$ACCESS_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
 
-            # =====================================================
+            # =================================================
             # PULL LATEST IMAGES
-            # =====================================================
+            # =================================================
 
             docker compose pull
 
-            # =====================================================
-            # STOP OLD CONTAINERS
-            # =====================================================
+            # =================================================
+            # REMOVE OLD CONTAINERS
+            # =================================================
 
-            docker compose down
+            docker rm -f eka_app 2>/dev/null || true
 
-            # =====================================================
+            # =================================================
             # START NEW CONTAINERS
-            # =====================================================
+            # =================================================
 
             docker compose up -d --force-recreate --remove-orphans
 
-            # =====================================================
+            # =================================================
             # CLEANUP UNUSED IMAGES
-            # =====================================================
+            # =================================================
 
             docker image prune -f
+
+            # =================================================
+            # SHOW RUNNING CONTAINERS
+            # =================================================
+
+            docker ps
 
             echo "✅ Deployment completed successfully"

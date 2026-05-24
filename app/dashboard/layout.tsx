@@ -59,12 +59,13 @@ export default async function DashboardLayout({
                 <span className={styles.userNameCompact}>{user.name}</span>
                 <span className={styles.userRoleCompact}>
                   {user.role === "ADMIN" ? "Administrator" :
-                   user.role === "FREE_USER" ? "Regular User" :
-                   user.role === "PAID_MEMBER" ? "Premium Member" :
-                   user.role.charAt(0) + user.role.slice(1).toLowerCase().replace("_", " ")}
+                    user.role === "FREE_USER" ? "Regular User" :
+                      user.role === "PAID_MEMBER" ? "Premium Member" :
+                        user.role.charAt(0) + user.role.slice(1).toLowerCase().replace("_", " ")}
                 </span>
               </div>
             </Link>
+
 
             <div className={styles.footerActionsCompact}>
               <ThemeToggle />
