@@ -71,6 +71,8 @@ export default async function DashboardLayout({
               <ThemeToggle />
               <LogoutButton />
             </div>
+
+
           </div>
         </div>
       </aside>
