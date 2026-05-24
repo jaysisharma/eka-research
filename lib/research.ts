@@ -27,6 +27,8 @@ export type ResearchArticle = {
   content: string | null;
 };
 
+
+
 type DbArticle = {
   id: string;
   title: string;
@@ -67,7 +69,7 @@ export async function getPublishedArticles(): Promise<ResearchArticle[]> {
   const rows = await db.researchArticle.findMany({
     // Double-guard: both admin approval flags must be set
     where: {
-      published:        true,
+      published: true,
       submissionStatus: "approved",
     },
     orderBy: [{ year: "desc" }, { date: "desc" }],
