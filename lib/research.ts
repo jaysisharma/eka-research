@@ -29,6 +29,7 @@ export type ResearchArticle = {
 
 
 
+
 type DbArticle = {
   id: string;
   title: string;
