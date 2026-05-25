@@ -102,6 +102,7 @@ export default async function AboutPage() {
               just produce research, but build the people who will carry it forward.
             </p>
 
+
             <div className={styles.missionStats}>
               {[
                 { v: "2020", l: "Founded" },
