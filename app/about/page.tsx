@@ -83,8 +83,8 @@ export default async function AboutPage() {
 
           {/* Text column */}
           <div className={styles.missionText}>
-            <span className={styles.label}>
-              <span className={styles.labelLine} />
+            <span className={styles.label} />
+            <span className={styles.labelLine} >
               Our Mission
             </span>
 

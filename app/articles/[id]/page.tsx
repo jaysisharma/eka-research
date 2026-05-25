@@ -39,6 +39,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
+function safeHostname(url: string): string {
+  try { return new URL(url).hostname.replace("www.", ""); }
+  catch { return url; }
+}
+
 const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=1200&q=80";
 
@@ -293,7 +298,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                           <span>
                             <span className={styles.accessLinkLabel}>Publisher link</span>
                             <span className={styles.accessLinkSub}>
-                              {new URL(article.externalUrl).hostname.replace("www.", "")}
+                              {safeHostname(article.externalUrl)}
                             </span>
                           </span>
                         </a>
@@ -337,7 +342,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                           <span>
                             <span className={styles.accessLinkLabel}>Dataset</span>
                             <span className={styles.accessLinkSub}>
-                              {new URL(article.datasetUrl).hostname.replace("www.", "")}
+                              {safeHostname(article.datasetUrl)}
                             </span>
                           </span>
                         </a>
