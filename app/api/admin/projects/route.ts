@@ -32,6 +32,7 @@ export async function POST(req: Request) {
     period?: string;
     tags?: string[];
     imageUrl?: string | null;
+    images?: string[];
     href?: string;
     featured?: boolean;
     outcome?: string | null;
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
 
   const {
     title, description, status, categoryId, period,
-    tags, imageUrl, href, featured, outcome, phase,
+    tags, imageUrl, images, href, featured, outcome, phase,
     launchTarget, published,
   } = body;
 
@@ -59,6 +60,7 @@ export async function POST(req: Request) {
       period,
       tags:        JSON.stringify(tags ?? []),
       imageUrl:    imageUrl    ?? null,
+      images:      JSON.stringify(images ?? []),
       href,
       featured:    featured    ?? false,
       outcome:     outcome     ?? null,

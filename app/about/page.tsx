@@ -46,14 +46,6 @@ const TIMELINE = [
   { year: "2024", event: "Partnership formalised with Tribhuvan University Physics Department. First co-authored research paper published by Eka members." },
 ];
 
-const PARTNERS = [
-  "Tribhuvan University",
-  "Nepal Academy of Science & Technology",
-  "Astronomical Society of Nepal",
-  "International Meteor Organization",
-  "UNOOSA Partner",
-];
-
 export default async function AboutPage() {
   const TEAM = await db.teamMember.findMany({
     orderBy: [
@@ -62,8 +54,15 @@ export default async function AboutPage() {
     ],
   });
 
+  const partners = await db.partner.findMany({
+    orderBy: [
+      { order: "asc" },
+      { createdAt: "asc" },
+    ],
+  });
+
   const featured = TEAM.find((m: { featured: boolean }) => m.featured) || TEAM[0];
-  const restTeam  = featured ? TEAM.filter((m: { id: string }) => m.id !== featured.id) : TEAM;
+  const restTeam = featured ? TEAM.filter((m: { id: string }) => m.id !== featured.id) : TEAM;
 
   return (
     <main>
@@ -105,10 +104,10 @@ export default async function AboutPage() {
 
             <div className={styles.missionStats}>
               {[
-                { v: "2020",   l: "Founded" },
-                { v: "All",    l: "Open to" },
-                { v: "Open",   l: "Science" },
-                { v: "3",      l: "Countries" },
+                { v: "2020", l: "Founded" },
+                { v: "All", l: "Open to" },
+                { v: "Open", l: "Science" },
+                { v: "3", l: "Countries" },
               ].map(({ v, l }) => (
                 <div key={l} className={styles.missionStat}>
                   <span className={styles.missionStatVal}>{v}</span>
@@ -274,9 +273,27 @@ export default async function AboutPage() {
           </div>
 
           <div className={styles.partners}>
-            {PARTNERS.map((p) => (
-              <div key={p} className={styles.partner}>{p}</div>
-            ))}
+            {partners.map((p) => {
+              if (p.website) {
+                return (
+                  <a
+                    key={p.id}
+                    href={p.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.partner}
+                    style={{ textDecoration: "none" }}
+                  >
+                    {p.name}
+                  </a>
+                );
+              }
+              return (
+                <div key={p.id} className={styles.partner}>
+                  {p.name}
+                </div>
+              );
+            })}
           </div>
 
           <p className={styles.partnerNote}>

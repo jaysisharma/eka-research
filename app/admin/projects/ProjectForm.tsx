@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import styles from "./form.module.css";
 import ImageUpload from "@/components/ui/ImageUpload";
+import MultiImageUpload from "@/components/ui/MultiImageUpload";
 
 /* ── Types ───────────────────────────────────────────────────────────── */
 
@@ -23,6 +24,7 @@ export type ProjectFormData = {
   period:       string;
   tags:         string[];
   imageUrl:     string;
+  images:       string[];
   href:         string;
   featured:     boolean;
   outcome:      string;
@@ -34,7 +36,7 @@ export type ProjectFormData = {
 export const BLANK_FORM: ProjectFormData = {
   title: "", description: "", status: "planned",
   categoryId: "", period: "", tags: [],
-  imageUrl: "", href: "",
+  imageUrl: "", images: [], href: "",
   featured: false, outcome: "",
   phase: "", launchTarget: "", published: true,
 };
@@ -217,6 +219,20 @@ export default function ProjectForm({
                   value={form.imageUrl || ""}
                   onChange={(url) => onChange("imageUrl", url)}
                   label="Upload Cover Image"
+                />
+              </div>
+            </div>
+
+            {/* 1b. Project Gallery */}
+            <div className={styles.section} style={{ padding: "24px 32px" }}>
+              <div className={styles.field}>
+                <label className={styles.label}>Project Gallery</label>
+                <p className={styles.hint} style={{ marginBottom: "10px" }}>
+                  Additional images shown on the project detail page. Select multiple files at once.
+                </p>
+                <MultiImageUpload
+                  values={form.images || []}
+                  onChange={(urls) => onChange("images", urls)}
                 />
               </div>
             </div>

@@ -4,17 +4,15 @@ import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { 
-  Search, 
-  CalendarDays, 
-  Tag, 
-  Clock, 
-  CheckCircle2, 
-  Rocket, 
-  ArrowRight, 
+import {
+  Search,
+  CalendarDays,
+  Tag,
+  ArrowRight,
   X,
   Sparkles,
-  Inbox
+  Inbox,
+  Images,
 } from "lucide-react";
 import { type Project, type ProjectStatus } from "@/lib/constants";
 import styles from "@/app/projects/page.module.css";
@@ -32,20 +30,6 @@ const STATUS_CLASS: Record<ProjectStatus, string> = {
   upcoming:  "statusUpcoming",
 };
 
-const PHASES = [
-  "Planning", 
-  "Funding", 
-  "Instrument Design", 
-  "Site Survey", 
-  "Pre-launch", 
-  "Active"
-];
-
-function getPhaseIndex(phase?: string) {
-  if (!phase) return -1;
-  const idx = PHASES.findIndex(p => p.toLowerCase() === phase.toLowerCase());
-  return idx !== -1 ? idx : PHASES.indexOf(phase);
-}
 
 interface ProjectCatalogExplorerProps {
   projects: Project[];
@@ -295,15 +279,12 @@ export default function ProjectCatalogExplorer({
   );
 }
 
-/* ── Refactored Subcomponent: Premium Interactive Project Card ── */
+/* ── Project Card ── */
 function ProjectCard({ project }: { project: Project }) {
-  const phaseIdx = getPhaseIndex(project.phase);
-
   return (
     <div className={styles.cardContainer}>
       <Link href={project.href} className={styles.cardLinkOuter}>
-        
-        {/* Cover image wrap */}
+
         <div className={styles.cardImgFrame}>
           <Image
             src={project.image}
@@ -313,80 +294,32 @@ function ProjectCard({ project }: { project: Project }) {
             className={styles.cardImage}
           />
           <div className={styles.cardImageOverlay} />
-          
-          {/* Top Status Badge */}
           <div className={`${styles.badgeStatus} ${styles[STATUS_CLASS[project.status]]}`}>
             <span className={styles.badgeDot} />
             {STATUS_LABEL[project.status]}
           </div>
+          {(project.images?.length ?? 0) > 0 && (
+            <div className={styles.photoCountBadge}>
+              <Images size={9} />
+              {project.images!.length}
+            </div>
+          )}
         </div>
 
-        {/* Card details body */}
         <div className={styles.cardBody}>
-          
-          <div className={styles.cardMetaRow}>
-            <span className={styles.cardPeriodInfo}>
-              <CalendarDays size={12} />
-              {project.period}
-            </span>
-          </div>
+          <span className={styles.cardPeriodInfo}>
+            <CalendarDays size={10} />
+            {project.period}
+          </span>
 
           <h3 className={styles.cardTitle}>{project.title}</h3>
-          
+
           <p className={styles.cardDescription}>{project.description}</p>
 
-          {/* Outcome highlight for Completed Projects */}
-          {project.status === "completed" && project.outcome && (
-            <div className={styles.outcomeBlock}>
-              <div className={styles.outcomeTitleRow}>
-                <CheckCircle2 size={13} className={styles.outcomeCheckIcon} />
-                <span className={styles.outcomeHeading}>Impact Highlight</span>
-              </div>
-              <p className={styles.outcomeContent}>{project.outcome}</p>
-            </div>
-          )}
-
-          {/* Development Phase progress track for Upcoming Projects */}
-          {project.status === "upcoming" && project.phase && phaseIdx >= 0 && (
-            <div className={styles.progressContainer}>
-              <div className={styles.progressLabelRow}>
-                <span className={styles.progressTitle}>Development Phase</span>
-                <span className={styles.progressValue}>{project.phase}</span>
-              </div>
-              <div className={styles.progressTrack}>
-                {PHASES.map((phaseName, index) => (
-                  <div
-                    key={phaseName}
-                    className={`${styles.progressBarStep} ${
-                      index <= phaseIdx ? styles.stepActive : ""
-                    } ${index === phaseIdx ? styles.stepCurrent : ""}`}
-                    title={phaseName}
-                  />
-                ))}
-              </div>
-              <div className={styles.progressRange}>
-                <span>{PHASES[0]}</span>
-                <span>{PHASES[PHASES.length - 1]}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Project tag labels */}
-          <div className={styles.cardTagsCloud}>
-            {project.tags.map((tag) => (
-              <span key={tag} className={styles.cardTagItem}>
-                <Tag size={9} />
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* Hover dynamic explore link */}
           <div className={styles.cardActionLink}>
-            <span>Project details</span>
-            <ArrowRight size={14} className={styles.arrowIcon} />
+            <span>View project</span>
+            <ArrowRight size={11} className={styles.arrowIcon} />
           </div>
-
         </div>
 
       </Link>

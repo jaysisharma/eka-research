@@ -1,0 +1,109 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+/* Counter top-left */
+.counter {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.05em;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Close button top-right */
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  z-index: 2;
+}
+.closeBtn:hover { background: rgba(255, 255, 255, 0.18); }
+
+/* Nav buttons */
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+  z-index: 2;
+}
+.navBtn:hover { background: rgba(255, 255, 255, 0.18); }
+.navPrev { left: 20px; }
+.navNext { right: 20px; }
+
+@media (max-width: 640px) {
+  .navBtn  { width: 40px; height: 40px; }
+  .navPrev { left: 10px; }
+  .navNext { right: 10px; }
+}
+
+/* Image container */
+.imgWrap {
+  position: relative;
+  width: min(90vw, 1200px);
+  height: min(80vh, 800px);
+  cursor: default;
+}
+
+.img {
+  object-fit: contain;
+}
+
+/* Dot indicators */
+.dots {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dotActive {
+  background: #fff;
+  transform: scale(1.3);
+}

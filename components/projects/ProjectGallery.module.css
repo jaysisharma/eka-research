@@ -1,0 +1,150 @@
+.root {
+  margin-top: 52px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-default);
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 100px;
+  background: rgba(254, 199, 62, 0.15);
+  border: 1px solid rgba(254, 199, 62, 0.3);
+  color: var(--color-brand-gold);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+/* ── Mosaic grid ── */
+.grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 1 image — full width */
+.grid[data-count="1"] {
+  grid-template-columns: 1fr;
+}
+
+/* 2 images — 2 columns equal */
+.grid[data-count="2"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 3 images — first takes 2 cols */
+.grid[data-count="3"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 4+ — 3 col grid, cover spans 2 rows */
+.grid[data-count="4"],
+.grid[data-count="5"],
+.grid[data-count="6"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 640px) {
+  .grid,
+  .grid[data-count="3"],
+  .grid[data-count="4"],
+  .grid[data-count="5"],
+  .grid[data-count="6"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid[data-count="1"] {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Cells ── */
+.cell {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
+  cursor: zoom-in;
+  padding: 0;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cell:hover {
+  border-color: rgba(254, 199, 62, 0.35);
+  transform: scale(1.015);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* Featured cell (cover image) — taller on larger grids */
+.cellFeatured {
+  aspect-ratio: 16 / 10;
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 641px) {
+  .grid[data-count="4"] .cellFeatured,
+  .grid[data-count="5"] .cellFeatured,
+  .grid[data-count="6"] .cellFeatured {
+    grid-column: span 2;
+    aspect-ratio: 16 / 8;
+  }
+}
+
+.img {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.cell:hover .img {
+  transform: scale(1.05);
+}
+
+.cellOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.2s ease;
+}
+.cell:hover .cellOverlay {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* "Cover" label on the featured cell */
+.featuredLabel {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 8px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  z-index: 1;
+  pointer-events: none;
+}

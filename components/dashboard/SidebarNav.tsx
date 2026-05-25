@@ -63,6 +63,9 @@ export function SidebarNav({ role, adminMode = false }: SidebarNavProps) {
           <Link href="/admin/team" className={styles.navLink} data-active={isActive("/admin/team")}>
             <Contact size={18} /><span>Team</span>
           </Link>
+          <Link href="/admin/partners" className={styles.navLink} data-active={isActive("/admin/partners")}>
+            <Award size={18} /><span>Partners</span>
+          </Link>
           <Link href="/admin/messages" className={styles.navLink} data-active={isActive("/admin/messages")}>
             <MessageSquare size={18} /><span>Messages</span>
           </Link>

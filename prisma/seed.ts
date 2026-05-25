@@ -1099,8 +1099,27 @@ The ASC-EKA1 provides a viable, sub-USD-350 path to professional-grade meteor de
   } else {
     console.log(`  Team already has ${teamMemberCount} members — skipping.`);
   }
+
+  // ── Seed Partners ──────────────────────────────────────────────────
+  const partnerCount = await db.partner.count();
+  if (partnerCount === 0) {
+    const defaultPartners = [
+      { name: "Tribhuvan University", order: 1, featured: true },
+      { name: "Nepal Academy of Science & Technology", order: 2, featured: true },
+      { name: "Astronomical Society of Nepal", order: 3, featured: false },
+      { name: "International Meteor Organization", order: 4, featured: false },
+      { name: "UNOOSA Partner", order: 5, featured: false },
+    ];
+    for (const p of defaultPartners) {
+      await db.partner.create({ data: p });
+    }
+    console.log(`✓ Seeded ${defaultPartners.length} partners`);
+  } else {
+    console.log(`  Partners already has ${partnerCount} records — skipping.`);
+  }
 }
 
 main()
   .catch(console.error)
   .finally(() => db.$disconnect());
+

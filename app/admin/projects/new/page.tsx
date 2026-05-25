@@ -60,6 +60,7 @@ export default function NewProjectPage() {
           period:       form.period,
           tags:         form.tags,
           imageUrl:     form.imageUrl  || null,
+          images:       form.images,
           href:         form.href,
           featured:     form.featured,
           outcome:      form.outcome      || null,

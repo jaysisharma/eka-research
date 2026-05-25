@@ -51,6 +51,12 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
           : [];
       }
 
+      let parsedImages: string[] = [];
+      try {
+        const raw = JSON.parse(dbProj.images ?? "[]");
+        parsedImages = Array.isArray(raw) ? raw : [];
+      } catch { parsedImages = []; }
+
       return {
         id: dbProj.id,
         title: dbProj.title,
@@ -59,6 +65,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
         period: dbProj.period,
         tags: parsedTags,
         image: dbProj.imageUrl || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+        images: parsedImages,
         href: dbProj.href || `/projects/${dbProj.id}`,
         featured: dbProj.featured,
         outcome: dbProj.outcome || undefined,

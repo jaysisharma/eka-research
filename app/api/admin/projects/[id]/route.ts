@@ -41,6 +41,7 @@ export async function PATCH(
     period?: string;
     tags?: string[];
     imageUrl?: string | null;
+    images?: string[];
     href?: string;
     featured?: boolean;
     outcome?: string | null;
@@ -59,6 +60,7 @@ export async function PATCH(
       ...(body.period       !== undefined && { period:       body.period       }),
       ...(body.tags         !== undefined && { tags:         JSON.stringify(body.tags) }),
       ...(body.imageUrl     !== undefined && { imageUrl:     body.imageUrl     }),
+      ...(body.images       !== undefined && { images:       JSON.stringify(body.images) }),
       ...(body.href         !== undefined && { href:         body.href         }),
       ...(body.featured     !== undefined && { featured:     body.featured     }),
       ...(body.outcome      !== undefined && { outcome:      body.outcome      }),

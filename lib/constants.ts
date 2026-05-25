@@ -63,6 +63,8 @@ export type Project = {
   period: string;
   tags: string[];
   image: string;
+  /** Additional gallery images uploaded via admin */
+  images?: string[];
   href: string;
   featured?: boolean;
   /** Completed projects: one-line impact statement */
