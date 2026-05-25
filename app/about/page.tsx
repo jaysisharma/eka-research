@@ -94,8 +94,6 @@ export default async function AboutPage() {
               one paper, one discovery at a time.
             </blockquote>
 
-
-
             <p className={styles.missionBody}>
               Founded in {SITE.foundedYear} in Kathmandu, Eka Research combines
               original research in physics, astrophysics, mathematics, and space
