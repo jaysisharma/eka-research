@@ -88,6 +88,7 @@ export default async function AboutPage() {
               Our Mission
             </span>
 
+
             <blockquote className={styles.pullQuote}>
               Advanced science has always lived far from Nepal.
               We&rsquo;re changing that — one student,
@@ -101,7 +102,6 @@ export default async function AboutPage() {
               Our goal is to strengthen Nepal&rsquo;s scientific ecosystem — not
               just produce research, but build the people who will carry it forward.
             </p>
-
 
             <div className={styles.missionStats}>
               {[
