@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate",
     "gen:assets": "node scripts/generate-assets.mjs",
     "gen:research": "node scripts/generate-research-placeholders.mjs"
   },
