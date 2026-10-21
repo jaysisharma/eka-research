@@ -7,7 +7,7 @@ import {
   FolderKanban, ShoppingBag, Receipt,
   Briefcase, GraduationCap, Inbox, Newspaper, Contact,
   Calendar, User, Award, FileText, Image as ImageIcon,
-  ChevronRight,
+  ChevronRight, Settings,
 } from "lucide-react";
 import styles from "@/app/dashboard/layout.module.css";
 
@@ -153,6 +153,10 @@ export function SidebarNav({ role, adminMode = false }: SidebarNavProps) {
               </Link>
             </div>
           )}
+
+          <Link href="/admin/settings" className={styles.navLink} data-active={isActive("/admin/settings")}>
+            <Settings size={18} /><span>Settings</span>
+          </Link>
         </div>
       </nav>
     );
