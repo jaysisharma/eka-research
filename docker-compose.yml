@@ -1,4 +1,22 @@
 services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: eka_postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-eka}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      - POSTGRES_DB=${POSTGRES_DB:-eka}
+    volumes:
+      - eka_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - shared_network
+
   app:
     image: ghcr.io/jaysisharma/eka-research/eka-research-app:latest
     container_name: eka_app
@@ -12,6 +30,20 @@ services:
       - "3000:3000"
     networks:
       - shared_network
+
+  # One-off: docker compose run --rm migrator
+  migrator:
+    image: ghcr.io/jaysisharma/eka-research/eka-research-app:migrate
+    profiles:
+      - migrate
+    env_file:
+      - .env
+    networks:
+      - shared_network
+
+volumes:
+  eka_pgdata:
+    name: eka_pgdata
 
 networks:
   shared_network:

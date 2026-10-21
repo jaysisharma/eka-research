@@ -11,7 +11,7 @@ export default defineConfig({
   },
   datasource: {
     // Migrations require a direct (non-pooled) connection for advisory locking.
-    // DIRECT_URL is the Neon direct endpoint; fall back to DATABASE_URL for local dev.
+    // DIRECT_URL is optional; in production DATABASE_URL points at the eka_postgres container.
     url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
   },
 });

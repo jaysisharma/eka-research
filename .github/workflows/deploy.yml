@@ -67,52 +67,12 @@ jobs:
           cache-to: type=gha,mode=max
 
   # =========================================================
-  # 2. RUN DATABASE MIGRATIONS
-  # =========================================================
-  migrate:
-    name: Run Neon Database Migration
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      # -----------------------------------------------------
-      # Checkout Repository
-      # -----------------------------------------------------
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      # -----------------------------------------------------
-      # Setup Node.js
-      # -----------------------------------------------------
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      # -----------------------------------------------------
-      # Install Dependencies
-      # -----------------------------------------------------
-      - name: Install Dependencies
-        run: npm install
-
-      # -----------------------------------------------------
-      # Run Prisma Migrations
-      # -----------------------------------------------------
-      - name: Run Prisma Migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-        run: npx prisma migrate deploy
-
-  # =========================================================
-  # 3. DEPLOY APPLICATION
+  # 2. DEPLOY APPLICATION (Postgres runs on the server)
   # =========================================================
   deploy:
     name: Deploy Application
     runs-on: ubuntu-latest
-    needs:
-      - build
-      - migrate
+    needs: build
 
     steps:
 
@@ -132,15 +92,15 @@ jobs:
           cat docker-compose.yml
 
       # -----------------------------------------------------
-      # Copy docker-compose.yml to Server
+      # Copy docker-compose.yml + server scripts to Server
       # -----------------------------------------------------
-      - name: Copy docker-compose.yml
+      - name: Copy deploy files
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "docker-compose.yml"
+          source: "docker-compose.yml,scripts/server/ensure-db.sh,scripts/server/backup-db.sh"
           target: "/opt/app/"
 
       # -----------------------------------------------------
@@ -150,8 +110,8 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
 
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -171,19 +131,28 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
 
-          envs: DATABASE_URL,DIRECT_URL,ACCESS_TOKEN,GH_ACTOR,AUTH_SECRET,AUTH_URL,CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET,SMTP_HOST,SMTP_PORT,SMTP_SECURE,SMTP_USER,SMTP_PASS,SMTP_FROM
+          envs: POSTGRES_PASSWORD,NEON_DATABASE_URL,ACCESS_TOKEN,GH_ACTOR,AUTH_SECRET,AUTH_URL,CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET,SMTP_HOST,SMTP_PORT,SMTP_SECURE,SMTP_USER,SMTP_PASS,SMTP_FROM
 
           script: |
             set -e
 
             cd /opt/app
+            chmod +x scripts/server/*.sh
+
+            # Password goes into a URL unencoded — keep it URL-safe.
+            if [ -z "$POSTGRES_PASSWORD" ] || ! printf '%s' "$POSTGRES_PASSWORD" | grep -Eq '^[A-Za-z0-9_-]+$'; then
+              echo "❌ POSTGRES_PASSWORD secret must be set and contain only A-Z a-z 0-9 _ -"
+              exit 1
+            fi
 
             # =================================================
             # CREATE .env FILE
             # =================================================
 
-            echo "DATABASE_URL=$DATABASE_URL" > .env
-            echo "DIRECT_URL=$DIRECT_URL" >> .env
+            echo "POSTGRES_USER=eka" > .env
+            echo "POSTGRES_DB=eka" >> .env
+            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
+            echo "DATABASE_URL=postgresql://eka:$POSTGRES_PASSWORD@eka_postgres:5432/eka" >> .env
             echo "AUTH_SECRET=$AUTH_SECRET" >> .env
             echo "AUTH_URL=$AUTH_URL" >> .env
             echo "CLOUDINARY_CLOUD_NAME=$CLOUDINARY_CLOUD_NAME" >> .env
@@ -206,19 +175,35 @@ jobs:
             # PULL LATEST IMAGES
             # =================================================
 
-            docker compose pull
+            docker compose --profile migrate pull app migrator
 
             # =================================================
-            # REMOVE OLD CONTAINERS
+            # POSTGRES: create container/database only if missing
+            # =================================================
+
+            ./scripts/server/ensure-db.sh
+
+            # =================================================
+            # RUN DATABASE MIGRATIONS
+            # =================================================
+
+            docker compose run --rm migrator
+
+            # =================================================
+            # RECREATE APP ONLY (never touches Postgres)
             # =================================================
 
             docker rm -f eka_app 2>/dev/null || true
 
+            docker compose up -d --no-deps --force-recreate app
+
             # =================================================
-            # START NEW CONTAINERS
+            # BACKUP CRON (daily 02:00, idempotent)
             # =================================================
 
-            docker compose up -d --force-recreate --remove-orphans
+            mkdir -p /opt/app/backups
+            CRON_LINE="0 2 * * * /opt/app/scripts/server/backup-db.sh >> /opt/app/backups/backup.log 2>&1 # eka-db-backup"
+            ( crontab -l 2>/dev/null | grep -v '# eka-db-backup' || true; echo "$CRON_LINE" ) | crontab -
 
             # =================================================
             # CLEANUP UNUSED IMAGES
